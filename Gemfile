@@ -51,15 +51,54 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem 'rspec-rails', '~> 7.0.0'
+
+  gem 'factory_bot_rails'
+
+  gem "hotwire-spark"
+
+  gem 'pry'
+  gem 'pry-stack_explorer'
+  gem 'pry-nav'
+
+  gem 'pry-rails' # Causes rails console to open pry. `DISABLE_PRY_RAILS=1 rails c` can still open with IRB
+  gem 'pry-rescue' # Start a pry session whenever something goes wrong.
+  gem 'pry-theme' # An easy way to customize Pry colors via theme files
+
+  gem "binding_of_caller"
+  gem "ruby-lsp-rails"
+  gem "ruby-lsp-rspec", require: false
+
+  gem 'faker'
+  gem 'rails-controller-testing'
 end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  gem "letter_opener"
+
+  gem "bullet"
+
+  # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
+  gem "spring"
+  gem 'spring-commands-rspec'
+
+  gem "better_errors"
+
+  gem 'guard-rspec', require: false
+  gem 'guard-bundler', require: false
+  gem 'rack-mini-profiler'
 end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  gem 'database_cleaner'
 end
+
+gem "devise", "~> 4.9"
