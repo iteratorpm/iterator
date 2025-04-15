@@ -13,6 +13,21 @@ class User < ApplicationRecord
 
   before_save :set_initials_if_blank
 
+  has_many :project_memberships, dependent: :destroy
+  has_many :projects, through: :project_memberships
+
+  def owned_projects
+    projects.merge(ProjectMembership.owner)
+  end
+
+  def member_projects
+    projects.merge(ProjectMembership.member)
+  end
+
+  def viewer_projects
+    projects.merge(ProjectMembership.viewer)
+  end
+
   private
 
   def set_initials_if_blank

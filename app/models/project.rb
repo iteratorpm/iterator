@@ -20,4 +20,25 @@ class Project < ApplicationRecord
   enum :priority_display_scope, {
     icebox_only: 0, all_panels: 1
   }
+
+  has_many :project_memberships, dependent: :destroy
+  has_many :members, through: :project_memberships, source: :user
+
+  # Helper methods for common role checks
+  def owner?(user)
+    project_memberships.exists?(user: user, role: :owner)
+  end
+
+  def member?(user)
+    project_memberships.exists?(user: user)
+  end
+
+  def viewer?(user)
+    project_memberships.exists?(user: user, role: :viewer)
+  end
+
+  # Add a user with a specific role
+  def add_member(user, role = :member)
+    project_memberships.create(user: user, role: role)
+  end
 end

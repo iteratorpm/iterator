@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_15_170828) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_15_185117) do
   create_table "attachments", force: :cascade do |t|
     t.string "filename", null: false
     t.string "content_type"
@@ -89,6 +89,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_170828) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["owner_id"], name: "index_organizations_on_owner_id"
+  end
+
+  create_table "project_memberships", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "user_id", null: false
+    t.integer "role", default: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id", "user_id"], name: "index_project_memberships_on_project_id_and_user_id", unique: true
+    t.index ["project_id"], name: "index_project_memberships_on_project_id"
+    t.index ["user_id"], name: "index_project_memberships_on_user_id"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -206,6 +217,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_170828) do
     t.string "username", null: false
     t.string "name", default: "", null: false
     t.string "initials", default: "", null: false
+    t.boolean "admin", default: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -221,6 +233,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_170828) do
   add_foreign_key "iterations", "projects"
   add_foreign_key "labels", "projects"
   add_foreign_key "organizations", "owners"
+  add_foreign_key "project_memberships", "projects"
+  add_foreign_key "project_memberships", "users"
   add_foreign_key "projects", "organizations"
   add_foreign_key "reviews", "stories"
   add_foreign_key "reviews", "users", column: "reviewer_id"
