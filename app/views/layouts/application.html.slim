@@ -1,0 +1,41 @@
+doctype html
+html
+  head
+    title Tracker | Authentication
+    meta name="viewport" content="width=device-width, initial-scale=1.0"
+    meta name="apple-mobile-web-app-capable" content="yes"
+    meta name="mobile-web-app-capable" content="yes"
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag :app, "data-turbo-track": "reload"
+    = javascript_importmap_tags
+
+    = tag.link rel: "manifest", href: pwa_manifest_path(format: :json)
+
+    link rel="icon" href="/icon.png" type="image/png"
+    link rel="icon" href="/icon.svg" type="image/svg+xml"
+    link rel="apple-touch-icon" href="/icon.png"
+
+  body class="bg-gray-50 min-h-screen"
+    header.bg-white.shadow-sm
+      .max-w-7xl.mx-auto.py-4.px-4.sm:px-6.lg:px-8
+        .flex.justify-between.items-center
+          a href="/"
+            = image_tag "logo.svg", class: "h-10", alt: "Tracker Logo"
+          .hidden
+            span Don't have an account?
+            a.ml-2.text-blue-600.font-medium href="/signup" SIGN UP
+
+    main
+      .max-w-md.mx-auto.mt-8.mb-16.px-4.sm:px-6
+        = yield
+
+    footer.fixed.bottom-0.w-full.bg-white.shadow-inner.py-4
+      .max-w-7xl.mx-auto.px-4.sm:px-6.lg:px-8
+
+        .mt-6.text-center.text-xs.text-gray-500
+          p
+            | © Copyright 2025 Iterator
+            a.text-gray-700.hover:text-gray-900 href="/privacy-policy" target="_blank" rel="noopener noreferrer" Privacy Policy
+            | •
+            a.text-gray-700.hover:text-gray-900 href="/terms-of-use" target="_blank" rel="noopener noreferrer" Terms of Use

@@ -1,0 +1,10 @@
+- if resource.errors.any?
+  #error_explanation.bg-red-50.border.border-red-200.rounded-md.p-4.mb-6.text-red-800.text-sm data-turbo-cache="false"
+    h2.text-base.font-medium.mb-2
+      = I18n.t("errors.messages.not_saved",
+              count: resource.errors.count,
+              resource: resource.class.model_name.human.downcase)
+    
+    ul.list-disc.pl-5.space-y-1
+      - resource.errors.full_messages.each do |message|
+        li = message

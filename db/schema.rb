@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_15_161403) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_15_170828) do
   create_table "attachments", force: :cascade do |t|
     t.string "filename", null: false
     t.string "content_type"
@@ -98,7 +98,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_161403) do
     t.string "description"
     t.integer "organization_id"
     t.boolean "enable_tasks", default: true
-    t.boolean "public_access", default: false
+    t.boolean "public", default: false
     t.integer "iteration_start_day", default: 0
     t.date "project_start_date"
     t.integer "project_time_zone", default: 0
