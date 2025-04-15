@@ -21,6 +21,9 @@ class Story < ApplicationRecord
   has_many :followers, class_name: 'StoryFollower', dependent: :destroy
   has_many :reviews, dependent: :destroy
 
+  has_many :comments, as: :commentable, dependent: :destroy
+  has_many :attachments, as: :attachable, dependent: :destroy
+
   # Validations
   validates :title, presence: true
   validates :story_type, presence: true

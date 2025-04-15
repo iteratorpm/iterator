@@ -74,6 +74,7 @@ GEM
       uri (>= 0.13.1)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
+    amazing_print (1.7.2)
     ast (2.4.3)
     base64 (0.2.0)
     bcrypt (3.1.20)
@@ -95,6 +96,7 @@ GEM
     bullet (8.0.3)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
+    cancancan (3.6.1)
     capybara (3.40.0)
       addressable
       matrix
@@ -110,6 +112,9 @@ GEM
     concurrent-ruby (1.3.5)
     connection_pool (2.5.0)
     crass (1.0.6)
+    data_migrate (11.3.0)
+      activerecord (>= 6.1)
+      railties (>= 6.1)
     database_cleaner (2.1.0)
       database_cleaner-active_record (>= 2, < 3)
     database_cleaner-active_record (2.2.0)
@@ -141,6 +146,7 @@ GEM
       railties (>= 5.0.0)
     faker (3.5.1)
       i18n (>= 1.8.11, < 2)
+    fast_blank (1.0.1)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -204,6 +210,8 @@ GEM
       sshkit (>= 1.23.0, < 2.0)
       thor (~> 1.3)
       zeitwerk (>= 2.6.18, < 3.0)
+    kramdown (2.5.1)
+      rexml (>= 3.3.9)
     language_server-protocol (3.17.0.4)
     launchy (3.1.1)
       addressable (~> 2.8)
@@ -230,6 +238,16 @@ GEM
     method_source (1.1.0)
     mini_mime (1.1.5)
     minitest (5.25.5)
+    mission_control-jobs (1.0.2)
+      actioncable (>= 7.1)
+      actionpack (>= 7.1)
+      activejob (>= 7.1)
+      activerecord (>= 7.1)
+      importmap-rails (>= 1.2.1)
+      irb (~> 1.13)
+      railties (>= 7.1)
+      stimulus-rails
+      turbo-rails
     msgpack (1.8.0)
     nenv (0.3.0)
     net-imap (0.5.6)
@@ -262,9 +280,12 @@ GEM
     notiffany (0.1.3)
       nenv (~> 0.1)
       shellany (~> 0.0)
+    oj (3.16.10)
+      bigdecimal (>= 3.0)
+      ostruct (>= 0.2)
     orm_adapter (0.5.0)
     ostruct (0.6.1)
-    parallel (1.26.3)
+    parallel (1.27.0)
     parser (3.3.8.0)
       ast (~> 2.4.1)
       racc
@@ -428,6 +449,9 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     shellany (0.0.1)
+    slim (5.2.1)
+      temple (~> 0.10.0)
+      tilt (>= 2.1.0)
     solid_cable (3.0.7)
       actioncable (>= 7.2)
       activejob (>= 7.2)
@@ -472,10 +496,12 @@ GEM
     tailwindcss-ruby (4.1.3-aarch64-linux-musl)
     tailwindcss-ruby (4.1.3-x86_64-linux-gnu)
     tailwindcss-ruby (4.1.3-x86_64-linux-musl)
+    temple (0.10.3)
     thor (1.3.2)
     thruster (0.1.12)
     thruster (0.1.12-aarch64-linux)
     thruster (0.1.12-x86_64-linux)
+    tilt (2.6.0)
     timeout (0.4.3)
     turbo-rails (2.0.13)
       actionpack (>= 7.1.0)
@@ -515,24 +541,31 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  amazing_print
   better_errors
   binding_of_caller
   bootsnap
   brakeman
   bullet
+  cancancan
   capybara
+  data_migrate
   database_cleaner
   debug
-  devise (~> 4.9)
+  devise
   factory_bot_rails
   faker
+  fast_blank
   guard-bundler
   guard-rspec
   hotwire-spark
   importmap-rails
   jbuilder
   kamal
+  kramdown
   letter_opener
+  mission_control-jobs
+  oj
   propshaft
   pry
   pry-nav
@@ -549,6 +582,7 @@ DEPENDENCIES
   ruby-lsp-rails
   ruby-lsp-rspec
   selenium-webdriver
+  slim
   solid_cable
   solid_cache
   solid_queue

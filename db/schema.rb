@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_15_150856) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_15_161403) do
+  create_table "attachments", force: :cascade do |t|
+    t.string "filename", null: false
+    t.string "content_type"
+    t.integer "file_size"
+    t.string "file_path", null: false
+    t.string "attachable_type", null: false
+    t.integer "attachable_id", null: false
+    t.integer "uploader_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable"
+    t.index ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable_type_and_attachable_id"
+    t.index ["uploader_id"], name: "index_attachments_on_uploader_id"
+  end
+
   create_table "blockers", force: :cascade do |t|
     t.text "description", null: false
     t.boolean "resolved", default: false
@@ -21,6 +36,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_150856) do
     t.index ["blocker_story_id"], name: "index_blockers_on_blocker_story_id"
     t.index ["resolved"], name: "index_blockers_on_resolved"
     t.index ["story_id"], name: "index_blockers_on_story_id"
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.text "content", null: false
+    t.string "commentable_type", null: false
+    t.integer "commentable_id", null: false
+    t.integer "author_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_comments_on_author_id"
+    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
+    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
   end
 
   create_table "epics", force: :cascade do |t|
@@ -185,8 +212,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_150856) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "attachments", "users", column: "uploader_id"
   add_foreign_key "blockers", "stories"
   add_foreign_key "blockers", "stories", column: "blocker_story_id"
+  add_foreign_key "comments", "users", column: "author_id"
   add_foreign_key "epics", "labels"
   add_foreign_key "epics", "projects"
   add_foreign_key "iterations", "projects"

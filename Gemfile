@@ -42,7 +42,20 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+gem "cancancan"
+gem "devise"
+gem 'slim'
+gem "oj"
+
+gem 'data_migrate'
+
+gem "mission_control-jobs"
+gem 'fast_blank'
+gem 'kramdown'
+
 group :development, :test do
+  gem "amazing_print"
+
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
@@ -100,5 +113,3 @@ group :test do
 
   gem 'database_cleaner'
 end
-
-gem "devise", "~> 4.9"
