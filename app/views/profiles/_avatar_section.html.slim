@@ -1,0 +1,23 @@
+.bg-white.rounded-lg.shadow.overflow-hidden
+  .px-6.py-4.border-b.flex.justify-between.items-center
+    h2.text-lg.font-medium.text-gray-900 Profile Photo
+    = link_to "Upload Photo", "#", 
+              class: "text-blue-600 hover:text-blue-800", 
+              data: { action: "click->profile#uploadAvatar" }
+
+  .px-6.py-4
+    p.text-sm.text-gray-600.mb-4
+      | Profile photos help your teammates more easily distinguish who requested a story, 
+      | who is working on it, and who is making comments. 
+      = link_to "Learn more", help_article_path("updating_your_profile_photo"), class: "text-blue-600 hover:text-blue-800", target: "_blank"
+
+    .flex.items-center.space-x-4
+      - if user.avatar.attached?
+        = image_tag user.avatar, class: "h-16 w-16 rounded-full"
+        = link_to "Remove", remove_avatar_profile_path, 
+                  method: :delete, 
+                  class: "text-red-600 hover:text-red-800 text-sm",
+                  data: { turbo_method: :delete }
+      - else
+        .h-16.w-16.rounded-full.bg-gray-200.flex.items-center.justify-center
+          span.text-xl.font-bold.text-gray-500= user.initials

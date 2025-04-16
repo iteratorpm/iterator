@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "api_token_section" do %>
+  <%= render partial: "profiles/api_token_section", locals: { user: @user } %>
+<% end %>
+
+<%= turbo_stream.update "flash" do %>
+  <%= render partial: "shared/flash", locals: { notice: "New API token generated successfully" } %>
+<% end %>

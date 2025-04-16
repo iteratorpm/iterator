@@ -1,0 +1,171 @@
+- content_for :page_title, "Notification Settings"
+
+= render "shared/user_management_header"
+
+.max-w-4xl.mx-auto.space-y-6 data-controller="notifcation-settings"
+
+  / In-App Notifications Card
+  = form_with model: current_user, url: notification_settings_path, method: :put, class: "bg-white rounded-lg shadow overflow-hidden" do |f|
+    = f.hidden_field :section, value: "in_app"
+    .px-6.py-4.border-b.flex.justify-between.items-center
+      .flex.items-center.space-x-4
+        .flex.items-center
+          = f.check_box :in_app_enabled, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+        h2.text-lg.font-medium.text-gray-900 In-App Notifications
+      .flex.space-x-3
+        = link_to "Edit", "#", class: "text-blue-600 hover:text-blue-800", data: { action: "click->notifications#toggleEdit", target: "in_app.editButton" }
+        = link_to "Cancel", "#", class: "text-gray-600 hover:text-gray-800 hidden", data: { action: "click->notifications#toggleEdit", target: "in_app.cancelButton" }
+        = link_to "Save", "#", class: "text-blue-600 hover:text-blue-800 hidden", data: { action: "click->notifications#saveForm", target: "in_app.saveButton" }
+
+    .px-6.py-4.space-y-4
+      / Read Mode
+      .space-y-4 data-notifications-target="in_app.readMode"
+        .grid.grid-cols-1.md:grid-cols-2.gap-4
+          .border-b.pb-2
+            h3.text-sm.font-medium.text-gray-500 New Stories/Epics
+            p.text-sm.text-gray-900 Notify me when a new story/epic is created
+          .border-b.pb-2
+            h3.text-sm.font-medium.text-gray-500 Ownership change
+            p.text-sm.text-gray-900 Notify me when someone adds me as an owner of a story
+          .border-b.pb-2
+            .flex.items-center
+              h3.text-sm.font-medium.text-gray-500 Story State
+              = link_to "#", target: "_blank", rel: "noopener noreferrer", class: "ml-2 text-gray-400 hover:text-gray-600" do
+                svg.h-4.w-4 fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                  path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            p.text-sm.text-gray-900 State changes relevant to me
+
+        .border-t.my-2
+
+        .grid.grid-cols-1.md:grid-cols-2.gap-4
+          .border-b.pb-2
+            h3.text-sm.font-medium.text-gray-500 Comments
+            p.text-sm.text-gray-900 All comments, on stories/epics I follow
+          .border-b.pb-2
+            h3.text-sm.font-medium.text-gray-500 Commits
+            p.text-sm.text-gray-900 No commits
+          .border-b.pb-2
+            h3.text-sm.font-medium.text-gray-500 Blockers
+            p.text-sm.text-gray-900 All blockers, on stories I follow
+          .border-b.pb-2
+            h3.text-sm.font-medium.text-gray-500 Tasks
+            p.text-sm.text-gray-900 Mentions only
+          .border-b.pb-2
+            h3.text-sm.font-medium.text-gray-500 Reactions
+            p.text-sm.text-gray-900 All reactions to my comments
+          .border-b.pb-2
+            h3.text-sm.font-medium.text-gray-500 Reviews
+            p.text-sm.text-gray-900 Only reviews that I own
+
+      / Edit Mode
+      .space-y-4.hidden data-notifications-target="in_app.editMode"
+        .grid.grid-cols-1.md:grid-cols-2.gap-4
+          .border-b.pb-2
+            = f.label :in_app_new, "New Stories/Epics", class: "block text-sm font-medium text-gray-700"
+            .flex.items-center.mt-1
+              = f.check_box :in_app_new, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              span.ml-2.text-sm.text-gray-900 Notify me when a new story/epic is created
+          .border-b.pb-2
+            = f.label :in_app_ownership_change, "Ownership change", class: "block text-sm font-medium text-gray-700"
+            .flex.items-center.mt-1
+              = f.check_box :in_app_ownership_change, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              span.ml-2.text-sm.text-gray-900 Notify me when someone adds me as an owner of a story
+          .border-b.pb-2
+            .flex.items-center
+              = f.label :in_app_story_state, "Story State", class: "block text-sm font-medium text-gray-700"
+              = link_to "#", target: "_blank", rel: "noopener noreferrer", class: "ml-2 text-gray-400 hover:text-gray-600" do
+                svg.h-4.w-4 fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                  path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            = f.select :in_app_story_state, options_for_select([ ["No state changes", "no"], ["State changes relevant to me", "relevant"], ["All state changes, on stories I follow", "on_followed"], ["All state changes, on all stories in a project", "all"] ], "relevant"), {}, class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+
+        .border-t.my-2
+
+        .grid.grid-cols-1.md:grid-cols-2.gap-4
+          .border-b.pb-2
+            = f.label :in_app_comments, "Comments", class: "block text-sm font-medium text-gray-700"
+            = f.select :in_app_comments, options_for_select([ ["No Comments", "no"], ["Mentions only", "mentions"], ["All comments, on stories/epics I follow", "on_followed"], ["All comments, on all stories/epics in a project", "all"] ], "on_followed"), {}, class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+          .border-b.pb-2
+            = f.label :in_app_commits, "Commits", class: "block text-sm font-medium text-gray-700"
+            = f.select :in_app_commits, options_for_select([ ["No commits", "no"], ["Commits on stories I follow", "on_followed"], ["Commits on all stories in a project", "all"] ], "no"), {}, class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+          .border-b.pb-2
+            = f.label :in_app_blockers, "Blockers", class: "block text-sm font-medium text-gray-700"
+            = f.select :in_app_blockers, options_for_select([ ["No Blockers", "no"], ["All blockers, on stories I follow", "on_followed"], ["All blockers, on all stories in a project", "all"] ], "on_followed"), {}, class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+          .border-b.pb-2
+            = f.label :in_app_tasks, "Tasks", class: "block text-sm font-medium text-gray-700"
+            = f.select :in_app_tasks, options_for_select([ ["No Tasks", "no"], ["Mentions only", "mentions"] ], "mentions"), {}, class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+          .border-b.pb-2
+            = f.label :in_app_reactions, "Reactions", class: "block text-sm font-medium text-gray-700"
+            = f.select :in_app_reactions, options_for_select([ ["No reactions", "no"], ["All reactions to my comments", "yes"] ], "yes"), {}, class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+          .border-b.pb-2
+            = f.label :in_app_reviews, "Reviews", class: "block text-sm font-medium text-gray-700"
+            = f.select :in_app_reviews, options_for_select([ ["No reviews", "no"], ["Only reviews that I own", "owned"], ["All reviews on stories I follow", "all"] ], "owned"), {}, class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+
+  / Email Notifications Card (similar structure to In-App)
+  = form_with model: current_user, url: notification_settings_path, method: :put, class: "bg-white rounded-lg shadow overflow-hidden" do |f|
+    = f.hidden_field :section, value: "email"
+    .px-6.py-4.border-b.flex.justify-between.items-center
+      .flex.items-center.space-x-4
+        .flex.items-center
+          = f.check_box :email_enabled, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+        h2.text-lg.font-medium.text-gray-900 Email Notifications
+      .flex.space-x-3
+        = link_to "Edit", "#", class: "text-blue-600 hover:text-blue-800", data: { action: "click->notifications#toggleEdit", target: "email.editButton" }
+        = link_to "Cancel", "#", class: "text-gray-600 hover:text-gray-800 hidden", data: { action: "click->notifications#toggleEdit", target: "email.cancelButton" }
+        = link_to "Save", "#", class: "text-blue-600 hover:text-blue-800 hidden", data: { action: "click->notifications#saveForm", target: "email.saveButton" }
+
+    / ... similar content structure as in-app notifications ...
+
+  / Other Settings Card
+  = form_with model: current_user, url: notification_settings_path, method: :put, class: "bg-white rounded-lg shadow overflow-hidden" do |f|
+    = f.hidden_field :section, value: "other"
+    .px-6.py-4.border-b.flex.justify-between.items-center
+      h2.text-lg.font-medium.text-gray-900 Other
+      .flex.space-x-3
+        = link_to "Edit", "#", class: "text-blue-600 hover:text-blue-800", data: { action: "click->notifications#toggleEdit", target: "other.editButton" }
+        = link_to "Cancel", "#", class: "text-gray-600 hover:text-gray-800 hidden", data: { action: "click->notifications#toggleEdit", target: "other.cancelButton" }
+        = link_to "Save", "#", class: "text-blue-600 hover:text-blue-800 hidden", data: { action: "click->notifications#saveForm", target: "other.saveButton" }
+
+    .px-6.py-4.space-y-4
+      / Read Mode
+      .space-y-4 data-notifications-target="other.readMode"
+        .border-b.pb-2
+          h3.text-sm.font-medium.text-gray-500 Product Updates & Newsletters
+          p.text-sm.text-gray-900 I'd like to get occasional product updates, newsletters, or surveys via email
+
+      / Edit Mode
+      .space-y-4.hidden data-notifications-target="other.editMode"
+        .border-b.pb-2
+          = f.label :optin, "Product Updates & Newsletters", class: "block text-sm font-medium text-gray-700"
+          .flex.items-center.mt-1
+            = f.check_box :optin, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            span.ml-2.text-sm.text-gray-900 I'd like to get occasional product updates, newsletters, or surveys via email
+
+  / Project Notifications Card
+  = form_with model: current_user, url: notification_settings_path, method: :put, class: "bg-white rounded-lg shadow overflow-hidden" do |f|
+    = f.hidden_field :section, value: "project_notifications"
+    .px-6.py-4.border-b.flex.justify-between.items-center
+      h2.text-lg.font-medium.text-gray-900 Project Notifications
+      .flex.space-x-3
+        = link_to "Edit", "#", class: "text-blue-600 hover:text-blue-800", data: { action: "click->notifications#toggleEdit", target: "projects.editButton" }
+        = link_to "Cancel", "#", class: "text-gray-600 hover:text-gray-800 hidden", data: { action: "click->notifications#toggleEdit", target: "projects.cancelButton" }
+        = link_to "Save", "#", class: "text-blue-600 hover:text-blue-800 hidden", data: { action: "click->notifications#saveForm", target: "projects.saveButton" }
+
+    .px-6.py-4.space-y-4
+      p.text-sm.text-gray-600.mb-4
+        | This setting lets you mute general notifications from specified projects. You will only receive mentions from muted projects if you are mentioned.
+
+      / Read Mode
+      .space-y-4 data-notifications-target="projects.readMode"
+        .border-b.pb-2
+          h3.text-sm.font-medium.text-gray-500 Projects that get notifications
+          - current_user.projects.each do |project|
+            p.text-sm.text-gray-900= project.name
+
+      / Edit Mode
+      .space-y-4.hidden data-notifications-target="projects.editMode"
+        .border-b.pb-2
+          h3.text-sm.font-medium.text-gray-500.mb-2 Projects that get notifications
+          - current_user.projects.each do |project|
+            .flex.items-center.mb-2
+              = check_box_tag "project_notifications[#{project.id}]", "1", true, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              span.ml-2.text-sm.text-gray-900= project.name

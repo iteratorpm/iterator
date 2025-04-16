@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :projects, through: :project_memberships
   has_many :memberships, dependent: :destroy
   has_many :organizations, through: :memberships
+  has_one_attached :avatar
 
   belongs_to :current_organization, class_name: 'Organization', optional: true
 
@@ -46,6 +47,18 @@ class User < ApplicationRecord
   # Check if user can create projects in an organization
   def can_create_projects_in?(organization)
     organization.memberships.where(user_id: id, role: [:owner, :admin, :project_creator]).exists?
+  end
+
+  def authorized_apps
+    []
+  end
+
+  def regenerate_api_token
+    update(api_token: SecureRandom.hex(16))
+  end
+
+  def clear_api_token!
+    update(api_token: nil)
   end
 
   private

@@ -1,0 +1,20 @@
+= turbo_frame_tag "api_token_section", class: "block bg-white rounded-lg shadow overflow-hidden"
+  .px-6.py-4.border-b.flex.justify-between.items-center
+    h2.text-lg.font-medium.text-gray-900 API Token
+    .flex.space-x-3
+      = link_to "Create New Token", tokens_profile_path,
+                method: :post,
+                class: "text-blue-600 hover:text-blue-800",
+                data: { turbo_method: :post, turbo_frame: "api_token_section", action: "click->profile#showToken", confirm: "Creating a new token will replace and de-activate your existing token. Replace your token?" }
+      - if current_user.api_token.present?
+        = link_to "Remove Token", token_profile_path(current_user.api_token),
+                  method: :delete,
+                  class: "text-red-600 hover:text-red-800",
+                  data: { turbo_method: :delete, turbo_frame: "api_token_section", action: "click->profile#hideToken", confirm: "You are about to delete your API token. You can generate a new one, but you can not get your old one back." }
+
+  .px-6.py-4.space-y-4
+    p.text-sm.text-gray-600
+      | Your token enables access to your project and story data via the API, and needs to be kept private.
+      / = link_to "Learn more", help_article_path("api_token"), class: "text-blue-600 hover:text-blue-800"
+
+    = render partial: "profiles/api_token", locals: { user: current_user }

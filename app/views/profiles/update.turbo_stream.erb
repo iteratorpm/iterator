@@ -1,0 +1,11 @@
+<%= turbo_stream.replace "avatar_section" do %>
+  <%= render partial: "profiles/avatar_section", locals: { user: @user } %>
+<% end %>
+
+<%= turbo_stream.replace "api_token_section" do %>
+  <%= render partial: "profiles/api_token_section", locals: { user: @user } %>
+<% end %>
+
+<%= turbo_stream.replace "authorized_apps_section" do %>
+  <%= render partial: "profiles/authorized_apps_section", locals: { user: @user } %>
+<% end %>
