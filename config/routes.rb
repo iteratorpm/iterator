@@ -12,5 +12,14 @@ Rails.application.routes.draw do
   resource :projects
   resource :organizations
 
+  resources :notifications, only: [:index] do
+    post :mark_as_read, on: :member
+    post :mark_all_as_read, on: :collection
+  end
+
+  resource :notification_settings, only: [:edit, :update] do
+    post :toggle_mute_project, on: :collection
+  end
+
   root "projects#index"
 end

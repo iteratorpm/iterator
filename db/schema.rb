@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_16_065554) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_16_092719) do
   create_table "attachments", force: :cascade do |t|
     t.string "filename", null: false
     t.string "content_type"
@@ -90,6 +90,54 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_065554) do
     t.index ["organization_id", "user_id"], name: "index_memberships_on_organization_id_and_user_id", unique: true
     t.index ["organization_id"], name: "index_memberships_on_organization_id"
     t.index ["user_id"], name: "index_memberships_on_user_id"
+  end
+
+  create_table "muted_projects", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "project_id", null: false
+    t.integer "mute_type", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_muted_projects_on_project_id"
+    t.index ["user_id", "project_id"], name: "index_muted_projects_on_user_id_and_project_id", unique: true
+    t.index ["user_id"], name: "index_muted_projects_on_user_id"
+  end
+
+  create_table "notification_settings", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "project_id"
+    t.integer "story_creation", default: 0
+    t.integer "comments", default: 1
+    t.integer "comment_source", default: 0
+    t.integer "story_state_changes", default: 1
+    t.integer "blockers", default: 1
+    t.integer "comment_reactions", default: 1
+    t.integer "reviews", default: 1
+    t.integer "in_app_status", default: 1
+    t.integer "email_status", default: 1
+    t.integer "mute_status", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_notification_settings_on_project_id"
+    t.index ["user_id", "project_id"], name: "index_notification_settings_on_user_id_and_project_id", unique: true
+    t.index ["user_id"], name: "index_notification_settings_on_user_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "project_id"
+    t.string "notifiable_type"
+    t.integer "notifiable_id"
+    t.integer "notification_type", null: false
+    t.integer "delivery_method", default: 0, null: false
+    t.datetime "read_at", precision: nil
+    t.text "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
+    t.index ["project_id"], name: "index_notifications_on_project_id"
+    t.index ["user_id", "read_at"], name: "index_notifications_on_user_id_and_read_at"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -245,6 +293,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_065554) do
   add_foreign_key "labels", "projects"
   add_foreign_key "memberships", "organizations"
   add_foreign_key "memberships", "users"
+  add_foreign_key "muted_projects", "projects"
+  add_foreign_key "muted_projects", "users"
+  add_foreign_key "notification_settings", "projects"
+  add_foreign_key "notification_settings", "users"
+  add_foreign_key "notifications", "projects"
+  add_foreign_key "notifications", "users"
   add_foreign_key "project_memberships", "projects"
   add_foreign_key "project_memberships", "users"
   add_foreign_key "projects", "organizations"

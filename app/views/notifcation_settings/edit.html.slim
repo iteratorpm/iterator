@@ -1,0 +1,74 @@
+.container.mx-auto.p-4
+  h1.text-2xl.font-bold.text-gray-800.mb-6 Notification Settings
+
+  .bg-white.rounded-lg.shadow.overflow-hidden
+    .border-b.border-gray-200
+      nav.flex.space-x-8
+        = link_to '#global-settings', class: 'px-4 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300 whitespace-nowrap', data: { toggle: 'tab' } do
+          | Global Settings
+        = link_to '#project-settings', class: 'px-4 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300 whitespace-nowrap', data: { toggle: 'tab' } do
+          | Project Settings
+        = link_to '#muted-projects', class: 'px-4 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300 whitespace-nowrap', data: { toggle: 'tab' } do
+          | Muted Projects
+
+    .p-6
+      #global-settings.tab-pane.active
+        = form_with model: @global_settings, url: notification_settings_path, method: :patch, class: 'space-y-6' do |f|
+          = f.hidden_field :project_id, value: nil
+
+          .space-y-4
+            h3.text-lg.font-medium.text-gray-900 Delivery Methods
+            .space-y-4
+              .flex.items-center
+                = f.check_box :in_app_status, { class: 'h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded', checked: @global_settings.in_app_status_enabled? }, 'enabled', 'disabled'
+                = f.label :in_app_status, 'Enable in-app notifications', class: 'ml-2 block text-sm text-gray-900'
+              .flex.items-center
+                = f.check_box :email_status, { class: 'h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded', checked: @global_settings.email_status_enabled? }, 'enabled', 'disabled'
+                = f.label :email_status, 'Enable email notifications', class: 'ml-2 block text-sm text-gray-900'
+              .flex.items-center
+                = f.check_box :email_titles_enabled, { class: 'h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded' }
+                = f.label :email_titles_enabled, 'Include story actions in email titles (disables threading)', class: 'ml-2 block text-sm text-gray-900'
+
+          .space-y-4
+            h3.text-lg.font-medium.text-gray-900 Notification Types
+            .grid.grid-cols-1.gap-y-4.gap-x-6.sm:grid-cols-2
+              .space-y-2
+                = f.label :story_creation, 'New stories', class: 'block text-sm font-medium text-gray-700'
+                = f.select :story_creation, options_for_select([['No notifications', 'no'], ['Notify me when any new story is created', 'yes']], @global_settings.story_creation), {}, class: 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md'
+
+              / Add more form fields for each notification type here
+
+          .flex.justify-end
+            = f.submit 'Save Settings', class: 'inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+
+      #project-settings.tab-pane.hidden
+        / Similar form structure for project-specific settings
+
+      #muted-projects.tab-pane.hidden
+        h3.text-lg.font-medium.text-gray-900.mb-4 Muted Projects
+        - if @projects.empty?
+          p.text-gray-500 You're not a member of any projects yet.
+        - else
+          .overflow-x-auto
+            table.min-w-full.divide-y.divide-gray-200
+              thead.bg-gray-50
+                tr
+                  th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Project
+                  th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Status
+                  th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Actions
+              tbody.bg-white.divide-y.divide-gray-200
+                - @projects.each do |project|
+                  tr
+                    td.px-6.py-4.whitespace-nowrap.text-sm.font-medium.text-gray-900 = project.name
+                    td.px-6.py-4.whitespace-nowrap.text-sm.text-gray-500
+                      - if project.muted_by?(current_user)
+                        | Muted #{project.muted_as_mentions_only?(current_user) ? '(except mentions)' : ''}
+                      - else
+                        | Not muted
+                    td.px-6.py-4.whitespace-nowrap.text-sm.text-gray-500
+                      - if project.muted_by?(current_user)
+                        = link_to 'Unmute', toggle_mute_project_notification_settings_path(project_id: project.id, mute_type: 'unmute'), method: :post, class: 'inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+                      - else
+                        .space-x-2
+                          = link_to 'Mute all', toggle_mute_project_notification_settings_path(project_id: project.id, mute_type: 'all_notifications'), method: :post, class: 'inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+                          = link_to 'Mute except mentions', toggle_mute_project_notification_settings_path(project_id: project.id, mute_type: 'except_mentions'), method: :post, class: 'inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'

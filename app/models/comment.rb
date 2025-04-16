@@ -13,12 +13,13 @@ class Comment < ApplicationRecord
   scope :by_author, ->(user_id) { where(author_id: user_id) }
 
   # Allow for @mentions in comments
-  after_create :process_mentions
+  after_create :notify_mentioned_users
 
   private
 
-  def process_mentions
-    # Logic to extract @mentions from content and notify users
-    # Implementation depends on your notification system
+  def notify_mentioned_users
+    # mentioned_users.each do |user|
+    #   NotificationService.notify(user, :mention_in_comment, self)
+    # end
   end
 end

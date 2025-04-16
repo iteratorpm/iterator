@@ -39,6 +39,8 @@ class Story < ApplicationRecord
   scope :by_owner, ->(user_id) { joins(:story_owners).where(story_owners: { user_id: user_id }) }
   scope :by_label, ->(label_id) { joins(:story_labels).where(story_labels: { label_id: label_id }) }
 
+  after_update :notify_if_delivered, if: :saved_change_to_state?
+
   # Methods
   def add_owner(user)
     owners << user unless owners.include?(user)
@@ -58,5 +60,20 @@ class Story < ApplicationRecord
 
   def completed_tasks
     tasks.where(completed: true).count
+  end
+
+  private
+  def notify_if_delivered
+    if delivered? && status_before_last_save != 'delivered'
+      # Notify requester
+      if requester && requester != user
+        NotificationService.notify(requester, :story_delivered, self)
+      end
+
+      # Notify owner
+      if owner && owner != user
+        NotificationService.notify(owner, :story_delivered, self)
+      end
+    end
   end
 end
