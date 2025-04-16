@@ -19,14 +19,7 @@ html
   body class="bg-gray-50 min-h-screen"
     = turbo_frame_tag "modal"
 
-    header.bg-white.shadow-sm
-      .max-w-7xl.mx-auto.py-4.px-4.sm:px-6.lg:px-8
-        .flex.justify-between.items-center
-          a href="/"
-            = image_tag "logo.svg", class: "h-10", alt: "Tracker Logo"
-          .hidden
-            span Don't have an account?
-            a.ml-2.text-blue-600.font-medium href="/signup" SIGN UP
+    = render "layouts/header"
 
     main
       = yield

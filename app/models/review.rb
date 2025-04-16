@@ -3,5 +3,5 @@ class Review < ApplicationRecord
   belongs_to :reviewer, class_name: 'User'
 
   validates :status, presence: true
-  enum status: { requested: 0, approved: 1, rejected: 2 }
+  enum :status, { requested: 0, approved: 1, rejected: 2 }
 end
