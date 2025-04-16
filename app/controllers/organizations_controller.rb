@@ -6,7 +6,15 @@ class OrganizationsController < ApplicationController
   # GET /organizations
   def index
     @organizations = current_user.organizations.order(:name)
-    render json: @organizations
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @organizations }
+    end
+  end
+
+  def show
+    render json: @organization
   end
 
   # GET /organizations/new

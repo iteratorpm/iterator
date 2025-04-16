@@ -10,7 +10,9 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   resource :projects
-  resource :organizations
+  resources :organizations do
+    post :set_default
+  end
 
   resources :notifications, only: [:index] do
     post :mark_as_read, on: :member

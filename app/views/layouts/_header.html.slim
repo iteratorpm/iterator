@@ -6,11 +6,30 @@ header.bg-white.shadow-sm
 
       .flex.items-center.space-x-6
         - if signed_in?
-          / Notification Bell
-          .relative
-            button.text-gray-600.hover:text-gray-900.focus:outline-none aria-label="0 unread notifications" type="button"
-              svg.h-6.w-6 fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          / Notification Bell Dropdown
+          .relative data-controller="dropdown"
+            button.text-gray-600.hover:text-gray-900.focus:outline-none.p-1 data-action="dropdown#toggle click@window->dropdown#hide" aria-label="Notifications" type="button"
+              svg.h-5.w-5 fill="none" viewBox="0 0 24 24" stroke="currentColor"
                 path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+
+            / Dropdown menu (hidden by default)
+            .hidden.absolute.right-0.mt-2.w-80.rounded-md.shadow-lg.bg-white.ring-1.ring-black.ring-opacity-5.z-50 data-dropdown-target="menu"
+              .py-1 role="menu" aria-orientation="vertical"
+                div tabindex="0" data-aid="Dropdown__tabstop" style="outline: none;"
+                  / Header
+                  .flex.items-center.justify-between.px-4.py-3.border-b
+                    .flex.items-center
+                      h3.text-sm.font-medium.text-gray-900 Notifications
+                      .relative.ml-2
+                        button.flex.items-center.text-xs.text-gray-500.border.border-gray-300.rounded.px-2.py-1.hover:bg-gray-50 type="button" All
+                        / Dropdown arrow could be added here if needed
+
+                    button.text-xs.text-blue-600.hover:text-blue-800 data-aid="NotificationsTitleBar__markAllAsRead" aria-label="Mark all notifications as read" type="button"
+                      | Mark all as read
+
+                  / Empty state
+                  .p-4.text-center
+                    .text-sm.text-gray-500 data-aid="NotificationsList__emptyMessage" No notifications
 
           / Navigation Items
           ul.flex.items-center.space-x-6
@@ -72,9 +91,9 @@ header.bg-white.shadow-sm
 
                     .border-t.border-gray-100.my-1
 
-                    = link_to "Profile", "/profile", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem", tabindex: "-1", data: { aid: "ProfileDropdown__profile" }
-                    = link_to "Accounts", "/accounts", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem", tabindex: "-1"
-                    = link_to "Reports & Analytics", "/reports", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem", tabindex: "-1", data: { aid: "ProfileDropdown__analytics" }
+                    = link_to "Profile", edit_user_registration_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem", tabindex: "-1"
+                    = link_to "Organizations", organizations_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem", tabindex: "-1"
+                    = link_to "Reports & Analytics", "/reports", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem", tabindex: "-1"
 
                     .border-t.border-gray-100.my-1
 
