@@ -21,8 +21,11 @@ class Project < ApplicationRecord
     icebox_only: 0, all_panels: 1
   }
 
+  belongs_to :organization
   has_many :project_memberships, dependent: :destroy
   has_many :members, through: :project_memberships, source: :user
+
+  validates :organization, presence: true
 
   # Helper methods for common role checks
   def owner?(user)

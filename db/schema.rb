@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_15_185117) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_16_065554) do
   create_table "attachments", force: :cascade do |t|
     t.string "filename", null: false
     t.string "content_type"
@@ -81,14 +81,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_185117) do
     t.index ["project_id"], name: "index_labels_on_project_id"
   end
 
+  create_table "memberships", force: :cascade do |t|
+    t.integer "organization_id", null: false
+    t.integer "user_id", null: false
+    t.integer "role", default: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "user_id"], name: "index_memberships_on_organization_id_and_user_id", unique: true
+    t.index ["organization_id"], name: "index_memberships_on_organization_id"
+    t.index ["user_id"], name: "index_memberships_on_user_id"
+  end
+
   create_table "organizations", force: :cascade do |t|
     t.string "name"
-    t.integer "owner_id", null: false
     t.integer "seats_limit"
     t.integer "projects_limit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["owner_id"], name: "index_organizations_on_owner_id"
   end
 
   create_table "project_memberships", force: :cascade do |t|
@@ -218,7 +227,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_185117) do
     t.string "name", default: "", null: false
     t.string "initials", default: "", null: false
     t.boolean "admin", default: false
+    t.integer "current_organization_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+    t.index ["current_organization_id"], name: "index_users_on_current_organization_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
@@ -232,7 +243,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_185117) do
   add_foreign_key "epics", "projects"
   add_foreign_key "iterations", "projects"
   add_foreign_key "labels", "projects"
-  add_foreign_key "organizations", "owners"
+  add_foreign_key "memberships", "organizations"
+  add_foreign_key "memberships", "users"
   add_foreign_key "project_memberships", "projects"
   add_foreign_key "project_memberships", "users"
   add_foreign_key "projects", "organizations"
@@ -249,4 +261,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_185117) do
   add_foreign_key "story_owners", "stories"
   add_foreign_key "story_owners", "users"
   add_foreign_key "tasks", "stories"
+  add_foreign_key "users", "organizations", column: "current_organization_id"
 end

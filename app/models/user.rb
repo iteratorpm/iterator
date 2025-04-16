@@ -2,6 +2,12 @@ class User < ApplicationRecord
 
   has_many :authored_comments, class_name: 'Comment', foreign_key: 'author_id', dependent: :nullify
   has_many :uploaded_attachments, class_name: 'Attachment', foreign_key: 'uploader_id', dependent: :nullify
+  has_many :project_memberships, dependent: :destroy
+  has_many :projects, through: :project_memberships
+  has_many :memberships, dependent: :destroy
+  has_many :organizations, through: :memberships
+
+  belongs_to :current_organization, class_name: 'Organization', optional: true
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -13,9 +19,6 @@ class User < ApplicationRecord
 
   before_save :set_initials_if_blank
 
-  has_many :project_memberships, dependent: :destroy
-  has_many :projects, through: :project_memberships
-
   def owned_projects
     projects.merge(ProjectMembership.owner)
   end
@@ -26,6 +29,23 @@ class User < ApplicationRecord
 
   def viewer_projects
     projects.merge(ProjectMembership.viewer)
+  end
+
+  def owned_organizations
+    organizations.joins(:memberships).where(memberships: { role: :owner })
+  end
+
+  def admin_organizations
+    organizations.joins(:memberships).where(memberships: { role: :admin })
+  end
+
+  def project_creator_organizations
+    organizations.joins(:memberships).where(memberships: { role: [:owner, :admin, :project_creator] })
+  end
+
+  # Check if user can create projects in an organization
+  def can_create_projects_in?(organization)
+    organization.memberships.where(user_id: id, role: [:owner, :admin, :project_creator]).exists?
   end
 
   private

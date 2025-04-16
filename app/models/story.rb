@@ -1,8 +1,8 @@
 class Story < ApplicationRecord
   # Enums
-  enum story_type: { feature: 0, bug: 1, chore: 2, release: 3 }
-  enum status: { unstarted: 0, started: 1, finished: 2, delivered: 3, accepted: 4, rejected: 5 }
-  enum priority: { p1_highest: 0, p2_high: 1, p3_medium: 2, p4_low: 3 }
+  enum :story_type, { feature: 0, bug: 1, chore: 2, release: 3 }
+  enum :status, { unstarted: 0, started: 1, finished: 2, delivered: 3, accepted: 4, rejected: 5 }
+  enum :priority, { p1_highest: 0, p2_high: 1, p3_medium: 2, p4_low: 3 }
 
   # Associations
   belongs_to :project

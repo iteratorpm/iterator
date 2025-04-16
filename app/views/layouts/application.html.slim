@@ -17,6 +17,8 @@ html
     link rel="apple-touch-icon" href="/icon.png"
 
   body class="bg-gray-50 min-h-screen"
+    = turbo_frame_tag "modal"
+
     header.bg-white.shadow-sm
       .max-w-7xl.mx-auto.py-4.px-4.sm:px-6.lg:px-8
         .flex.justify-between.items-center
@@ -27,8 +29,7 @@ html
             a.ml-2.text-blue-600.font-medium href="/signup" SIGN UP
 
     main
-      .max-w-md.mx-auto.mt-8.mb-16.px-4.sm:px-6
-        = yield
+      = yield
 
     footer.fixed.bottom-0.w-full.bg-white.shadow-inner.py-4
       .max-w-7xl.mx-auto.px-4.sm:px-6.lg:px-8

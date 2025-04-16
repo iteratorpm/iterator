@@ -46,6 +46,7 @@ gem "cancancan"
 gem "devise"
 gem 'slim'
 gem "oj"
+gem "ultimate_turbo_modal"
 
 gem 'data_migrate'
 

@@ -1,16 +1,17 @@
-.max-w-md.mx-auto.bg-white.rounded-lg.shadow-md.p-6
-  h2.text-2xl.font-bold.text-gray-800.mb-4 Reset Your Password
-  p.text-gray-600.mb-6 Enter your email address below and we'll send you instructions to reset your password.
+.max-w-md.mx-auto.mt-8.mb-16.px-4.sm:px-6
+  .bg-white.rounded-lg.shadow-md.p-6
+    h2.text-2xl.font-bold.text-gray-800.mb-4 Reset Your Password
+    p.text-gray-600.mb-6 Enter your email address below and we'll send you instructions to reset your password.
 
-  = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
-    = render "devise/shared/error_messages", resource: resource
+    = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
+      = render "devise/shared/error_messages", resource: resource
 
-    .mb-6
-      = f.label :email, class: "block text-sm font-medium text-gray-700 mb-1"
-      = f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      .mb-6
+        = f.label :email, class: "block text-sm font-medium text-gray-700 mb-1"
+        = f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 
-    .mb-6
-      = f.submit "Send Reset Instructions", class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      .mb-6
+        = f.submit "Send Reset Instructions", class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
 
-  .mt-6.text-center
-    = link_to "Back to sign in", new_session_path(resource_name), class: "text-blue-600 hover:text-blue-800 text-sm"
+    .mt-6.text-center
+      = link_to "Back to sign in", new_session_path(resource_name), class: "text-blue-600 hover:text-blue-800 text-sm"

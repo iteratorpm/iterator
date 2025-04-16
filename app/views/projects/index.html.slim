@@ -1,1 +1,141 @@
-= @projects.count
+div data-aid="dashboard" class="min-h-screen bg-gray-50"
+  / Tabs Section
+  div class="bg-white border-b border-gray-200"
+    div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      div class="flex justify-between items-center py-4"
+        div class="flex space-x-8"
+          span class="border-b-2 border-blue-500 px-1 py-2 text-sm font-medium text-blue-600" Projects
+          span class="border-b-2 border-transparent px-1 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300" Workspaces
+
+        = link_to "Create project", new_projects_path, class:"inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500", data: { turbo_frame: "modal" }
+
+  / Projects Pane
+  div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
+    / Top Menu
+    div class="flex justify-between items-center mb-6"
+      div class="SearchBar relative flex-grow max-w-md"
+        input placeholder="Search Active Projects" id="projects-search-bar" data-aid="search-input" autofocus="" autocomplete="off" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm pl-4 pr-10 py-2 border"
+
+      div class="ml-4"
+        button class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" Active Projects
+
+    / Favorite Projects Section
+    div class="mb-8" data-aid="favorite-projects"
+      header class="mb-4"
+        div class="flex items-center text-gray-500 text-sm font-medium"
+          span class="text-gray-900" Favorite Projects
+          span class="mx-2" |
+          span data-aid="favorite-projects-count" 1
+
+      section
+        ol class="space-y-4"
+          li class="bg-white rounded-lg shadow overflow-hidden" data-aid="project-tile"
+            header class="border-b border-gray-200 p-4"
+              div class=""
+                div class="flex items-center justify-between"
+                  div class="flex-shrink-0"
+                    span data-balloon="Private" data-balloon-pos="down"
+                      span class="w-4 h-4 bg-gray-400 rounded-full" aria-label="private"
+
+                  div class="mx-4 flex-grow"
+                    span data-balloon="English Fox" data-balloon-pos="down"
+                      a class="text-blue-600 hover:text-blue-800 font-medium" data-aid="pr" href="/projects/2712725" English Fox
+
+                  div class="flex space-x-3"
+                    span data-balloon="Remove from Favorites" data-balloon-pos="down"
+                      button class="w-5 h-5 text-red-500 hover:text-red-700" data-aid="unfavorite-project-link" ♥
+                    span data-balloon="Manage project members" data-balloon-pos="down"
+                      a class="w-5 h-5 text-gray-500 hover:text-gray-700" href="/projects/2712725/memberships" aria-label="Manage project members" 👥
+                    span data-balloon="Project settings" data-balloon-pos="down"
+                      a class="w-5 h-5 text-gray-500 hover:text-gray-700" aria-label="settings" href="/projects/2712725/settings" ⚙
+
+            section class="p-4"
+              div class="flex justify-between items-center mb-4"
+                div class="flex space-x-6"
+                  span class="text-sm"
+                    | Velocity
+                    span class="font-medium" 1
+                  span class="text-sm"
+                    | Volatility
+                    span class="font-medium" 0%
+
+                div class=""
+                  a href="/reports/v2/projects/2712725/overview" class="text-sm text-blue-600 hover:text-blue-800" View Project Analytics
+
+              div class="flex space-x-1 h-8"
+                a href="/reports/v2/projects/2712725/overview" class="bg-green-500 hover:bg-green-600 rounded-t-sm w-full" data-aid="points-bar" style="height: 100%"
+                  div class="hidden absolute bg-white p-2 rounded shadow-lg text-xs"
+                    div class="font-medium mb-1" Apr 7 - Apr 14 2025
+                    div class="space-y-1"
+                      div
+                        span class="text-gray-500" Points accepted
+                        span class="font-medium ml-2" 1 pt
+                      div
+                        span class="text-gray-500" Team strength
+                        span class="font-medium ml-2" 100%
+
+                a href="/reports/v2/projects/2712725/overview" class="bg-green-300 hover:bg-green-400 rounded-t-sm w-full" data-aid="points-bar" style="height: 5%"
+                  div class="hidden absolute bg-white p-2 rounded shadow-lg text-xs"
+                    div class="font-medium mb-1" Apr 14 - Apr 21 2025
+                    div class="space-y-1"
+                      div
+                        span class="text-gray-500" Points accepted
+                        span class="font-medium ml-2" 0 pts
+                      div
+                        span class="text-gray-500" Team strength
+                        span class="font-medium ml-2" 100%
+
+    / My Projects Section
+    div class="" data-aid="my-projects"
+      header class="mb-4"
+        div class="flex items-center text-gray-500 text-sm font-medium"
+          span class="text-gray-900" My Projects
+          span class="mx-2" |
+          span class="" data-aid="my-projects-count" 1
+
+      section class=""
+        ol class="space-y-4"
+          li class="bg-white rounded-lg shadow overflow-hidden" data-aid="project-tile"
+            header class="border-b border-gray-200 p-4"
+              div class=""
+                div class="flex items-center justify-between"
+                  div class="flex-shrink-0"
+                    span data-balloon="Private" data-balloon-pos="down"
+                      span class="w-4 h-4 bg-gray-400 rounded-full" aria-label="private"
+
+                  div class="mx-4 flex-grow"
+                    span data-balloon="Ben D'Angelo" data-balloon-pos="down"
+                      a class="text-blue-600 hover:text-blue-800 font-medium" data-aid="pr" href="/projects/2395498" Ben D'Angelo
+
+                  div class="flex space-x-3"
+                    span data-balloon="Add to Favorites" data-balloon-pos="down"
+                      button class="w-5 h-5 text-gray-400 hover:text-red-500" data-aid="favorite-project-link" ♡
+                    span data-balloon="Manage project members" data-balloon-pos="down"
+                      a class="w-5 h-5 text-gray-500 hover:text-gray-700" href="/projects/2395498/memberships" aria-label="Manage project members" 👥
+                    span data-balloon="Project settings" data-balloon-pos="down"
+                      a class="w-5 h-5 text-gray-500 hover:text-gray-700" aria-label="settings" href="/projects/2395498/settings" ⚙
+
+            section class="p-4"
+              div class="flex justify-between items-center mb-4"
+                div class="flex space-x-6"
+                  span class="text-sm"
+                    | Velocity
+                    span class="font-medium" 10
+                  span class="text-sm"
+                    | Volatility
+                    span class="font-medium" 0%
+
+                div
+                  a href="/reports/v2/projects/2395498/overview" class="text-sm text-blue-600 hover:text-blue-800" View Project Analytics
+
+              div class="flex space-x-1 h-8"
+                a href="/reports/v2/projects/2395498/overview" class="bg-green-300 hover:bg-green-400 rounded-t-sm w-full" data-aid="points-bar" style="height: 5%"
+                  div class="hidden absolute bg-white p-2 rounded shadow-lg text-xs"
+                    div class="font-medium mb-1" Apr 14 - Apr 21 2025
+                    div class="space-y-1"
+                      div
+                        span class="text-gray-500" Points accepted
+                        span class="font-medium ml-2" 0 pts
+                      div
+                        span class="text-gray-500" Team strength
+                        span class="font-medium ml-2" 100%
