@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_16_145058) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_17_055103) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -174,6 +174,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_145058) do
     t.integer "projects_limit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "plan_type", default: 0, null: false
+    t.integer "projects_count", default: 0
+    t.integer "admins_count", default: 0
+    t.integer "collaborators_count", default: 0
   end
 
   create_table "project_memberships", force: :cascade do |t|
@@ -196,8 +200,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_145058) do
     t.boolean "enable_tasks", default: true
     t.boolean "public", default: false
     t.integer "iteration_start_day", default: 0
-    t.date "project_start_date"
-    t.integer "project_time_zone", default: 0
+    t.date "start_date"
+    t.integer "time_zone", default: 0
     t.integer "iteration_length", default: 1
     t.integer "point_scale", default: 0
     t.string "point_scale_custom", default: ""
@@ -211,6 +215,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_145058) do
     t.boolean "priority_field_enabled", default: false
     t.integer "priority_display_scope", default: 0
     t.boolean "point_bugs_and_chores", default: false
+    t.integer "members_count", default: 0
+    t.integer "stories_count", default: 0
     t.index ["organization_id"], name: "index_projects_on_organization_id"
   end
 

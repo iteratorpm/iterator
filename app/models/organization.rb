@@ -1,4 +1,8 @@
 class Organization < ApplicationRecord
+  enum :plan_type, {
+    free: 0, pro: 1
+  }
+
   has_many :memberships, dependent: :destroy
   has_many :users, through: :memberships
   has_many :projects, dependent: :destroy

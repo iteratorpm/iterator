@@ -4,7 +4,7 @@ FactoryBot.define do
     description { "Project description" }
     association :organization
     iteration_start_day { 0 }
-    project_time_zone { "UTC" }
+    time_zone { "UTC" }
     point_scale { "fibonacci" }
     velocity_strategy { "average" }
     initial_velocity { 10 }

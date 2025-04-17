@@ -35,7 +35,7 @@ RSpec.describe "Projects", type: :request do
       get new_project_path
       expect(assigns(:project)).to have_attributes(
         iteration_start_day: 0,
-        project_time_zone: 0,
+        time_zone: 0,
         point_scale: 0,
         velocity_strategy: 0,
         initial_velocity: 10,
@@ -61,8 +61,8 @@ RSpec.describe "Projects", type: :request do
           organization_id: organization.id,
           public: false,
           iteration_start_day: 1,
-          project_start_date: Date.today,
-          project_time_zone: "UTC",
+          start_date: Date.today,
+          time_zone: "UTC",
           iteration_length: 2,
           point_scale: "fibonacci",
           initial_velocity: 8,

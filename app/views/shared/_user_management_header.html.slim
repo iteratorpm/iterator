@@ -9,13 +9,14 @@
           class: "hover:text-blue-800 hover:underline #{'font-medium border-b-2 border-blue-500 pb-1 text-blue-800' if current_page?(profile_path)} text-blue-600"
 
       .section
-        = link_to "Organization", organizations_path,
+        = link_to "Organizations", organizations_path,
           class: "hover:text-blue-800 hover:underline #{'font-medium border-b-2 border-blue-500 pb-1 text-blue-800' if current_page?(organizations_path)} text-blue-600"
 
       .section
         = link_to "Notification Settings", notification_settings_path,
           class: "hover:text-blue-800 hover:underline #{'font-medium border-b-2 border-blue-500 pb-1 text-blue-800' if current_page?(notification_settings_path)} text-blue-600"
 
-      / .section
-      /   = link_to "Security", security_settings_path, class: "text-blue-600 hover:text-blue-800 hover:underline"
+      .section
+        = link_to "Security", security_settings_path,
+          class: "hover:text-blue-800 hover:underline #{'font-medium border-b-2 border-blue-500 pb-1 text-blue-800' if current_page?(security_settings_path)} text-blue-600"
 

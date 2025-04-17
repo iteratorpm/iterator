@@ -1,0 +1,26 @@
+- content_for :page_title, "Security Settings"
+
+= render "shared/user_management_header"
+
+.max-w-4xl.mx-auto.bg-white.rounded-lg.shadow.overflow-hidden
+  .px-6.py-4.border-b
+    h3.text-lg.font-medium.text-gray-900 Two-Factor Authentication
+
+  .px-6.py-4.space-y-6
+    .flex.items-start.space-x-4
+      / Lock icon
+      svg.w-6.h-6.text-gray-500[fill="currentColor" viewBox="0 0 24 24"]
+        path[d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"]
+      h2.text-lg.font-medium.text-gray-700 Two-factor authentication is not enabled
+
+    .space-y-4
+      p.text-gray-600
+        | Two-Factor Authentication (2FA or TFA) is a process that adds an extra layer of security to your account,
+        | by asking you to verify your identity using authentication codes from an app on your phone.
+        | When you enable this process, every time you log into Tracker, you will be asked to enter a code
+        | from the app on your phone.
+
+      = link_to "Enable Two-Factor Authentication",
+                "",
+                class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500",
+                data: { turbo_frame: "modal" }

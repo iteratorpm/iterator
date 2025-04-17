@@ -13,7 +13,7 @@
         = f.label :organization_id, "Organization", class: "block mb-2 text-sm font-medium text-gray-700"
 
         - if @organizations.any?
-          = f.select :organization_id, options_for_select(@organizations.map { |org| [org.name, org.id] }, { prompt: "Select an organization" }), class: "w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500", required: true, data: { action: "change->organizations#checkSelection" }
+          = f.select :organization_id, options_for_select(@organizations.map { |org| [org.name, org.id] }, f.object.organization_id), { prompt: "Select an organization" }, class: "w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500", required: true, data: { action: "change->organizations#checkSelection" }
           .mt-2.text-sm.text-gray-500
             | Don't see your organization?
             = link_to "Create new organization", "#", class: "text-blue-600 hover:text-blue-800", data: { action: "click->organizations#showNewOrganizationForm" }

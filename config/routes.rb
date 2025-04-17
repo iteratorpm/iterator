@@ -19,6 +19,8 @@ Rails.application.routes.draw do
     delete 'revoke_app/:id', to: 'profiles#revoke_app', as: :revoke_app
   end
 
+  resource :security_settings
+
   resource :projects
   resources :organizations do
     post :set_default

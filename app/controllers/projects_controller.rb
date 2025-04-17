@@ -8,12 +8,13 @@ class ProjectsController < ApplicationController
   def new
     @project = Project.new(
       iteration_start_day: 0,
-      project_time_zone: 0,
+      time_zone: 0,
       point_scale: 0,
       velocity_strategy: 0,
       initial_velocity: 10,
       iteration_length: 1,
-      done_iterations_to_show: 4
+      done_iterations_to_show: 4,
+      organization_id: params[:organization_id]
     )
     @organizations = current_user.organizations.order(:name)
   end
@@ -62,8 +63,8 @@ class ProjectsController < ApplicationController
       :organization_id,
       :public,
       :iteration_start_day,
-      :project_start_date,
-      :project_time_zone,
+      :start_date,
+      :time_zone,
       :iteration_length,
       :point_scale,
       :point_scale_custom,

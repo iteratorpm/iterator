@@ -4,7 +4,7 @@ class Project < ApplicationRecord
     thursday: 4, friday: 5, saturday: 6
   }
 
-  enum :project_time_zone, {
+  enum :time_zone, {
     eastern: 0, central: 1, mountain: 2, pacific: 3
     # ...expand as needed
   }
