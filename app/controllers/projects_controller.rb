@@ -33,6 +33,12 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def memberships
+  end
+
+  def archive
+  end
+
   def show
   end
 

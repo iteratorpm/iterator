@@ -1,0 +1,20 @@
+h3.text-lg.font-medium.text-gray-900.mb-4 Add Member
+= form_with model: [@organization, @organization.memberships.build], class: "space-y-4" do |f|
+  .form-group
+    = f.label :email, "Name or Email", class: "block text-sm font-medium text-gray-700"
+    = f.text_field :email, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+
+  .form-group
+    = f.label :role, "Account Role", class: "block text-sm font-medium text-gray-700"
+    = f.select :role, options_for_select(["Member", "Admin", "Owner"]), {}, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+    .text-xs.text-gray-500.mt-1
+      | (learn more about #{link_to "roles", help_account_member_roles_path, class: "text-blue-600 hover:text-blue-800"})
+
+  .form-group
+    .flex.items-center
+      = f.check_box :project_creator, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+      = f.label :project_creator, "Project Creator", class: "ml-2 block text-sm text-gray-700"
+
+  .flex.items-center.justify-end.space-x-3.pt-2
+    = f.submit "Add", class: "px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+    = link_to "Cancel", "#", data: { action: "click->modal#close" }, class: "px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"

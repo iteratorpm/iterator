@@ -1,7 +1,7 @@
 class OrganizationsController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource
-  before_action :set_organization, only: [:show, :edit, :update, :destroy]
+  before_action :set_organization, only: [:show, :edit, :update, :destroy, :plans_and_billing, :projects, :memberships, :project_report, :memberships_report]
 
   # GET /organizations
   def index
@@ -14,7 +14,40 @@ class OrganizationsController < ApplicationController
   end
 
   def show
-    render json: @organization
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @organization }
+    end
+  end
+
+  def plans_and_billing
+  end
+
+  def projects
+    @projects = if params[:archived] == "true"
+                  @organization.projects
+                else
+                  @organization.projects.where(archived: false)
+                end
+  end
+
+  def memberships
+    @memberships = @organization.memberships
+  end
+
+  def project_report
+    respond_to do |format|
+      format.json { render json: @organization }
+      format.csv { render csv: @organization }
+    end
+  end
+
+  def memberships_report
+    respond_to do |format|
+      format.json { render json: @organization }
+      format.csv { render csv: @organization }
+    end
   end
 
   # GET /organizations/new

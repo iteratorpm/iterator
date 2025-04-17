@@ -1,0 +1,55 @@
+- content_for :page_title, "Projects"
+
+= render "shared/user_management_header"
+
+= render "header_container"
+= render "navigation"
+
+.max-w-4xl.mx-auto.space-y-6
+
+  div id="project_list" class="max-w-4xl mx-auto bg-white rounded-lg shadow overflow-hidden"
+    div class="flex items-center justify-between p-4 border-b"
+      h3 class="text-lg font-medium text-gray-900" Projects
+      div class="flex space-x-2"
+        = link_to "Create Project", new_projects_path, \
+          id: "new_project_link", \
+          class: "px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700", \
+          data: { \
+            turbo_frame: "modal",
+          }
+        = link_to "Export Projects CSV", projects_report_organization_path(format: :csv), \
+          class: "px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded hover:bg-gray-300"
+
+    ul class="divide-y divide-gray-200"
+      - if @projects.empty?
+        li class="p-4 text-center text-gray-500"
+          | There are no active projects in this organization.
+      - else
+        - @projects.each do |project|
+          li id="project_#{project.id}" class="p-4 hover:bg-gray-50"
+            div class="flex items-start justify-between"
+              div class="flex-1 min-w-0"
+                div class="flex items-center space-x-2"
+                  = link_to project.name, projects_path(project), class: "text-blue-600 hover:text-blue-800 font-medium truncate"
+                div class="flex space-x-4 mt-1 text-sm text-gray-500"
+                  span = pluralize(project.project_memberships_count, 'Member')
+                  span = pluralize(project.stories_count, 'Story')
+
+              div class="ml-4 flex items-center space-x-4"
+                = link_to "Members", memberships_projects_path(project), class: "text-sm text-gray-600 hover:text-gray-900"
+                = link_to "Settings", edit_projects_path(project), class: "text-sm text-gray-600 hover:text-gray-900"
+                = link_to "Archive", archive_projects_path(project), \
+                  method: :post, \
+                  data: { confirm: "You are about to archive the project \"#{project.name}\". Are you sure you want to do this?" }, \
+                  class: "text-sm text-gray-600 hover:text-gray-900"
+                = link_to "Delete", projects_path(project), \
+                  method: :delete, \
+                  data: { confirm: "You are about to permanently delete the project \"#{project.name}\". Are you sure you want to do this?" }, \
+                  class: "text-sm text-red-600 hover:text-red-800"
+
+  - if params[:archived]
+    = link_to "Show Active Projects", projects_organization_path(@organization), \
+      class: "px-4 py-2 border border-gray-300 bg-white text-gray-700 rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+  - else
+    = link_to "Show Archived Projects", projects_organization_path(@organization, archived: true), \
+      class: "px-4 py-2 border border-gray-300 bg-white text-gray-700 rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"

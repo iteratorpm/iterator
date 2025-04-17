@@ -15,7 +15,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :confirmable
 
-  validates :name, length: { minimum: 0, maximum: 30 }
+  validates :name, length: { minimum: 1, maximum: 30 }
+  validates :username, length: { minimum: 1, maximum: 30 }
   validates :password, length: { minimum: 8 }, if: -> { password.present? }
 
   before_save :set_initials_if_blank
@@ -64,8 +65,12 @@ class User < ApplicationRecord
   private
 
   def set_initials_if_blank
-    if initials.blank? && username.present?
-      self.initials = username[0, 2].upcase
+    if initials.blank? && name.present?
+      self.initials = name[0, 2].upcase
+    end
+
+    if username.blank? && name.present?
+      self.username = name.gsub " ", ""
     end
   end
 end

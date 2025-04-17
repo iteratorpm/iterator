@@ -9,8 +9,9 @@
           class: "hover:text-blue-800 hover:underline #{'font-medium border-b-2 border-blue-500 pb-1 text-blue-800' if current_page?(profile_path)} text-blue-600"
 
       .section
+        - org_active = request.path.start_with?('/organizations')
         = link_to "Organizations", organizations_path,
-          class: "hover:text-blue-800 hover:underline #{'font-medium border-b-2 border-blue-500 pb-1 text-blue-800' if current_page?(organizations_path)} text-blue-600"
+          class: "hover:text-blue-800 hover:underline #{'font-medium border-b-2 border-blue-500 pb-1 text-blue-800' if org_active} text-blue-600"
 
       .section
         = link_to "Notification Settings", notification_settings_path,

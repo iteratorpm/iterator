@@ -20,9 +20,23 @@ Rails.application.routes.draw do
   end
 
   resource :security_settings
+  resource :memberships
 
-  resource :projects
+  resource :projects do
+    member do
+      get :memberships
+      post :archive
+    end
+  end
+
   resources :organizations do
+    member do
+      get :plans_and_billing
+      get :projects
+      get :memberships
+      get "projects/report", to: "organizations#project_report", as: :projects_report
+      get "memberships/report", to: "organizations#memberships_report", as: :memberships_report
+    end
     post :set_default
   end
 
