@@ -47,6 +47,7 @@ gem "devise"
 gem 'slim'
 gem "oj"
 gem "ultimate_turbo_modal"
+gem 'inline_svg'
 
 gem 'data_migrate'
 

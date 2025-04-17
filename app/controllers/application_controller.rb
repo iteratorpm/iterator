@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   around_action :use_user_time_zone, if: :current_user
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_recent_projects, if: :current_user
 
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
@@ -21,5 +22,9 @@ class ApplicationController < ActionController::Base
 
   def use_user_time_zone(&block)
     Time.use_zone(current_user.time_zone.presence || 'UTC', &block)
+  end
+
+  def set_recent_projects
+    @recent_projects = Project.order(created_at: :desc).limit(5)
   end
 end

@@ -1,0 +1,46 @@
+.flex.items-center
+  / Logo linking to home/dashboard
+  = link_to root_path, class: "flex-shrink-0 flex items-center", aria: { label: "Dashboard" } do
+    = image_tag "logo.svg", class: "h-10", alt: "Iterator Logo"
+
+  - if not signed_in?
+    .ml-4
+      span.font-medium.truncate.max-w-xs Iterator
+  - else
+    / Project dropdown
+    .relative.ml-4 data-controller="dropdown"
+      button.flex.items-center.space-x-1.text-gray-700.hover:text-gray-900 data-action="dropdown#toggle click@window->dropdown#hide"
+        - if @current_project.present?
+          span.font-medium.truncate.max-w-xs= @current_project.name
+        - else
+          span.font-medium.truncate.max-w-xs Iterator
+
+          svg.ml-1.h-4.w-4 fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"
+
+      / Dropdown menu
+      .hidden.absolute.left-0.mt-2.w-64.rounded-md.shadow-lg.bg-white.ring-1.ring-black.ring-opacity-5.z-50 data-dropdown-target="menu"
+        .py-1 role="menu"
+          / Projects section
+          .px-4.py-2.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Projects
+          = link_to new_projects_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem", data: { turbo_frame: "modal" } do
+            | Create Project
+
+          - @recent_projects.each do |p|
+            = link_to p.name, projects_path(p), class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem"
+
+          = link_to projects_path, class: "flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem" do
+            span Show All Projects
+            = inline_svg_tag "chevron-right.svg", class: "h-4 w-4 text-gray-500 ml-2"
+
+          / Workspaces section
+          / .border-t.border-gray-100.mt-1.mb-1
+          / .px-4.py-2.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Workspaces
+          / = link_to "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem" do
+          /   | Create Workspace
+          / = link_to "Big Workspace", workspace_path(932442), class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem"
+          / = link_to "Show All Workspaces", projects_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem"
+
+          / Footer
+          .border-t.border-gray-100.mt-1.mb-1
+          = link_to "Dashboard", root_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem"

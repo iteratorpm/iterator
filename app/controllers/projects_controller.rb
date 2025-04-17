@@ -40,6 +40,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    @current_project = @project
   end
 
   def edit
