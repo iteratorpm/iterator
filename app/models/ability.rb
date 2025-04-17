@@ -23,6 +23,7 @@ class Ability
     # Project creation
     can :create, Project
     can :create, Organization
+    can :create, Membership
 
     # Project-level access
     can :manage, Project, project_memberships: { user_id: user.id, role: :owner }

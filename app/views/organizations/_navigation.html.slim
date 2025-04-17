@@ -11,8 +11,8 @@
           class: "px-3 py-1 rounded-md font-medium #{'bg-gray-100 text-blue-600' if current_page?(projects_organization_path(@organization))} hover:bg-gray-100"
 
       li
-        = link_to "Members", memberships_organization_path(@organization),
-          class: "px-3 py-1 rounded-md font-medium #{'bg-gray-100 text-blue-600' if current_page?(memberships_organization_path(@organization))} hover:bg-gray-100"
+        = link_to "Members", organization_memberships_path(@organization),
+          class: "px-3 py-1 rounded-md font-medium #{'bg-gray-100 text-blue-600' if current_page?(organization_memberships_path(@organization))} hover:bg-gray-100"
 
       li
         = link_to "Plans & Billing", plans_and_billing_organization_path(@organization),

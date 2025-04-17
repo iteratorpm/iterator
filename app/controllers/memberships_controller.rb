@@ -1,10 +1,106 @@
 class MembershipsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_organization
+  load_and_authorize_resource
+
+  def index
+    @memberships = @organization.memberships.includes(:user)
+    apply_filters
+  end
+
   def new
+    @membership = @organization.memberships.build
   end
 
   def create
+    user = User.find_by(email: membership_params[:email])
+    @membership = @organization.memberships.build(user: user)
+
+    if user.nil?
+      invite_user_and_create_membership
+    elsif @membership.save
+      redirect_to organization_memberships_path(@organization), notice: 'Member was successfully added.'
+    else
+      render :new, alert: @membership.errors.full_messages.join(', ')
+    end
+  end
+
+  def edit
+    @membership = @organization.memberships.find(params[:id])
+  end
+
+  def update
+    @membership = @organization.memberships.find(params[:id])
+    if @membership.update(membership_params)
+      redirect_to organization_memberships_path(@organization), notice: 'Member was successfully updated.'
+    else
+      render :edit, alert: @membership.errors.full_messages.join(', ')
+    end
   end
 
   def destroy
+    @membership = @organization.memberships.find(params[:id])
+    @membership.destroy
+    redirect_to organization_memberships_path(@organization), notice: 'Member was successfully removed.'
+  end
+
+  def report
+    @memberships = @organization.memberships.includes(:user)
+    respond_to do |format|
+      format.csv { send_data generate_csv, filename: "memberships-#{Date.today}.csv" }
+    end
+  end
+
+  private
+
+  def set_organization
+    @organization = Organization.find(params[:organization_id])
+  end
+
+  def membership_params
+    params.require(:membership).permit(:email, :role, :project_creator)
+  end
+
+  def apply_filters
+    case params[:filter]
+    when 'admin'
+      @memberships = @memberships.where(role: :admin)
+    when 'project_creator'
+      @memberships = @memberships.where(project_creator: true)
+    end
+
+    if params[:hide_non_collaborators] == '1'
+      @memberships = @memberships.joins(:projects).distinct
+    end
+
+    if params[:search].present?
+      @memberships = @memberships.joins(:user).where(
+        "users.name ILIKE :search OR users.email ILIKE :search",
+        search: "%#{params[:search]}%"
+      )
+    end
+  end
+
+  def invite_user_and_create_membership
+    user = User.invite!(email: membership_params[:email]) do |u|
+      u.skip_invitation = true
+    end
+    @membership.user = user
+
+    if @membership.save
+      user.deliver_invitation
+      redirect_to organization_memberships_path(@organization), notice: 'Invitation sent successfully.'
+    else
+      render :new, alert: @membership.errors.full_messages.join(', ')
+    end
+  end
+
+  def generate_csv
+    CSV.generate(headers: true) do |csv|
+      csv << ['Name', 'Email', 'Role', 'Project Creator', 'Joined At']
+      @memberships.each do |m|
+        csv << [m.user.name, m.user.email, m.role.humanize, m.project_creator, m.created_at.to_date]
+      end
+    end
   end
 end

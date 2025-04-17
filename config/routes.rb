@@ -30,12 +30,16 @@ Rails.application.routes.draw do
   end
 
   resources :organizations do
+    resources :memberships, except: [:show] do
+      collection do
+        get :report
+      end
+    end
+
     member do
       get :plans_and_billing
       get :projects
-      get :memberships
       get "projects/report", to: "organizations#project_report", as: :projects_report
-      get "memberships/report", to: "organizations#memberships_report", as: :memberships_report
     end
     post :set_default
   end

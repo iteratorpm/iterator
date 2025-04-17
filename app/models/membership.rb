@@ -1,6 +1,7 @@
 class Membership < ApplicationRecord
   belongs_to :user
   belongs_to :organization
+  has_and_belongs_to_many :projects
 
   enum :role, {
     member: 0,        # Regular member
