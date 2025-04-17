@@ -14,14 +14,39 @@ class MembershipsController < ApplicationController
 
   def create
     user = User.find_by(email: membership_params[:email])
-    @membership = @organization.memberships.build(user: user)
 
-    if user.nil?
-      invite_user_and_create_membership
-    elsif @membership.save
-      redirect_to organization_memberships_path(@organization), notice: 'Member was successfully added.'
+    if user
+      # Existing user flow
+      @membership = @organization.memberships.build(user: user)
+      if @membership.update(membership_params.except(:email, :name, :initials))
+        redirect_to organization_memberships_path(@organization), notice: 'Member was successfully added.'
+      else
+        render :new, alert: @membership.errors.full_messages.join(', ')
+      end
     else
-      render :new, alert: @membership.errors.full_messages.join(', ')
+      # New user flow - render form for additional details
+      @email = membership_params[:email]
+      render :new_user_form
+    end
+  end
+
+  def create_with_new_user
+    user = User.invite!(
+      email: new_user_params[:email],
+      name: new_user_params[:name],
+      initials: new_user_params[:initials]
+    ) do |u|
+      u.skip_invitation = true
+    end
+
+    @membership = @organization.memberships.build(user: user, role: new_user_params[:role], project_creator: new_user_params[:project_creator])
+
+    if @membership.save
+      user.deliver_invitation
+      redirect_to organization_memberships_path(@organization), notice: 'Invitation sent successfully.'
+    else
+      @email = new_user_params[:email]
+      render :new_user_form, alert: @membership.errors.full_messages.join(', ')
     end
   end
 
@@ -59,6 +84,10 @@ class MembershipsController < ApplicationController
 
   def membership_params
     params.require(:membership).permit(:email, :role, :project_creator)
+  end
+
+  def new_user_params
+    params.require(:membership).permit(:email, :name, :initials, :role, :project_creator)
   end
 
   def apply_filters

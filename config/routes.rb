@@ -33,6 +33,7 @@ Rails.application.routes.draw do
     resources :memberships, except: [:show] do
       collection do
         get :report
+        post :create_with_new_user
       end
     end
 
