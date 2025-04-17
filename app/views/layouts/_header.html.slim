@@ -1,5 +1,5 @@
 header.bg-white.shadow-sm
-  nav.max-w-7xl.mx-auto.py-4.px-4.sm:px-6.lg:px-8
+  .max-w-7xl.mx-auto.pt-4.px-4.sm:px-6.lg:px-8
     .flex.justify-between.items-center
       = render "layouts/header_projects_dropdown"
 
@@ -32,40 +32,11 @@ header.bg-white.shadow-sm
 
           / Navigation Items
           ul.flex.items-center.space-x-6
-            li.relative data-controller="dropdown"
-              button.flex.items-center.text-gray-600.hover:text-gray-900.font-medium.focus:outline-none data-action="dropdown#toggle click@window->dropdown#hide" type="button"
-                | What's New
-                svg.ml-1.h-4.w-4 fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                  path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"
+            - if @current_project.present?
+              = render "layouts/search_bar"
 
-              / Dropdown menu (hidden by default)
-              .hidden.absolute.right-0.mt-2.w-80.rounded-md.shadow-lg.bg-white.ring-1.ring-black.ring-opacity-5.z-50.overflow-hidden data-dropdown-target="menu"
-                .py-1 role="menu" aria-orientation="vertical"
-                  div tabindex="0" data-aid="Dropdown__tabstop" style="outline: none;"
-                    / Header
-                    .flex.items-center.justify-between.px-4.py-3.bg-gray-50.border-b
-                      h3.text-sm.font-medium.text-gray-900 What's New
-                      = link_to "View all updates", "http://www.pivotaltracker.com/blog/category/updates/", class: "text-xs.text-blue-600.hover:text-blue-800", target: "_blank", rel: "noopener noreferrer"
+            = render "layouts/whats_new"
 
-                    / Update items
-                    .divide-y.divide-gray-100
-                      / Update 1
-                      .px-4.py-3
-                        .text-xs.text-gray-500.mb-1 September 19, 2024
-                        = link_to "News regarding your Pivotal Tracker subscription", "https://www.pivotaltracker.com/blog/2024-09-18-end-of-life", class: "block.text-sm.font-medium.text-blue-600.hover:text-blue-800.mb-1", target: "_blank", rel: "noopener noreferrer"
-                        .text-xs.text-gray-500 An important update regarding your Pivotal Tracker subscription
-
-                      / Update 2
-                      .px-4.py-3
-                        .text-xs.text-gray-500.mb-1 May 9, 2024
-                        = link_to "Pivotal Tracker subscription options are changing!", "https://www.pivotaltracker.com/blog/2024-03-12-subscriptions-update", class: "block.text-sm.font-medium.text-blue-600.hover:text-blue-800.mb-1", target: "_blank", rel: "noopener noreferrer"
-                        .text-xs.text-gray-500 A new update regarding your Pivotal Tracker account status and our future commercial offering!
-
-                      / Update 3
-                      .px-4.py-3
-                        .text-xs.text-gray-500.mb-1 December 14, 2023
-                        = link_to "PayPal comes to Pivotal Tracker!", "http://www.pivotaltracker.com/blog/2023-12-13-paypal", class: "block.text-sm.font-medium.text-blue-600.hover:text-blue-800.mb-1", target: "_blank", rel: "noopener noreferrer"
-                        .text-xs.text-gray-500 We're excited to announce the integration of a new payment method for Tracker, PayPal!
             li
               button.text-gray-600.hover:text-gray-900.font-medium.focus:outline-none type="button" Help
 
@@ -100,3 +71,6 @@ header.bg-white.shadow-sm
         - else
           span.text-gray-600 Don't have an account?
           a.ml-2.text-blue-600.font-medium.hover:text-blue-800 href=new_user_registration_path SIGN UP
+
+    - if @current_project.present?
+      = render "layouts/project_nav", project: @current_project

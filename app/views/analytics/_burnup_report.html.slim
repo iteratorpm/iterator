@@ -1,0 +1,26 @@
+.bg-white.rounded.shadow.p-6
+  .flex.justify-between.items-center.mb-4
+    .text-sm.flex.space-x-6
+      span.flex.items-center
+        span.w-4.h-2.bg-blue-500.inline-block.rounded-full.mr-2
+        | Points Accepted
+      span.flex.items-center
+        span.w-4.h-2.bg-blue-200.inline-block.rounded-full.mr-2
+        | Point Scope
+
+    .text-right.text-xs.text-gray-500
+      = link_to "View Report", charts_project_path(@project, type: :burnup), class: "text-blue-600 hover:underline"
+      div Date range options and list of stories
+
+  / Chart container
+  .mt-6
+    = line_chart [
+        { name: "Points Accepted", data: burnup_data[:accepted], color: "rgba(50, 157, 208, 0.9)" },
+        { name: "Point Scope", data: burnup_data[:scope], color: "rgba(50, 157, 208, 0.35)" }
+      ],
+      height: "290px",
+      library: {
+        point: { show: true },
+        line: { width: 2 },
+        legend: { position: 'top' }
+      }

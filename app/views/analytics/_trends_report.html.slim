@@ -1,0 +1,85 @@
+.grid.grid-cols-1.md:grid-cols-2.gap-0.border-t.border-gray-200
+  / Velocity and points accepted
+  .p-4.border-r.border-b.border-gray-200
+    .flex.justify-between.items-center.mb-2
+      h3.text-sm.font-medium.text-gray-700 Velocity and points accepted
+      = link_to "view report", velocity_project_analytics_path(@project), class: "text-xs text-blue-600 hover:text-blue-800"
+
+    .flex.flex-col.md:flex-row
+      .w-full.md:w-1/3.mb-4.md:mb-0
+        .text-blue-500.mb-2
+          span.text-3xl.font-bold= @velocity_data[:current_points]
+          span.text-xs.ml-2 points
+        .flex.items-center.text-xs.text-gray-600.mt-2
+          = inline_svg_tag "velocity_icon.svg", class: "w-4 h-4 mr-1"
+          span.font-semibold= "#{@velocity_data[:average_velocity]} pts"
+          span.ml-1 velocity
+
+      .w-full.md:w-2/3
+        = line_chart @velocity_data[:trend], height: "130px", library: { legend: { display: false } }
+
+  / Stories accepted
+  .p-4.border-b.border-gray-200
+    .flex.justify-between.items-center.mb-2
+      h3.text-sm.font-medium.text-gray-700 Stories accepted
+      = link_to "view report", composition_project_analytics_path(@project), class: "text-xs text-blue-600 hover:text-blue-800"
+
+    .flex.flex-col.md:flex-row
+      .w-full.md:w-1/3.mb-4.md:mb-0
+        .mb-2
+          span.text-3xl.font-bold= @stories_data[:total]
+          span.text-xs.ml-2 stories
+
+        .space-y-1.text-xs
+          - @stories_data[:by_type].each do |type, count|
+            .flex.items-center
+              .w-3.h-3.mr-2 class="bg-#{type_color(type)}"
+              span= "#{count} #{type.downcase.pluralize}"
+
+      .w-full.md:w-2/3
+        = column_chart @stories_data[:trend], height: "130px", library: { legend: { display: false } }
+
+.grid.grid-cols-1.md:grid-cols-2.gap-0.border-t.border-gray-200
+  / Story cycle time
+  .p-4.border-r.border-gray-200
+    .flex.justify-between.items-center.mb-2
+      h3.text-sm.font-medium.text-gray-700 Story cycle time*
+      = link_to "view report", cycle_time_project_analytics_path(@project), class: "text-xs text-blue-600 hover:text-blue-800"
+    p.text-xs.text-gray-500.mb-2 Typical time between Start and Accept
+
+    .flex.flex-col.md:flex-row
+      .w-full.md:w-2/5.mb-4.md:mb-0
+        .text-teal-600.mb-2
+          span.text-3xl.font-bold= @cycle_time_data[:current]
+          span.text-xs.ml-2 hrs per story
+        .text-xs.text-gray-600.mt-2
+          span.inline-block.w-2.h-2.bg-teal-600.opacity-30.mr-1
+          span 5-iteration avg:
+          span.font-semibold= "#{@cycle_time_data[:average]} hrs"
+
+      .w-full.md:w-3/5
+        = line_chart @cycle_time_data[:trend], height: "110px", library: { legend: { display: false } }
+
+  / Rejection rate
+  .p-4
+    .flex.justify-between.items-center.mb-2
+      h3.text-sm.font-medium.text-gray-700 Rejection rate
+      = link_to "view report", cycle_time_project_analytics_path(@project, display: "rejection"), class: "text-xs text-blue-600 hover:text-blue-800"
+    p.text-xs.text-gray-500.mb-2 Percentage of rejections vs. acceptances and rejections
+
+    .flex.flex-col.md:flex-row
+      .w-full.md:w-2/5.mb-4.md:mb-0
+        .text-red-500.mb-2
+          span.text-3xl.font-bold= @rejection_data[:current]
+          span.text-sm.ml-1 %
+        .text-xs.text-gray-600.mt-2
+          span.inline-block.w-2.h-2.bg-red-500.opacity-30.mr-1
+          span 5-iteration avg:
+          span.font-semibold= "#{@rejection_data[:average]}%"
+
+      .w-full.md:w-3/5
+        = line_chart @rejection_data[:trend], height: "110px", library: { legend: { display: false } }
+
+.p-4.text-xs.text-gray-500.border-t.border-gray-200
+  | * Weekends removed. Time based on #{Time.zone.name}. To set timezone, visit
+  = link_to "Project Settings", settings_project_path(@project), class: "text-blue-600 hover:text-blue-800"

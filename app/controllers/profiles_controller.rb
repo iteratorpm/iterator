@@ -2,6 +2,10 @@ class ProfilesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_user, except: [:remove_avatar]
 
+  def recent_analytics
+    redirect_to project_analytics_path @user.projects.first
+  end
+
   # GET /profile
   def show
     respond_to do |format|

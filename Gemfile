@@ -48,6 +48,8 @@ gem 'slim'
 gem "oj"
 gem "ultimate_turbo_modal"
 gem 'inline_svg'
+gem "chartkick"
+gem "chart-js-rails"
 
 gem 'data_migrate'
 

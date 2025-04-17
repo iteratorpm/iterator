@@ -19,14 +19,25 @@ Rails.application.routes.draw do
     delete 'revoke_app/:id', to: 'profiles#revoke_app', as: :revoke_app
   end
 
-  resource :security_settings
-  resource :memberships
+  get "analytics", to: "profile#recent_analytics"
 
-  resource :projects do
+  resources :security_settings
+  resources :memberships
+
+  resources :projects do
     member do
       get :memberships
       post :archive
     end
+
+    resources :analytics do
+      get :overview
+      get :charts, on: :member
+    end
+
+    resources :memberships, only: [:index]
+    resources :integrations, only: [:index]
+
   end
 
   resources :organizations do
@@ -50,7 +61,7 @@ Rails.application.routes.draw do
     post :mark_all_as_read, on: :collection
   end
 
-  resource :notification_settings, only: [:edit, :update, :show] do
+  resources :notification_settings, only: [:edit, :update, :show] do
     post :toggle_mute_project, on: :collection
   end
 

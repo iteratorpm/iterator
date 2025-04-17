@@ -1,0 +1,162 @@
+li.flex.items-center.justify-end
+  .relative.group
+    form.search-bar.flex.items-center.relative[action="#" data-controller="search" data-action="submit->search#preventDefault"]
+      a.absolute.left-3.text-gray-400[href="#"]
+        svg.w-4.h-4[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
+          path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"]
+      input.w-full.pl-10.pr-8.py-2.rounded.border.border-gray-300.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-transparent[name="search" type="text" aria-label="Search project" placeholder="Search project" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value=""]
+      button.absolute.right-3.text-gray-400.hover:text-gray-600[type="button" aria-label="search help"] ?
+
+    .absolute.right-0.hidden.group-focus-within:block.w-xl.bg-white.rounded-md.shadow-lg.border.border-gray-200.z-50.mt-1
+      header.bg-gray-50.px-4.py-3.border-b.border-gray-200
+        a.text-blue-500.hover:text-blue-700.text-sm.font-medium.float-right[href="/help/articles/advanced_search" target="_blank" rel="noopener noreferrer"] Search Help
+        h2.text-lg.font-semibold.text-gray-800 Search Operators
+
+      article.p-4
+        p.text-sm.text-gray-500.mb-4 SYNTAX: Search terms must be followed by a colon and use quotes for search terms containing spaces, dashes, etc.
+
+        .grid.grid-cols-2.gap-4
+          .col-span-1
+            ul.space-y-2
+              li
+                span.font-mono.text-blue-600 name
+                span.font-mono.text-gray-700 :voyage
+              li
+                span.font-mono.text-blue-600 epic
+                span.font-mono.text-gray-700
+                  | :"version 1.1"
+              li
+                span.font-mono.text-blue-600 label
+                span.font-mono.text-gray-700
+                  | :"needs discussion"
+              li
+                span.font-mono.text-blue-600 review
+                span.font-mono.text-gray-700
+                  | :"test (qa)"
+              li
+                span.font-mono.text-blue-600 review_status
+                span.font-mono.text-gray-700
+                  | :in_review
+              li
+                span.font-mono.text-blue-600 review
+                span.font-mono.text-gray-700
+                  | :"test (qa)"&in_review
+              li
+                span.font-mono.text-blue-600 type
+                span.font-mono.text-gray-700
+                  | :feature
+              li
+                span.font-mono.text-blue-600 story_priority
+                span.font-mono.text-gray-700
+                  | :"p3"
+              li
+                span.font-mono.text-blue-600 state
+                span.font-mono.text-gray-700
+                  | :unstarted
+              li
+                span.font-mono.text-blue-600 is
+                span.font-mono.text-gray-700
+                  | :blocked
+              li
+                span.font-mono.text-blue-600 is
+                span.font-mono.text-gray-700
+                  | :blocking
+
+            ul.space-y-2.mt-4
+              li
+                span.font-mono.text-blue-600 estimate
+                span.font-mono.text-gray-700
+                  | :8
+              li
+                span.font-mono.text-blue-600 estimate
+                span.font-mono.text-gray-700
+                | :-1
+                span.text-gray-500.text-sm
+                | (unestimated)
+
+            ul.space-y-2.mt-4
+              li
+                span.font-mono.text-blue-600 requester
+                span.font-mono.text-gray-700
+                  | :JTK
+              li
+                span.font-mono.text-blue-600 owner
+                span.font-mono.text-gray-700
+                  | :"James T Kirk"
+              li
+                span.font-mono.text-blue-600 owner
+                span.font-mono.text-gray-700
+                  | :""
+                span.text-gray-500.text-sm
+                  | (no owner)
+              li
+                span.font-mono.text-blue-600 reviewer
+                span.font-mono.text-gray-700
+                  | :"James T Kirk"
+
+            p.text-gray-500.text-sm.mt-4 Followed by you
+            ul.space-y-2
+              li
+                span.font-mono.text-blue-600 is
+                span.font-mono.text-gray-700
+                | :following
+
+          .col-span-1
+            ul.space-y-2
+              li
+                span.font-mono.text-blue-600 has
+                span.font-mono.text-gray-700
+                  | :attachment
+              li
+                span.font-mono.text-blue-600 no
+                span.font-mono.text-gray-700
+                  | :epics
+
+            ul.space-y-2.mt-4
+              li
+                span.font-mono.text-blue-600 created_on
+                span.font-mono.text-gray-700
+                  | :11/16/2012
+              li
+                span.font-mono.text-blue-600 updated_since
+                span.font-mono.text-gray-700
+                  | :"Nov 16 2012"
+              li
+                span.font-mono.text-blue-600 accepted_before
+                span.font-mono.text-gray-700
+                  | :11/16/2012
+              li
+                span.font-mono.text-blue-600 created
+                span.font-mono.text-gray-700
+                  | :today
+              li
+                span.font-mono.text-blue-600 updated
+                span.font-mono.text-gray-700
+                  | :-1w
+              li
+                span.font-mono.text-blue-600 accepted
+                span.font-mono.text-gray-700
+                  | :-2weeks..today
+
+            p.text-gray-500.text-sm.mt-4 For NOT searches, prefix with minus
+            ul.space-y-2
+              li
+                span.font-mono.text-blue-600
+                  | -label
+                span.font-mono.text-gray-700
+                  | :beta
+
+            p.text-gray-500.text-sm.mt-4 Boolean searches
+            ul.space-y-2
+              li.text-sm
+                | (
+                span.font-mono.text-blue-600 label
+                span.font-mono.text-gray-700 :alpha
+                span.font-mono.text-blue-600.mx-1 OR
+                span.font-mono.text-blue-600 label
+                span.font-mono.text-gray-700
+                  | :"needs design"
+                | )
+                span.font-mono.text-blue-600.mx-1 AND
+                span.font-mono.text-blue-600 state
+                span.font-mono.text-gray-700 :unstarted
