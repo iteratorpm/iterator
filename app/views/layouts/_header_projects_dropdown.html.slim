@@ -44,3 +44,7 @@
           / Footer
           .border-t.border-gray-100.mt-1.mb-1
           = link_to "Dashboard", root_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem"
+
+    - if @current_project.present?
+      = render "layouts/project_nav", project: @current_project
+

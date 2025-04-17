@@ -1,5 +1,5 @@
 header.bg-white.shadow-sm
-  .max-w-7xl.mx-auto.pt-4.px-4.sm:px-6.lg:px-8
+  .max-w-7xl.mx-auto.py-4.px-4.sm:px-6.lg:px-8
     .flex.justify-between.items-center
       = render "layouts/header_projects_dropdown"
 
@@ -72,5 +72,3 @@ header.bg-white.shadow-sm
           span.text-gray-600 Don't have an account?
           a.ml-2.text-blue-600.font-medium.hover:text-blue-800 href=new_user_registration_path SIGN UP
 
-    - if @current_project.present?
-      = render "layouts/project_nav", project: @current_project

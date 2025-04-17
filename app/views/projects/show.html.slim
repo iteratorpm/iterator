@@ -1,1 +1,10 @@
-p hello
+- content_for :page_title, "Stories"
+
+- content_for :sidebar do
+  = render 'projects/sidebar', project: @project
+
+.main.flex.h-screen
+  = yield :sidebar
+
+  article.main.flex-1.overflow-hidden
+    = render 'projects/panels', project: @project
