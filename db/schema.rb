@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_17_091247) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_18_080021) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -88,6 +88,43 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_17_091247) do
     t.datetime "updated_at", null: false
     t.index ["label_id"], name: "index_epics_on_label_id"
     t.index ["project_id"], name: "index_epics_on_project_id"
+  end
+
+  create_table "github_integrations", force: :cascade do |t|
+    t.string "api_url"
+    t.string "webhook_secret"
+    t.string "oauth_token"
+    t.string "oauth_refresh_token"
+    t.datetime "oauth_expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "github_repositories", force: :cascade do |t|
+    t.integer "github_integration_id", null: false
+    t.string "name", null: false
+    t.string "external_id", null: false
+    t.bigint "webhook_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["github_integration_id", "external_id"], name: "idx_on_github_integration_id_external_id_d697261199", unique: true
+    t.index ["github_integration_id"], name: "index_github_repositories_on_github_integration_id"
+  end
+
+  create_table "integrations", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "creator_id", null: false
+    t.string "name", null: false
+    t.string "integration_type", null: false
+    t.string "provider_type"
+    t.bigint "provider_id"
+    t.json "config"
+    t.json "scopes", default: []
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_integrations_on_creator_id"
+    t.index ["project_id"], name: "index_integrations_on_project_id"
+    t.index ["provider_type", "provider_id"], name: "index_integrations_on_provider_type_and_provider_id"
   end
 
   create_table "iterations", force: :cascade do |t|
@@ -322,6 +359,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_17_091247) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "webhook_events", force: :cascade do |t|
+    t.integer "integration_id", null: false
+    t.integer "status", default: 0
+    t.integer "event_type", default: 0
+    t.json "payload"
+    t.integer "attempts", default: 0
+    t.datetime "last_attempt_at"
+    t.text "response"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["integration_id"], name: "index_webhook_events_on_integration_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "attachments", "users", column: "uploader_id"
@@ -330,6 +380,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_17_091247) do
   add_foreign_key "comments", "users", column: "author_id"
   add_foreign_key "epics", "labels"
   add_foreign_key "epics", "projects"
+  add_foreign_key "github_repositories", "github_integrations"
+  add_foreign_key "integrations", "users", column: "creator_id"
   add_foreign_key "iterations", "projects"
   add_foreign_key "labels", "projects"
   add_foreign_key "memberships", "organizations"
@@ -357,4 +409,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_17_091247) do
   add_foreign_key "story_owners", "users"
   add_foreign_key "tasks", "stories"
   add_foreign_key "users", "organizations", column: "current_organization_id"
+  add_foreign_key "webhook_events", "integrations"
 end

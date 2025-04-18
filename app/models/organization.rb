@@ -6,6 +6,7 @@ class Organization < ApplicationRecord
   has_many :memberships, dependent: :destroy
   has_many :users, through: :memberships
   has_many :projects, dependent: :destroy
+  has_many :integrations, through: :projects
 
   validates :name, length: { minimum: 1, maximum: 50 }
 

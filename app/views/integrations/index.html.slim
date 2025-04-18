@@ -1,0 +1,50 @@
+.container.mx-auto.p-6
+  .bg-white.rounded-lg.shadow.mb-6
+    .flex.flex-col.md:flex-row.justify-between.items-start.md:items-center.p-6
+      .mb-4.md:mb-0
+        .flex.items-center
+          .text-gray-600.mr-3 Integrations for Organization:
+          .relative.w-64
+            = select_tag :organization_id,
+                         options_for_select(@available_organizations.map { |a| [a.name, a.id] },
+                         selected: @organization.id),
+                         class: 'block.w-full.pl-3.pr-10.py-2.text-base.border-gray-300.focus:outline-none.focus:ring-blue-500.focus:border-blue-500.sm:text-sm.rounded-md',
+                         data: { controller: 'dropdown', action: 'change->dropdown#changeOrganization' }
+
+      = link_to new_organization_integration_path(@organization),
+        class: 'px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors', data: {turbo_frame: "modal"} do
+        | Add an integration
+
+  .bg-white.rounded-lg.shadow.overflow-hidden
+    - if @integrations.empty?
+      .p-8.text-center
+        p.text-gray-500.mb-4 No integrations have been added yet.
+        = link_to 'Add your first integration', new_organization_integration_path(@organization),
+          class: 'px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors',
+          data: { turbo_frame: "modal" }
+    - else
+      - @integrations.group_by(&:integration_type).each do |type, integrations|
+        .mb-6
+          .flex.items-center.bg-gray-50.p-4.border-b
+            .w-8.h-8.mr-3
+              = image_tag "#{type}_logo.svg", alt: "#{type} logo", class: 'w-full h-full'
+            h3.text-lg.font-semibold.text-gray-700= integration_display_name(type)
+
+          .divide-y.divide-gray-200
+            - integrations.each do |integration|
+              .flex.items-center.justify-between.p-4.hover:bg-gray-50
+                .flex-1
+                  .flex.items-center
+                    .text-lg.font-medium.text-gray-900.mr-3= integration.name
+                    - if integration.projects.any?
+                      .text-xs.bg-gray-100.rounded-full.px-2.py-1.text-gray-600
+                        = "#{integration.projects.count} #{'project'.pluralize(integration.projects.count)}"
+                  .text-sm.text-gray-500
+                    | Created on #{l(integration.created_at, format: :long)} by #{integration.creator.name}
+                .flex.items-center.space-x-2
+                  = link_to 'Edit', edit_organization_integration_path(@organization, integration),
+                            class: 'text-blue-600 hover:text-blue-800 hover:underline'
+                  = link_to 'Remove', organization_integration_path(@organization, integration),
+                            method: :delete,
+                            data: { confirm: 'Are you sure you want to remove this integration?' },
+                            class: 'text-red-600 hover:text-red-800 hover:underline'

@@ -1,0 +1,31 @@
+- content_for :page_title, "Project Integrations"
+
+.max-w-4xl.mx-auto.space-y-6
+  .flex.items-center.justify-between.p-6.border-b
+    h2.text-2xl.font-bold.text-gray-800 Project Integrations
+    .flex.items-center.space-x-4
+      = link_to 'Add an integration', new_project_integration_path, \
+                class: 'px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors', \
+                data: { turbo_frame: 'modal' }
+      = link_to 'View organization integrations', organization_integrations_path(@project.organization), \
+                class: 'text-blue-600 hover:text-blue-800 hover:underline'
+
+  .p-6
+    - @integrations.group_by(&:provider).each do |provider, integrations|
+      .mb-8
+        .flex.items-center.mb-4
+          .w-8.h-8.mr-3
+            = image_tag "#{provider.downcase}_logo.svg", alt: "#{provider} logo", class: 'w-full h-full'
+          h3.text-lg.font-semibold.text-gray-700= provider
+
+        .divide-y.divide-gray-200.border.border-gray-200.rounded-lg.overflow-hidden
+          - integrations.each do |integration|
+            = link_to edit_integration_path(integration), class: 'block hover:bg-gray-50 transition-colors' do
+              .flex.items-center.justify-between.p-4
+                .flex-1
+                  .text-lg.font-medium.text-gray-900= integration.name
+                  .text-sm.text-gray-500
+                    | Updated on #{l(integration.updated_at, format: :long)} by #{integration.updated_by.name}
+                .ml-4
+                  svg.h-5.w-5.text-gray-400 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                    path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"

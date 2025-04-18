@@ -40,11 +40,14 @@ Rails.application.routes.draw do
     end
 
     resources :memberships, only: [:index]
-    resources :integrations, only: [:index]
+    resources :integrations, path: 'integrations', controller: 'project_integrations', except: [:show]
 
   end
 
   resources :organizations do
+    resources :github_integrations, only: [:edit]
+    resources :integrations, controller: 'integrations', except: [:show]
+
     resources :memberships, except: [:show] do
       collection do
         get :report

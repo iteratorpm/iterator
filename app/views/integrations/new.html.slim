@@ -1,0 +1,25 @@
+= modal do
+    header.border-b.p-6
+      h1.text-2xl.font-bold.text-gray-800 Add an integration
+
+      p.text-gray-600.mb-6 Select an integration from the list below to get started.
+
+      .divide-y.divide-gray-200.border.border-gray-200.rounded-lg.overflow-hidden
+        - Integration.integration_types.each do |type, _|
+          = link_to new_organization_integration_path(@organization, type: type),
+                    class: 'block hover:bg-gray-50 transition-colors',
+                    data: { type: type, aid: 'IntegrationsListItem' } do
+            .flex.items-center.justify-between.p-4
+              .flex.items-center
+                .w-8.h-8.mr-4
+                  = image_tag "/#{type}_logo.svg", alt: "#{type} logo", class: 'w-full h-full'
+                .integration-title
+                  span.font-medium.text-gray-900= integration_display_name(type)
+                  span.text-gray-500.ml-2= integration_description(type)
+              .ml-4
+                svg.h-5.w-5.text-gray-400 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                  path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"
+
+    footer.flex.justify-end.p-4.border-t
+      = link_to 'Cancel', organization_integrations_path(@organization),
+                class: 'px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors'
