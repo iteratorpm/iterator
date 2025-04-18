@@ -25,8 +25,12 @@ Rails.application.routes.draw do
   resources :memberships
 
   resources :projects do
+    resources :memberships, path: "memberships", controller: "project_memberships", only: [:new, :index, :create, :update, :destroy] do
+      collection do
+        get :search_users
+      end
+    end
     member do
-      get :memberships
       post :archive
     end
 

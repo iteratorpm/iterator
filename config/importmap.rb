@@ -8,3 +8,4 @@ pin_all_from "app/javascript/controllers", under: "controllers"
 pin "ultimate_turbo_modal" # @2.0.3
 pin "chartkick" # @5.0.1
 pin "Chart.bundle", to: "Chart.bundle.js"
+pin "lodash" # @4.17.21

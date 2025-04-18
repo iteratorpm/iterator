@@ -1,0 +1,13 @@
+div.relative
+  = form_tag "#", data: { search_memberships_target: "form" } do
+    input#project-members-search-bar.pl-8.pr-8.py-2.border.rounded-lg.w-full.focus:outline-none.focus:ring-2.focus:ring-blue-500 type="text" placeholder="Find by name or email" data-search-memberships-target="input" data-action="input->search-memberships#filter keydown->search-memberships#handleKeydown" autofocus=true autocomplete="off"
+
+    / Search icon
+    div.absolute.left-2.top-2.text-gray-400
+      svg.w-5.h-5.fill-current xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+        path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+
+    / Clear button
+    button.absolute.right-2.top-2.text-gray-400.hidden.hover:text-gray-600 type="button" data-search-memberships-target="clear" data-action="click->search-memberships#clear"
+      svg.w-5.h-5.fill-current xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+        path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"

@@ -22,26 +22,30 @@ class Project < ApplicationRecord
   }
 
   belongs_to :organization
-  has_many :project_memberships, dependent: :destroy
-  has_many :members, through: :project_memberships, source: :user
+  has_many :memberships, class_name: "ProjectMembership", dependent: :destroy
+  has_many :users, through: :memberships
 
   validates :organization, presence: true
 
+  def user_ids
+    users.pluck(:id)
+  end
+
   # Helper methods for common role checks
   def owner?(user)
-    project_memberships.exists?(user: user, role: :owner)
+    memberships.exists?(user: user, role: :owner)
   end
 
   def member?(user)
-    project_memberships.exists?(user: user)
+    memberships.exists?(user: user)
   end
 
   def viewer?(user)
-    project_memberships.exists?(user: user, role: :viewer)
+    memberships.exists?(user: user, role: :viewer)
   end
 
   # Add a user with a specific role
   def add_member(user, role = :member)
-    project_memberships.create(user: user, role: role)
+    memberships.create(user: user, role: role)
   end
 end

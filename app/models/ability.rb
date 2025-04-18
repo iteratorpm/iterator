@@ -24,11 +24,12 @@ class Ability
     can :create, Project
     can :create, Organization
     can :create, Membership
+    can :create, ProjectMembership
 
     # Project-level access
-    can :manage, Project, project_memberships: { user_id: user.id, role: :owner }
-    can [:read, :update], Project, project_memberships: { user_id: user.id, role: :member }
-    can :read, Project, project_memberships: { user_id: user.id, role: :viewer }
+    can :manage, Project, memberships: { user_id: user.id, role: :owner }
+    can [:read, :update], Project, memberships: { user_id: user.id, role: :member }
+    can :read, Project, memberships: { user_id: user.id, role: :viewer }
 
     # Organization owners/admins can manage any project within their org
     can [:read, :update, :manage], Project do |project|
@@ -38,24 +39,24 @@ class Ability
     end
 
     # Project membership management
-    can :manage, ProjectMembership, project: { project_memberships: { user_id: user.id, role: :owner } }
+    can :manage, ProjectMembership, project: { memberships: { user_id: user.id, role: :owner } }
 
     # Stories
-    can [:create, :update, :move, :destroy], Story, project: { project_memberships: { user_id: user.id, role: [:owner, :member] } }
-    can :read, Story, project: { project_memberships: { user_id: user.id } }
+    can [:create, :update, :move, :destroy], Story, project: { memberships: { user_id: user.id, role: [:owner, :member] } }
+    can :read, Story, project: { memberships: { user_id: user.id } }
 
     # Comments
-    can [:create], Comment, project: { project_memberships: { user_id: user.id, role: [:owner, :member] } }
+    can [:create], Comment, project: { memberships: { user_id: user.id, role: [:owner, :member] } }
     can :edit, Comment, user_id: user.id
     can :destroy, Comment do |comment|
-      comment.user_id == user.id || comment.project.project_memberships.where(user_id: user.id, role: :owner).exists?
+      comment.user_id == user.id || comment.project.memberships.where(user_id: user.id, role: :owner).exists?
     end
 
     # Attachments
-    can [:create, :destroy], Attachment, project: { project_memberships: { user_id: user.id, role: [:owner, :member] } }
+    can [:create, :destroy], Attachment, project: { memberships: { user_id: user.id, role: [:owner, :member] } }
 
     # Follow / Notification access for viewers
-    can :follow, Story, project: { project_memberships: { user_id: user.id, role: :viewer } }
+    can :follow, Story, project: { memberships: { user_id: user.id, role: :viewer } }
 
     # Account-wide actions
     if user.memberships.where(role: [:owner, :admin]).exists?

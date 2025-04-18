@@ -50,6 +50,7 @@ gem "ultimate_turbo_modal"
 gem 'inline_svg'
 gem "chartkick"
 gem "chart-js-rails"
+gem 'ransack'
 
 gem 'data_migrate'
 

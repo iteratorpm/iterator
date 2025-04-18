@@ -10,4 +10,6 @@ class ProjectMembership < ApplicationRecord
 
   validates :role, presence: true
   validates :user_id, uniqueness: { scope: :project_id }
+
+  delegate :name, :email, to: :user, prefix: true
 end

@@ -1,0 +1,55 @@
+- content_for :page_title, "Project Members"
+
+.max-w-4xl.mx-auto.space-y-6
+  div.flex.flex-col.h-full data-controller="search-memberships"
+    div.flex.justify-between.items-center.mb-4.py-4
+      = render "search_form"
+
+      = link_to "Invite people", new_project_membership_path, class: "bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg text-sm", data: { turbo_frame: "modal" }
+
+    div.border.rounded-lg.overflow-hidden.px-4
+      ul
+        - @memberships.each do |membership|
+          li.flex.items-center.p-4.border-b.last:border-b-0.hover:bg-gray-50 data-member-name=membership.user.name data-member-email=membership.user.email data-search-memberships-target="item"
+            div.w-10.h-10.rounded-full.bg-gray-200.flex.items-center.justify-center.mr-4 id="avatarMemberList-#{membership.id}" aria-hidden="true"
+              div.text-gray-700.font-medium = membership.user.initials
+
+            div.flex-1
+              div class=["font-medium", membership == current_user.project_memberships.find_by(project: @project) ? "text-gray-900" : "text-gray-500"] title="#{membership == current_user.project_memberships.find_by(project: @project) ? 'You • ' : ''}#{membership.user.name}"
+                - if membership == current_user.project_memberships.find_by(project: @project)
+                  | You •
+                  '
+                = membership.user.name
+              div class=["text-sm", membership == current_user.project_memberships.find_by(project: @project) ? "text-gray-700" : "text-gray-400"] title="#{membership.user.email}"
+                = membership.user.email
+
+            div.text-sm.text-gray-500.mx-4 = membership.role.capitalize
+
+            div.relative
+              div.relative
+                div.absolute.right-0.mt-2.w-48.bg-white.rounded-md.shadow-lg.z-10.py-1.hidden.group-hover:block
+                  button.px-2.py-1.text-gray-500.hover:text-gray-700.group •••
+                  div.absolute.right-0.mt-2.w-48.bg-white.rounded-md.shadow-lg.z-10.py-1.hidden.group-hover:block
+                    - if membership == current_user.project_memberships.find_by(project: @project)
+                      div.block.px-4.py-2.text-sm.text-gray-700.border-b Assign another owner to change your role or leave.
+                    div.block.px-4.py-2.text-sm.text-gray-700 Change role to...
+                    - Membership.roles.keys.each do |role|
+                      - if can?(:update, membership) && membership != current_user.project_memberships.find_by(project: @project)
+                        = button_to "Change to #{role.capitalize}", project_membership_path(@project, membership), method: :patch, class: "block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", params: { membership: { role: role } }, data: { aid: role }
+                      - else
+                        button.block.w-full.text-left.px-4.py-2.text-sm.text-gray-400.opacity-50.cursor-not-allowed data-aid=role = role.capitalize
+
+                    div.border-t.my-1
+
+                    - if can?(:destroy, membership)
+                      - if membership == current_user.project_memberships.find_by(project: @project)
+                        = button_to "Leave project", project_membership_path(@project, membership), method: :delete, class: "block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", data: { aid: "leave-project", confirm: "Are you sure you want to leave this project?" }
+                      - else
+                        = button_to "Remove member", project_membership_path(@project, membership), method: :delete, class: "block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", data: { aid: "remove-member", confirm: "Are you sure you want to remove this member?" }
+                    - else
+                      button.block.w-full.text-left.px-4.py-2.text-sm.text-gray-400.opacity-50.cursor-not-allowed data-aid="leave-project" Leave project
+
+        - if @memberships.size < 2
+          li.flex.items-center.justify-center.text-center.p-4.border-b.last:border-b-0.hover:bg-gray-50.text-gray-500.p-10 data-search-memberships-target="item"
+            span.mr-1 It's lonely in here!
+            = link_to "Invite others to join", new_project_membership_path, class: "text-blue-500 hover:text-blue-700 hover:underline", data: { turbo_frame: "modal" }

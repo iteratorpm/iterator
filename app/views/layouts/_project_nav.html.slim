@@ -1,8 +1,7 @@
-/ Navigation dropdown with current page as first element
+/ Navigation dropdown with current page highlighted
 nav[aria-label="Project navigation"]
   .mx-auto
     .flex.items-center
-      / Define navigation items
       - nav_items = [ \
         { name: 'Stories', path: project_path(project) }, \
         { name: 'Analytics', path: project_analytics_path(project) }, \
@@ -11,20 +10,17 @@ nav[aria-label="Project navigation"]
         { name: 'More', path: edit_project_path(project) } \
       ]
 
-      / Find current page
       - current_item = nav_items.find { |item| current_page?(item[:path]) } || nav_items.first
 
-      / Dropdown container
       .relative data-controller="dropdown"
-        / Current page button (always visible)
         button.flex.items-center.px-4.py-2.text-sm.font-medium.text-gray-700.hover:text-gray-900[data-action="dropdown#toggle click@window->dropdown#hide"]
           span = current_item[:name]
           svg.w-4.h-4.ml-1[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
             path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"]
 
-        / Dropdown menu (hidden by default)
         .hidden.absolute.left-0.mt-1.w-48.rounded-md.shadow-lg.bg-white.ring-1.ring-black.ring-opacity-5.z-50 data-dropdown-target="menu"
           .py-1
-            - nav_items.reject { |item| item == current_item }.each do |item|
-              = link_to item[:path], class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" do
+            - nav_items.each do |item|
+              = link_to item[:path],
+                class: "block px-4 py-2 text-sm #{current_page?(item[:path]) ? 'bg-gray-100 text-blue-600 font-semibold' : 'text-gray-700 hover:bg-gray-100'}" do
                 = item[:name]

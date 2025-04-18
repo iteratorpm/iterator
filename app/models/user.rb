@@ -1,5 +1,14 @@
 class User < ApplicationRecord
 
+  def self.ransackable_attributes(auth_object = nil)
+    %w[name email]
+  end
+
+  # Optionally limit associations that can be searched
+  def self.ransackable_associations(auth_object = nil)
+    []
+  end
+
   has_many :authored_comments, class_name: 'Comment', foreign_key: 'author_id', dependent: :nullify
   has_many :uploaded_attachments, class_name: 'Attachment', foreign_key: 'uploader_id', dependent: :nullify
   has_many :project_memberships, dependent: :destroy
@@ -66,7 +75,7 @@ class User < ApplicationRecord
 
   def set_initials_if_blank
     if initials.blank? && name.present?
-      self.initials = name[0, 2].upcase
+      self.initials.split.map(&:first).join.upcase
     end
 
     if username.blank? && name.present?

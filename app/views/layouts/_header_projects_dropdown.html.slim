@@ -10,8 +10,8 @@
     / Project dropdown
     .relative.ml-4 data-controller="dropdown"
       button.flex.items-center.space-x-1.text-gray-700.hover:text-gray-900 data-action="dropdown#toggle click@window->dropdown#hide"
-        - if @current_project.present?
-          span.font-medium.truncate.max-w-xs= @current_project.name
+        - if @project.present? && @project.id?
+          span.font-medium.truncate.max-w-xs= @project.name
         - else
           span.font-medium.truncate.max-w-xs Iterator
 
@@ -45,6 +45,6 @@
           .border-t.border-gray-100.mt-1.mb-1
           = link_to "Dashboard", root_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem"
 
-    - if @current_project.present?
-      = render "layouts/project_nav", project: @current_project
+    - if @project.present? && @project.id?
+      = render "layouts/project_nav", project: @project
 
