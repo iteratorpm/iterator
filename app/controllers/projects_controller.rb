@@ -39,6 +39,9 @@ class ProjectsController < ApplicationController
   def show
   end
 
+  def profile
+  end
+
   def edit
     @organizations = current_user.organizations
   end

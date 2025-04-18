@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_18_080021) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_18_093621) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -245,7 +245,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_18_080021) do
     t.integer "point_scale", default: 0
     t.string "point_scale_custom", default: ""
     t.integer "initial_velocity", default: 10
-    t.integer "velocity_strategy", default: 0
+    t.integer "velocity_scheme", default: 0
     t.integer "done_iterations_to_show", default: 4
     t.boolean "auto_iteration_planning", default: true
     t.boolean "allow_api_access", default: true

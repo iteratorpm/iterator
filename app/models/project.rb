@@ -13,8 +13,11 @@ class Project < ApplicationRecord
     linear_0123: 0, fibonacci: 1, tshirt_sizes: 2, powers_of_2: 3, custom: 4
   }
 
-  enum :velocity_strategy, {
-    average_3: 0, last_iteration: 1
+  enum :velocity_scheme, {
+    past_iters_1: 0,
+    past_iters_2: 1,
+    past_iters_3: 2,
+    past_iters_4: 3
   }
 
   enum :priority_display_scope, {

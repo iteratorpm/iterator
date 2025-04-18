@@ -32,12 +32,20 @@ Rails.application.routes.draw do
     end
     member do
       post :archive
+      get :profile
+      get :recover_stories
+      get :import
+      get :export
     end
 
     resources :analytics do
       get :overview
       get :charts, on: :member
     end
+
+    resources :webhooks, controller: 'project_webhooks', path: "webhooks"
+    resources :templates, only: [:index]
+    resources :review_types, only: [:index]
 
     resources :memberships, only: [:index]
     resources :integrations, path: 'integrations', controller: 'project_integrations', except: [:show]
