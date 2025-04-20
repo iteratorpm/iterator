@@ -35,9 +35,15 @@ Rails.application.routes.draw do
     end
     member do
       post :archive
-      get :import
-      get :export
     end
+
+    resources :csv_exports, path: "export", module: "projects", only: [:index, :create] do
+      member do
+        get :download
+      end
+    end
+
+    resources :csv_imports, path: "import", module: "projects", only: [:index, :create]
 
     member do
       get 'profile', to: 'projects/profile#show'

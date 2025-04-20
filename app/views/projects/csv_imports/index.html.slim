@@ -1,0 +1,39 @@
+.flex.min-h-screen
+  = render 'projects/settings_sidebar', project: @project
+
+  .flex-1.p-8
+    h1.text-2xl.font-bold.text-gray-800.mb-4 Import CSV
+    p.mb-4 Please specify a CSV file to import from. An error will display if you attempt to import more than 3000 stories.
+    p.mb-6 For help with import, see the
+    / = link_to "Export & Import", "/help/articles/csv_import_export/", class: "text-blue-600 hover:underline"
+    / |  section in the Help Center.
+
+    .grid.grid-cols-1.md:grid-cols-2.gap-8
+      .border.p-4.rounded-lg
+        h2.text-xl.font-semibold.mb-4 Import from File
+        = form_with url: project_csv_imports_path(@project), method: :post, multipart: true, data: { turbo: false }, class: "space-y-4" do |f|
+          .form-group
+            = f.label :csv_file, "CSV File", class: "block text-sm font-medium text-gray-700 mb-1"
+            = f.file_field :csv_file, class: "block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+
+          = f.submit "Import", class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded", id: "csv_import_file"
+
+      .border.p-4.rounded-lg
+        h2.text-xl.font-semibold.mb-4 Import from Text
+        = form_with url: project_csv_imports_path(@project), method: :post, data: { turbo: false }, class: "space-y-4" do |f|
+          .form-group
+            = f.label :csv_content, "CSV Text", class: "block text-sm font-medium text-gray-700 mb-1"
+            = f.text_area :csv_content, rows: 15, class: "w-full border border-gray-300 rounded p-2 font-mono text-sm"
+
+          = f.submit "Import", class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded", id: "csv_import_text"
+
+    - if @errors
+      .mt-6.bg-red-50.border-l-4.border-red-400.p-4
+        .flex.items-start
+          .flex-shrink-0.bg-red-100.p-2.rounded-full.mr-3
+            = inline_svg_tag "exclamation-circle.svg", class: "h-6 w-6 text-red-600"
+          .text-sm.text-red-700
+            h3.font-medium Import failed with errors:
+            ul.list-disc.pl-5.mt-2
+              - @errors.each do |error|
+                li= error

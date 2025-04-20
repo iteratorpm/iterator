@@ -32,6 +32,7 @@ class Project < ApplicationRecord
   has_many :stories, dependent: :destroy
   has_many :description_templates, dependent: :destroy
   has_many :review_types, dependent: :destroy
+  has_many :csv_exports, dependent: :destroy
 
   validates :organization, presence: true
 

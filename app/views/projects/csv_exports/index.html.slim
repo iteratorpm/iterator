@@ -1,0 +1,60 @@
+.flex.min-h-screen
+  = render 'projects/settings_sidebar', project: @project
+
+  .flex-1.p-8
+    h1.text-2xl.font-bold.text-gray-800.mb-4 Create New Export
+    p.mb-6 Stories, Epics, and Project History will be exported as a CSV. All files will be available to download from the exports section below. Files are available for two weeks.
+
+    = form_with model: [@project, @new_export], url: project_csv_exports_path(@project), class: "space-y-4 mb-8" do |f|
+      .space-y-2
+        .flex.items-center
+          = f.check_box :options, { multiple: true, checked: true, class: "h-4 w-4 text-blue-600 border-gray-300 rounded" }, "include_done_stories", nil
+          = f.label :options, "All Done Stories", class: "ml-2 block text-sm text-gray-900"
+
+        .flex.items-center
+          = f.check_box :options, { multiple: true, checked: true, class: "h-4 w-4 text-blue-600 border-gray-300 rounded" }, "include_current_backlog_stories", nil
+          = f.label :options, "All Current/Backlog Stories", class: "ml-2 block text-sm text-gray-900"
+
+        .flex.items-center
+          = f.check_box :options, { multiple: true, checked: true, class: "h-4 w-4 text-blue-600 border-gray-300 rounded" }, "include_icebox_stories", nil
+          = f.label :options, "All Icebox Stories", class: "ml-2 block text-sm text-gray-900"
+
+        .flex.items-center
+          = f.check_box :options, { multiple: true, checked: true, class: "h-4 w-4 text-blue-600 border-gray-300 rounded" }, "include_epics", nil
+          = f.label :options, "All Epics", class: "ml-2 block text-sm text-gray-900"
+
+        .flex.items-center
+          = f.check_box :options, { multiple: true, checked: true, class: "h-4 w-4 text-blue-600 border-gray-300 rounded" }, "include_attachments", nil
+          = f.label :options, "All Attachments", class: "ml-2 block text-sm text-gray-900"
+
+        .flex.items-center
+          = f.check_box :options, { multiple: true, checked: true, class: "h-4 w-4 text-blue-600 border-gray-300 rounded" }, "include_project_history", nil
+          = f.label :options, "Project History", class: "ml-2 block text-sm text-gray-900"
+
+      = f.submit "Export", class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded"
+
+    h2.text-xl.font-bold.text-gray-800.mb-4 Exports
+    .space-y-4
+      - if @exports.any?
+        - @exports.each do |export|
+          .border.p-4.rounded-lg
+            .flex.justify-between.items-start
+              .flex-1
+                .text-sm.text-gray-500
+                  = l(export.created_at, format: :long)
+                  |  (#{number_to_human_size(export.filesize)})
+                  - if export.completed?
+                    span.ml-2.text-green-600 Complete
+                  - else
+                    span.ml-2.text-yellow-600 Processing
+
+                .text-sm.text-gray-700.mt-1
+                  = export.options.to_sentence
+
+                .text-sm.text-gray-500.mt-1
+                  | Expires on #{l(export.created_at + 2.weeks, format: :short)}
+
+              - if export.completed?
+                = link_to "Download", download_project_csv_export_path(@project, export), class: "text-blue-600 hover:text-blue-800 font-medium"
+      - else
+        p.text-gray-500 No exports yet

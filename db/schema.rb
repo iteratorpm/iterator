@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_20_143725) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_20_151025) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -76,6 +76,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_20_143725) do
     t.index ["author_id"], name: "index_comments_on_author_id"
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
+  end
+
+  create_table "csv_exports", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "filename"
+    t.integer "filesize"
+    t.integer "status", default: 0, null: false
+    t.text "options"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_csv_exports_on_project_id"
   end
 
   create_table "description_templates", force: :cascade do |t|
@@ -410,6 +421,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_20_143725) do
   add_foreign_key "blockers", "stories"
   add_foreign_key "blockers", "stories", column: "blocker_story_id"
   add_foreign_key "comments", "users", column: "author_id"
+  add_foreign_key "csv_exports", "projects"
   add_foreign_key "description_templates", "projects"
   add_foreign_key "epics", "labels"
   add_foreign_key "epics", "projects"
