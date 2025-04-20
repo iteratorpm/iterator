@@ -1,0 +1,53 @@
+.flex.min-h-screen[data-controller="project-settings"]
+  = render 'projects/settings_sidebar', project: @project
+
+  .flex-1.p-8 data-controller="review-types"
+    .mb-8
+      h1.text-2xl.font-bold.text-gray-800 Manage Project Review Types
+      = link_to "Back to Stories", project_path(@project), class: "text-blue-600 hover:underline mt-2 inline-block"
+
+    .mb-8
+      h3.text-lg.font-medium.text-gray-800.mb-4 Add a Review Type
+      = form_with model: [@project, @new_review_type], class: "flex items-center gap-4" do |f|
+        .flex-1
+          = f.text_field :name,
+                        placeholder: "Review Type",
+                        maxlength: 25,
+                        class: "w-full border border-gray-300 rounded-lg p-2",
+                        "aria-label": "Review Type"
+        = f.submit "Add Review", class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded"
+
+    .mb-8
+      h3.text-lg.font-medium.text-gray-800.mb-4 Review Types
+      ul.space-y-3
+        - @review_types.each do |review_type|
+          li.flex.items-center.justify-between.p-3.border.border-gray-200.rounded-lg
+            div data-review-types-target="nameDisplay"
+              span.review-type-name data-id=review_type.id = review_type.name
+            .flex.items-center.gap-2
+              button.text-blue-600.hover:text-blue-800.font-medium data-action="click->review-types#editName" data-id=review_type.id Edit
+              = button_to "Hide", toggle_hidden_project_review_type_path(@project, review_type),
+                          method: :patch,
+                          class: "text-gray-600 hover:text-gray-800 font-medium border border-gray-300 px-3 py-1 rounded"
+
+    - if @hidden_review_types.any?
+      .mb-8
+        h3.text-lg.font-medium.text-gray-800.mb-4 Hidden Review Types
+        p.mb-4 When a review type is hidden, it is no longer visible in the dropdown, and it cannot be added to a story. Existing reviews of that type will not be affected.
+        ul.space-y-3
+          - @hidden_review_types.each do |review_type|
+            li.flex.items-center.justify-between.p-3.border.border-gray-200.rounded-lg
+              div data-review-types-target="nameDisplay"
+                span.text-gray-600 data-id=review_type.id = review_type.name
+              .flex.items-center.gap-2
+                = button_to "Show", toggle_hidden_project_review_type_path(@project, review_type),
+                            method: :patch,
+                            class: "text-gray-600 hover:text-gray-800 font-medium border border-gray-300 px-3 py-1 rounded"
+
+    .bg-blue-50.border-l-4.border-blue-400.rounded.p-4
+      .flex.items-start
+        .flex-shrink-0.bg-blue-100.p-2.rounded-full.mr-3
+          = inline_svg_tag "info-icon.svg", class: "h-6 w-6 text-blue-600"
+        .text-sm.text-blue-700
+          p Learn more about reviews and how they work in the
+          / = link_to "Help Center", "/help/articles/reviews/", class: "underline"

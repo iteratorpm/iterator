@@ -31,6 +31,7 @@ class Project < ApplicationRecord
   has_many :webhooks, dependent: :destroy
   has_many :stories, dependent: :destroy
   has_many :description_templates, dependent: :destroy
+  has_many :review_types, dependent: :destroy
 
   validates :organization, presence: true
 

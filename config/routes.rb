@@ -56,7 +56,11 @@ Rails.application.routes.draw do
         post :preview
       end
     end
-    resources :review_types, only: [:index]
+    resources :review_types, module: 'projects', except: [:show, :edit] do
+      member do
+        patch :toggle_hidden
+      end
+    end
 
     resources :memberships, only: [:index]
     resources :integrations, path: 'integrations', controller: 'project_integrations', except: [:show]

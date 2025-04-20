@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_20_141407) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_20_143725) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -270,6 +270,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_20_141407) do
     t.index ["organization_id"], name: "index_projects_on_organization_id"
   end
 
+  create_table "review_types", force: :cascade do |t|
+    t.string "name"
+    t.boolean "hidden", default: false
+    t.integer "project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_review_types_on_project_id"
+  end
+
   create_table "reviews", force: :cascade do |t|
     t.integer "status", default: 0
     t.text "comment"
@@ -419,6 +428,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_20_141407) do
   add_foreign_key "project_memberships", "projects"
   add_foreign_key "project_memberships", "users"
   add_foreign_key "projects", "organizations"
+  add_foreign_key "review_types", "projects"
   add_foreign_key "reviews", "stories"
   add_foreign_key "reviews", "users", column: "reviewer_id"
   add_foreign_key "stories", "epics"
