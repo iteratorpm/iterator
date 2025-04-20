@@ -52,6 +52,7 @@ gem "chartkick"
 gem "chart-js-rails"
 gem 'ransack'
 gem 'redcarpet'
+gem 'validate_url'
 
 gem 'data_migrate'
 

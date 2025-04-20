@@ -1,0 +1,48 @@
+.flex.min-h-screen[data-controller="project-settings"]
+  = render 'projects/settings_sidebar', project: @project
+
+  .flex-1.p-8 data-controller="webhooks"
+    .mb-8
+      h1.text-2xl.font-bold.text-gray-800.mb-2 Activity Webhooks
+      p.text-gray-600.mb-4
+        | Tracker can send details about every story activity in your project to the URL you specify here, as JSON POST requests. See the
+        a.text-blue-600.hover:underline href="/help/articles/activity_webhook" target="_blank" rel="noopener noreferrer" integrations help page
+        |  for more information.
+
+    .mb-8
+      h3.text-lg.font-medium.text-gray-800.mb-4 Add new webhook
+      .flex.items-center.gap-2.mb-2
+        input.w-full.px-4.py-2.border.border-gray-300.rounded-lg.placeholder-gray-400 data-webhooks-target="newWebhookUrl" placeholder="https://yourserviceapi.net" type="text"
+        button.bg-blue-600.hover:bg-blue-700.text-white.font-medium.py-2.px-4.rounded data-action="webhooks#addWebhook" Add
+      span.text-red-500.text-sm.hidden data-webhooks-target="newWebhookError" Uh oh. Looks like something went wrong. Please try again.
+
+    div
+      h3.text-lg.font-medium.text-gray-800.mb-4 Edit existing webhook
+      - @webhooks.each do |webhook|
+        .border.border-gray-200.rounded-lg.mb-4 data-webhooks-target="webhookItem" data-webhook-id=webhook.id
+          .p-4.flex.items-center.justify-between
+            .flex.items-center.gap-4
+              label.inline-flex.items-center.cursor-pointer
+                input.sr-only.peer type="checkbox" checked=webhook.enabled data-action="change->webhooks#toggleWebhook"
+                / .relative.w-11.h-6.bg-gray-200.peer-focus:outline-none.rounded-full.peer-checked:after:translate-x-full.peer-checked:after:border-white.after:content-[''].after:absolute.after:top-[2px].after:left-[2px].after:bg-white.after:border-gray-300.after:border.after:rounded-full.after:h-5.after:w-5.after:transition-all.peer-checked:bg-blue-600
+              span.text-gray-700 data-webhooks-target="webhookUrl" = webhook.webhook_url
+            .flex.gap-2
+              button.text-blue-600.hover:text-blue-800.font-medium data-action="webhooks#editWebhook" Edit
+              button.text-red-600.hover:text-red-800.font-medium data-action="webhooks#deleteWebhook" Delete
+
+          - if webhook.failure_count > 0
+            .border-t.border-gray-200.p-4
+              .flex.justify-between.items-center.cursor-pointer data-action="click->webhooks#toggleErrorDetails"
+                .flex.gap-4
+                  span.text-gray-700 Failure count: #{webhook.failure_count}
+                  span.text-gray-700 Last error
+                svg.w-5.h-5.text-gray-500 data-webhooks-target="errorToggleIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                  path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"
+
+              .hidden.mt-2 data-webhooks-target="errorDetails"
+                pre.bg-gray-100.p-3.rounded.text-sm.text-gray-800 = webhook.last_response_body
+
+    = form_with url: project_webhooks_path(@project), method: :post, data: { 'webhooks-target': 'form' }, class: 'hidden' do |f|
+      = f.hidden_field :webhook_id, data: { 'webhooks-target': 'webhookId' }
+      = f.text_field :webhook_url, data: { 'webhooks-target': 'editWebhookUrl' }
+      = f.submit 'Save', class: 'bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded'

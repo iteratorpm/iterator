@@ -27,7 +27,8 @@ class Project < ApplicationRecord
   belongs_to :organization
   has_many :memberships, class_name: "ProjectMembership", dependent: :destroy
   has_many :users, through: :memberships
-  has_many :integrations
+  has_many :integrations, dependent: :destroy
+  has_many :webhooks, dependent: :destroy
 
   validates :organization, presence: true
 

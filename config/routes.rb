@@ -25,6 +25,9 @@ Rails.application.routes.draw do
   resources :memberships
 
   resources :projects do
+    resources :webhooks, only: [:index, :create, :destroy], module: 'projects' do
+      patch :toggle, on: :member
+    end
     resources :memberships, path: "memberships", controller: "project_memberships", only: [:new, :index, :create, :update, :destroy] do
       collection do
         get :search_users
@@ -45,7 +48,6 @@ Rails.application.routes.draw do
       get :charts, on: :member
     end
 
-    resources :webhooks, controller: 'project_webhooks', path: "webhooks"
     resources :templates, only: [:index]
     resources :review_types, only: [:index]
 

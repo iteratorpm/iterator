@@ -26,6 +26,7 @@ class Ability
     can :create, Membership
     can :create, ProjectMembership
     can :create, Integration
+    can :create, Webhook
 
     can :manage, Integration, { user_id: user.id, role: :owner }
 
@@ -43,6 +44,7 @@ class Ability
 
     # Project membership management
     can :manage, ProjectMembership, project: { memberships: { user_id: user.id, role: :owner } }
+    can :manage, Webhook, project: { memberships: { user_id: user.id, role: :owner } }
 
     # Stories
     can [:create, :update, :move, :destroy], Story, project: { memberships: { user_id: user.id, role: [:owner, :member] } }

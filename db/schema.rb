@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_20_065425) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_20_121243) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -373,6 +373,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_20_065425) do
     t.index ["integration_id"], name: "index_webhook_events_on_integration_id"
   end
 
+  create_table "webhooks", force: :cascade do |t|
+    t.string "webhook_url"
+    t.boolean "enabled", default: false
+    t.integer "failure_count", default: 0
+    t.text "last_response_body"
+    t.integer "project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_webhooks_on_project_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "attachments", "users", column: "uploader_id"
@@ -411,4 +422,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_20_065425) do
   add_foreign_key "tasks", "stories"
   add_foreign_key "users", "organizations", column: "current_organization_id"
   add_foreign_key "webhook_events", "integrations"
+  add_foreign_key "webhooks", "projects"
 end
