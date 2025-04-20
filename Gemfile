@@ -51,6 +51,7 @@ gem 'inline_svg'
 gem "chartkick"
 gem "chart-js-rails"
 gem 'ransack'
+gem 'redcarpet'
 
 gem 'data_migrate'
 

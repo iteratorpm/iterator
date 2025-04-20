@@ -32,7 +32,9 @@ Rails.application.routes.draw do
     end
     member do
       post :archive
-      get :profile
+      get 'profile', to: 'projects#profile'
+      patch 'profile', to: 'projects#update_profile'
+      post 'profile/preview', to: 'projects#preview'
       get :recover_stories
       get :import
       get :export

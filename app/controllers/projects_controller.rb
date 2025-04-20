@@ -42,6 +42,28 @@ class ProjectsController < ApplicationController
   def profile
   end
 
+  def update_profile
+    if @project.update(project_profile_params)
+      redirect_to profile_project_path(@project), notice: "Profile updated successfully"
+    else
+      render :profile
+    end
+  end
+
+  def preview
+    respond_to do |format|
+      format.json do
+        render json: {
+          html: render_to_string(
+            partial: 'projects/markdown_preview',
+            locals: { content: params[:content] },
+            formats: [:html]
+          )
+        }
+      end
+    end
+  end
+
   def edit
     @organizations = current_user.organizations
   end
@@ -86,5 +108,9 @@ class ProjectsController < ApplicationController
       :point_bugs_and_chores,
       :enable_tasks
     )
+  end
+
+  def project_profile_params
+    params.require(:project).permit(:profile_content)
   end
 end

@@ -388,6 +388,7 @@ GEM
       logger
     rdoc (6.13.1)
       psych (>= 4.0.0)
+    redcarpet (3.6.1)
     regexp_parser (2.10.0)
     reline (0.6.1)
       io-console (~> 0.5)
@@ -601,6 +602,7 @@ DEPENDENCIES
   rails (~> 8.0.2)
   rails-controller-testing
   ransack
+  redcarpet
   rspec-rails (~> 7.0.0)
   rubocop-rails-omakase
   ruby-lsp-rails
