@@ -1,0 +1,32 @@
+.flex.min-h-screen
+  = render 'projects/settings_sidebar', project: @project
+
+  .flex-1.p-8
+    .flex.items-center.justify-between.mb-8
+      h1.text-2xl.font-bold.text-gray-800 Manage Description Templates
+      = link_to "Back to Stories", project_path(@project), class: "text-blue-600 hover:underline"
+
+    .flex.items-center.justify-between.mb-6
+      h2.text-xl.font-semibold.text-gray-800 Your project's templates
+      = link_to "Add Template", new_project_description_template_path(@project), class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded"
+
+    .space-y-4.mb-8
+      - if @templates.any?
+        - @templates.each do |template|
+          = link_to edit_project_description_template_path(@project, template), class: "block border border-gray-200 rounded-lg p-4 hover:bg-gray-50" do
+            .flex.justify-between.items-center
+              .flex-1
+                h3.text-lg.font-medium.text-gray-800 = template.name
+                p.text-gray-600 = truncate(template.description, length: 100)
+              .text-gray-400
+                = inline_svg_tag "chevron-right.svg", class: "h-5 w-5"
+      - else
+        p.text-gray-500 No templates found
+
+    .bg-blue-50.border-l-4.border-blue-400.rounded.p-4
+      .flex.items-start
+        .flex-shrink-0.bg-blue-100.p-2.rounded-full.mr-3
+          = inline_svg_tag "info-icon.svg", class: "h-6 w-6 text-blue-600"
+        .text-sm.text-blue-700
+          p Learn more about custom templates and how they work in the
+          / = link_to "Help Center", "/help/articles/story_templates#custom_description_templates", class: "underline"

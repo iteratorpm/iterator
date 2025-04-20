@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_20_132257) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_20_141407) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -76,6 +76,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_20_132257) do
     t.index ["author_id"], name: "index_comments_on_author_id"
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
+  end
+
+  create_table "description_templates", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_description_templates_on_project_id"
   end
 
   create_table "epics", force: :cascade do |t|
@@ -392,6 +401,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_20_132257) do
   add_foreign_key "blockers", "stories"
   add_foreign_key "blockers", "stories", column: "blocker_story_id"
   add_foreign_key "comments", "users", column: "author_id"
+  add_foreign_key "description_templates", "projects"
   add_foreign_key "epics", "labels"
   add_foreign_key "epics", "projects"
   add_foreign_key "github_repositories", "github_integrations"

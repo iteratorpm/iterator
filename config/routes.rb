@@ -51,7 +51,11 @@ Rails.application.routes.draw do
       get :charts, on: :member
     end
 
-    resources :templates, only: [:index]
+    resources :description_templates, path:'templates', module: 'projects', except: [:show] do
+      collection do
+        post :preview
+      end
+    end
     resources :review_types, only: [:index]
 
     resources :memberships, only: [:index]

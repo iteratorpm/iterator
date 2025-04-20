@@ -1,0 +1,35 @@
+= form_with model: [@project, @template], data: { controller: "template-editor" } do |f|
+  .mb-4
+    = f.label :name, "Template Name", class: "block text-sm font-medium text-gray-700 mb-1"
+    = f.text_field :name, maxlength: 30, class: "w-full border border-gray-300 rounded-lg p-2", data: { "template-editor-target": "name" }
+
+  .mb-4
+    = f.label :description, "Description Template", class: "block text-sm font-medium text-gray-700 mb-1"
+    .border.border-gray-300.rounded-lg.overflow-hidden
+      .flex.border-b.border-gray-300
+        button.border-r.border-gray-300.p-2.bg-white.text-gray-700.font-medium.w-1/2.data-[active=true]:bg-gray-100[
+          type="button"
+          data-action="template-editor#showEditor"
+          data-template-editor-target="editTab"
+          data-active="true"
+        ] Write
+        button.p-2.bg-white.text-gray-700.font-medium.w-1/2.data-[active=true]:bg-gray-100[
+          type="button"
+          data-action="template-editor#showPreview"
+          data-template-editor-target="previewTab"
+          data-active="false"
+        ] Preview
+      = f.text_area :description,
+                    maxlength: 20000,
+                    class: "w-full p-4 font-mono text-sm border-none focus:ring-0",
+                    data: { "template-editor-target": "editor" },
+                    style: "min-height: 300px"
+      .hidden.p-4.bg-white[data-template-editor-target="preview"]
+        .hidden[data-template-editor-target="previewContent"]
+        .flex.items-center.justify-center.py-8[data-template-editor-target="previewLoading"]
+          = inline_svg_tag "spinner.svg", class: "animate-spin h-5 w-5 text-gray-500"
+          span.ml-2 Loading preview...
+
+  .flex.justify-end.space-x-2
+    = link_to "Cancel", project_description_templates_path(@project), class: "px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+    = f.submit "Save Template", class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
