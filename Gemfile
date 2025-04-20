@@ -53,6 +53,7 @@ gem "chart-js-rails"
 gem 'ransack'
 gem 'redcarpet'
 gem 'validate_url'
+gem 'discard', '~> 1.4'
 
 gem 'data_migrate'
 

@@ -1,4 +1,6 @@
 class Story < ApplicationRecord
+ include Discard::Model
+
   # Enums
   enum :story_type, { feature: 0, bug: 1, chore: 2, release: 3 }
   enum :status, { unstarted: 0, started: 1, finished: 2, delivered: 3, accepted: 4, rejected: 5 }

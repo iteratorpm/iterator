@@ -1,0 +1,28 @@
+.flex.min-h-screen[data-controller="project-settings"]
+  = render 'projects/settings_sidebar', project: @project
+
+  .flex-1.p-8
+    .mb-8
+      h1.text-2xl.font-bold.text-gray-800.mb-2 Recover Deleted Stories
+
+      .bg-blue-50.border-l-4.border-blue-400.rounded.p-4.mb-6
+        .flex.items-start
+          .flex-shrink-0.bg-blue-100.p-2.rounded-full.mr-3
+            = inline_svg_tag "circle-exclamation.svg", class: "text-blue-500 w-6 h-6"
+          .text-sm.text-blue-700
+            p.font-medium Warning
+            p When you recover a story, all users currently using your project will be forced to reload the page and may lose their updates.
+
+    .mb-8
+      h2.text-xl.font-semibold.text-gray-800.pb-2.border-b.border-gray-300.mb-4 Recently Deleted Stories
+
+      - if @deleted_stories.any?
+        - @deleted_stories.each do |story|
+          .flex.items-center.justify-between.py-3.border-b.border-gray-200
+            .flex-1
+              p.text-gray-800.font-medium.break-words = story.name
+              p.text-sm.text-gray-500 Deleted at: #{l(story.deleted_at, format: :long)} ID: ##{story.id}
+            .pl-4
+              = button_to "Recover", project_recover_stories_path(@project, story), method: :post, class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded", data: { confirm: "Are you sure you want to recover this story? All users will need to reload the page." }
+      - else
+        p.text-gray-500 No recently deleted stories found.

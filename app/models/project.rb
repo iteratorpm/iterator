@@ -29,6 +29,7 @@ class Project < ApplicationRecord
   has_many :users, through: :memberships
   has_many :integrations, dependent: :destroy
   has_many :webhooks, dependent: :destroy
+  has_many :stories, dependent: :destroy
 
   validates :organization, presence: true
 

@@ -38,10 +38,11 @@ Rails.application.routes.draw do
       get 'profile', to: 'projects#profile'
       patch 'profile', to: 'projects#update_profile'
       post 'profile/preview', to: 'projects#preview'
-      get :recover_stories
       get :import
       get :export
     end
+
+    resources :recover_stories, only: [:index, :create], module: 'projects'
 
     resources :analytics do
       get :overview
