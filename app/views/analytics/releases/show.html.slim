@@ -1,0 +1,121 @@
+.flex.min-h-screen
+  = render 'analytics/sidebar', project: @project
+
+  .flex-1.flex.p-8
+    / Header Section
+    .border.border-gray-300.rounded-lg.overflow-hidden
+      header.bg-white.px-4.py-3.border-b.border-gray-200.flex.justify-between.items-center
+        .flex.items-center
+          svg.w-5.h-5.mr-2 fill="none" stroke="currentColor" viewBox="0 0 21 17" xmlns="http://www.w3.org/2000/svg"
+            path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M0,14.9L6.6,0.2M4.1,7.8C4.1,7.8 7.5,7.4 9.5,9.4C11.7,11.6 14.8,11.1 14.8,11.1C14.8,11.1 15.7,9.6 16.6,7.6C17.4,5.6 17.7,4.8 18,3.4C18,3.4 14.8,4.2 12.7,1.9C10.3,-0.6 7.2,0.9 7.2,0.9L4.1,7.8Z"
+            path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.6" d="M9.4,10.1L13.6,1.5"
+            path d="M3.6,8.4C3.6,8.4 7.1,8 9.5,10.2C10.7,7.5 11.4,6.2 11.4,6.2C11.4,6.2 9.3,3.3 5.3,4.7C4.7,5.9 3.6,8.4 3.6,8.4ZM19,3.6C19,3.6 15.8,4.2 13.4,2C12.2,4.7 11.4,6.3 11.4,6.3C11.4,6.3 13.1,8.1 17,8.3C17.6,7.1 19,3.6 19,3.6Z" transform="translate(11.3,6.1) rotate(-3) translate(-11.3,-6.1)"
+          span.truncate.max-w-xl = @release.name
+
+        .flex.items-center
+          = link_to "CSV Export", analytics_project_release_path(@project, @release, format: :csv), class: "text-blue-600 hover:text-blue-800 ml-3", title: "CSV Export"
+            svg.w-4.h-4 fill="#21608A" viewBox="0 0 17 18" xmlns="http://www.w3.org/2000/svg"
+              path d="M13.5,15L13.5,16.5C13.5,17.1 13,17.5 12.4,17.5L1.6,17.5C1,17.5 0.5,17.1 0.5,16.5L0.5,15M0.5,15L0.5,1.5C0.5,0.9 1,0.5 1.6,0.5L8.6,0.5L13.5,5L13.5,15" stroke="#21608A"
+              path d="M8.5,0.5L8.5,5.5" stroke="#21608A" stroke-linecap="square"
+              path d="M13.5,5.5L8.5,5.5" stroke="#21608A" stroke-linecap="square"
+              path d="M3.9,9.4C3.5,9.4 3.3,9.5 3.1,9.8C2.9,10.1 2.8,10.4 2.8,10.9C2.8,11.8 3.1,12.3 3.9,12.3C4.2,12.3 4.5,12.2 4.9,12.1L4.9,12.8C4.6,13 4.2,13 3.8,13C3.2,13 2.7,12.9 2.3,12.5C2,12.1 1.8,11.6 1.8,10.9C1.8,10.4 1.9,10 2.1,9.7C2.3,9.4 2.5,9.1 2.8,8.9C3.1,8.7 3.5,8.7 3.9,8.7C4.3,8.7 4.7,8.8 5.1,9L4.8,9.7C4.7,9.6 4.5,9.5 4.3,9.5C4.2,9.4 4,9.4 3.9,9.4ZM8.4,11.8C8.4,12.2 8.3,12.5 8,12.7C7.7,12.9 7.3,13 6.8,13C6.4,13 6,12.9 5.6,12.8L5.6,12C5.9,12.1 6.1,12.2 6.3,12.2C6.5,12.3 6.7,12.3 6.9,12.3C7.1,12.3 7.2,12.3 7.3,12.2C7.4,12.1 7.5,12 7.5,11.9C7.5,11.8 7.5,11.7 7.4,11.6C7.4,11.5 7.3,11.5 7.2,11.4C7.1,11.4 6.9,11.3 6.7,11.2C6.4,11.1 6.2,10.9 6.1,10.8C6,10.7 5.9,10.6 5.8,10.4C5.7,10.3 5.6,10.1 5.6,9.9C5.6,9.5 5.7,9.2 6,9C6.3,8.8 6.6,8.7 7.1,8.7C7.3,8.7 7.5,8.7 7.7,8.8C7.9,8.8 8.1,8.9 8.4,9L8.1,9.7C7.8,9.6 7.6,9.5 7.5,9.5C7.4,9.4 7.2,9.4 7.1,9.4C6.9,9.4 6.8,9.4 6.7,9.5C6.6,9.6 6.5,9.7 6.5,9.8C6.5,9.9 6.5,10 6.6,10.1C6.6,10.1 6.7,10.2 6.8,10.2C6.9,10.3 7.1,10.3 7.3,10.4C7.7,10.6 8,10.7 8.2,10.9C8.3,11.1 8.4,11.3 8.4,11.6L8.4,11.8ZM11.6,8.7L12.5,8.7L11.1,13L10.1,13L8.6,8.7L9.5,8.7L10.4,11.3C10.4,11.4 10.4,11.6 10.5,11.8C10.5,12 10.6,12.1 10.6,12.2C10.6,12 10.7,11.7 10.8,11.3L11.6,8.7Z"
+
+          button.text-blue-600.hover:text-blue-800.ml-3 title="Print"
+            svg.w-4.h-4 fill="#21608A" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"
+              path d="M6.5,2.5L11.5,2.5" stroke="#21608A" stroke-linecap="square"
+              path d="M6.5,4.5L11.5,4.5" stroke="#21608A" stroke-linecap="square"
+              path d="M13.5,5.5C17.5,5.5 17.5,7.8 17.5,8.9C17.5,10.1 17.5,12.4 17.5,12.4C17.5,12.4 17.5,13.5 15.8,13.5L13.7,13.5M4.3,13.5L2.2,13.5C0.5,13.5 0.5,12.4 0.5,12.4L0.5,8.9C0.5,7.8 0.5,5.5 4.5,5.5" stroke="#21608A"
+              rect stroke="#21608A" x="4.5" y="0.5" width="9" height="6"
+              path d="M5,11.5L13,11.5L15.5,16.5L2.5,16.5L5,11.5Z" stroke="#21608A"
+              circle fill="#21608A" cx="14.5" cy="9.5" r="0.5"
+              circle fill="#21608A" cx="12.5" cy="9.5" r="0.5"
+
+      / Display Options
+      .bg-gray-50.px-4.py-3
+        .flex.items-center
+          span.font-semibold.text-gray-700.mr-3 Display by:
+          form.flex.items-center
+            label.inline-flex.items-center.mr-3.cursor-pointer
+              input.form-radio.text-blue-600 type="radio" name="pointsPreference" checked=""
+              span.ml-2 Points
+            label.inline-flex.items-center.mr-3.cursor-pointer
+              input.form-radio.text-blue-600 type="radio" name="pointsPreference"
+              span.ml-2 Stories
+
+  / Burndown Chart Section
+  .pt-13
+    .border.border-gray-300.rounded-lg.overflow-hidden
+      table.w-full.table-fixed.text-sm
+        thead.bg-white
+          tr
+            th.w-3/5.text-left.px-4.py-2.font-semibold.text-gray-800 Burndown
+            th.w-1/5.text-center.px-2.py-2.font-normal.text-xs.text-gray-600 Total points
+            th.w-1/5.text-center.px-2.py-2.font-normal.text-xs.text-gray-600 Points remaining
+            th.w-1/5.text-center.px-2.py-2.font-normal.text-xs.text-gray-600 Scheduled
+            th.w-1/5.text-center.px-2.py-2.font-normal.text-xs.text-gray-600 Completion
+
+        tbody.bg-gray-50
+          tr.border-t.border-gray-200
+            td.px-4.py-3.border-r.border-gray-200
+              .text-left
+                .font-semibold.text-sm.text-gray-700.mb-2 = "#{@release.completion_percentage}% complete"
+                .w-full.h-2.bg-gray-200.rounded-full.overflow-hidden
+                  .h-full.bg-blue-400 style="width: #{@release.progress_width}%"
+            td.text-center.font-semibold.text-gray-800 = @release.total_points
+            td.text-center.font-medium.text-gray-800 = @release.points_remaining
+            td.text-center.font-medium.text-xs.text-gray-700 = @release.scheduled_at&.strftime("%b %d, %Y")
+            td.text-center.font-medium.text-xs.text-gray-700
+              . Estimated
+              = @release.completion_date&.strftime("%b %d, %Y")
+
+      / Chart Legend
+      .bg-gray-50.px-8.py-4.border-t.border-gray-200
+        .flex.items-center.space-x-6
+          .flex.items-center
+            .w-4.h-0.5.bg-blue-400.mr-2
+            span.text-xs.text-gray-700 Progress
+          .flex.items-center
+            svg.w-3.h-4.mr-2 fill="#3D3D3D" viewBox="0 0 9 13" xmlns="http://www.w3.org/2000/svg"
+              path d="M52,54.7C52,54.7 52,54.7 52,54.7C52,54.7 52,51.8 52,49.2C53.6,48.6 54.6,49.3 55.2,49.6C55.8,49.9 56.2,50.4 57.4,50.5C59,50.5 60,49 60,49C60,49 60,53.8 60,55.1C59.3,55.9 58,56 57.5,56C56.3,56 55.4,55.3 55.3,55.2C54.3,54.5 53.6,54.6 53.2,54.6C52.5,54.6 52,54.7 52,54.7L52,49L51,49L51,62L52,62L52,54.7Z" transform="translate(-51, -49)"
+            span.text-xs.text-gray-700 Scheduled
+          .flex.items-center
+            svg.w-4.h-0.5.mr-2
+              line x1="0" y1="0.25" x2="16" y2="0.25" stroke="#32A0D0" stroke-width="0.5" stroke-dasharray="3,2"
+            span.text-xs.text-gray-700 Projected
+
+      / Chart Container
+      .bg-white.p-4
+        .chart-container.h-64 data-controller="burndown-chart" data-burndown-chart-data="#{@release.chart_data.to_json}"
+
+  / Stories by Status Section
+  - %w[accepted delivered finished started].each do |status|
+    - stories = @release.stories.send(status)
+    - next if stories.empty?
+
+    .pt-13
+      .border.border-gray-300.rounded-lg.overflow-hidden
+        .bg-white.px-4.py-3.border-b class=status_border_color(status)
+          .flex.justify-between.items-center
+            span.font-semibold.text-gray-800
+              = "#{status.capitalize} Stories"
+              span.text-xs.font-normal.text-gray-500.ml-2
+                = "(#{stories.count} story | #{stories.sum(:estimate)} points)"
+            span.text-xs.text-gray-500
+
+        .bg-gray-50
+          - stories.each do |story|
+            .p-3.border-b.border-gray-200 class=status_bg_color(status)
+              .flex
+                .w-8.text-center.mr-3
+                  svg.w-4.h-4.mx-auto fill="#E0C85E" stroke="#D7C053" viewBox="0 0 17 17" xmlns="http://www.w3.org/2000/svg"
+                    path stroke-linejoin="round" stroke-width="0.9" d="M8.4,11.7l-4.1,2.9L5.7,9.7L2,6.4l4.7,0L8.4,2l1.7,4.4l4.9,0l-3.9,3.2l1.4,4.9z"
+                  .text-xs.text-gray-500 = "#{story.estimate}pt"
+
+                .flex-1
+                  .text-sm.font-medium.text-gray-800
+                    = story.title
+                    = link_to "##{story.id}", story_path(story), class: "text-blue-600 hover:text-blue-800 ml-1", target: "_blank"
+                  - if story.labels.any?
+                    .mt-1
+                      - story.labels.each do |label|
+                        span.inline-block.bg-green-100.text-green-800.text-xs.px-2.py-0.5.rounded.mr-1 = label.name

@@ -1,0 +1,66 @@
+.flex.min-h-screen
+  = render 'analytics/sidebar', project: @project
+
+  .flex-1.flex.flex-col
+    / Top Header
+    header.flex.items-center.justify-between.bg-white.px-8.py-5.border-b.border-blue-200.shadow-sm.sticky.top-0.z-10
+      h1.text-xl.font-bold.text-blue-900 Releases Report
+
+      .flex.items-center.space-x-3
+        = link_to project_analytics_releases_path(@project, format: :csv), title: "Export CSV", class: "text-blue-600 hover:text-blue-800"
+          svg.w-5.h-5[xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 18"]
+            / CSV Icon paths
+        a.text-blue-600.hover:text-blue-800[title="Print"]
+          svg.w-5.h-5[xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"]
+            / Print Icon paths
+
+    / Display Options
+    .px-8.py-4.border-b.border-blue-200
+      .flex.items-center.space-x-6
+        span.font-medium.text-gray-800 Display by:
+        form.inline.flex.items-center.space-x-4
+          label.flex.items-center.space-x-1.cursor-pointer
+            input type="radio" name="pointsPreference" checked
+            | Points
+          label.flex.items-center.space-x-1.cursor-pointer
+            input type="radio" name="pointsPreference"
+            | Stories
+
+    / Releases Table
+    .p-8
+      .bg-white.border.border-blue-200.rounded-md.overflow-hidden.shadow-sm
+        table.w-full.text-sm
+          thead.text-blue-900
+            tr
+              th.text-left.px-4.py-3.font-semibold colspan="5" Releases
+              th.text-center.px-2.py-3.text-xs.font-medium Total Points
+              th.text-center.px-2.py-3.text-xs.font-medium Points Remaining
+              th.text-center.px-2.py-3.text-xs.font-medium Scheduled
+              th.text-center.px-2.py-3.text-xs.font-medium Completion
+
+          tbody
+            - @releases.each do |release|
+              tr.border-t.border-blue-200.bg-blue-50.hover:bg-blue-100.transition
+                td.px-4.py-4.colspan-5
+                  .flex.items-center
+                    .w-6.h-6.mr-4
+                      svg.w-full.h-full[xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 17"]
+                        / Release Icon paths
+
+                    .flex-1
+                      .flex.justify-between.items-center
+                        span.font-medium.text-gray-800.truncate= release.name
+                        = link_to "View Burndown", analytics_project_release_path(@project, release), class: "text-blue-600 text-xs font-semibold hover:underline"
+
+                      .w-full.mt-2
+                        .h-2.bg-gray-200.rounded
+                          .h-2.rounded.transition-all.duration-300.bg-blue-500[style="width: #{release.progress_width}%; opacity: #{release.completed_points.zero? ? '0.3' : '1'}"]
+
+                td.text-center.px-2.font-medium.text-gray-800= release.total_points
+                td.text-center.px-2.text-gray-700= release.points_remaining
+                td.text-center.px-2.text-gray-700= release.deadline&.strftime("%b %d, %Y")
+                td.text-center.px-2
+                  - if release.completion_date
+                    span.text-xs.font-medium[class=(release.completion_date > Date.today ? 'text-red-600' : 'text-gray-800')]
+                      div Estimated
+                      = release.completion_date.strftime("%b %d, %Y")

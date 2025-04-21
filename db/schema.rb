@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_21_152443) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_21_161058) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -320,6 +320,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_152443) do
     t.datetime "rejected_at"
     t.datetime "accepted_at"
     t.datetime "started_at"
+    t.date "deadline"
+    t.date "completion_date"
     t.index ["discarded_at"], name: "index_stories_on_discarded_at"
     t.index ["epic_id"], name: "index_stories_on_epic_id"
     t.index ["iteration_id"], name: "index_stories_on_iteration_id"

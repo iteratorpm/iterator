@@ -38,6 +38,10 @@ class Project < ApplicationRecord
 
   validates :organization, presence: true
 
+  def releases
+    stories.releases
+  end
+
   def user_ids
     users.pluck(:id)
   end

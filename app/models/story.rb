@@ -41,6 +41,7 @@ class Story < ApplicationRecord
   scope :by_owner, ->(user_id) { joins(:story_owners).where(story_owners: { user_id: user_id }) }
   scope :by_label, ->(label_id) { joins(:story_labels).where(story_labels: { label_id: label_id }) }
 
+  scope :releases, -> { where(story_type: :release) }
   scope :features, -> { where(story_type: :feature) }
   scope :bugs, -> { where(story_type: :bug) }
   scope :chores, -> { where(story_type: :chore) }
@@ -96,4 +97,26 @@ class Story < ApplicationRecord
       end
     end
   end
+
+  # TODO: add release methods
+  # def total_points
+  #   stories.sum(:estimate)
+  # end
+  #
+  # def completed_points
+  #   stories.where(state: 'accepted').sum(:estimate)
+  # end
+  #
+  # def points_remaining
+  #   total_points - completed_points
+  # end
+  #
+  # def completion_percentage
+  #   return 0 if total_points.zero?
+  #   ((completed_points.to_f / total_points) * 100).round
+  # end
+  #
+  # def progress_width
+  #   completion_percentage.clamp(0, 100)
+  # end
 end

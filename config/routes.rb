@@ -57,7 +57,9 @@ Rails.application.routes.draw do
       resources :epics, only: [:index, :show] do
         get :csv, on: :collection
       end
-      resources :releases, only: [:index]
+      resources :releases, only: [:index, :show] do
+        get :csv, on: :collection
+      end
       resources :stories, only: [:index]
       resources :projections, only: [:index]
       resources :iterations, only: [:show]
