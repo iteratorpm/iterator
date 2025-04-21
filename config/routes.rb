@@ -54,7 +54,12 @@ Rails.application.routes.draw do
 
     namespace :analytics do
       resources :overview, only: [:index]
-      resources :cycle_time, only: [:index] do
+      resources :epics, only: [:index]
+      resources :releases, only: [:index]
+      resources :stories, only: [:index]
+      resources :projections, only: [:index]
+      resources :iterations, only: [:show]
+      resources :cycle_times, only: [:index] do
         collection do
           get :export
         end

@@ -44,7 +44,7 @@
   .p-4.border-r.border-gray-200
     .flex.justify-between.items-center.mb-2
       h3.text-sm.font-medium.text-gray-700 Story cycle time*
-      = link_to "view report", project_analytics_cycle_time_index_path(@project), class: "text-xs text-blue-600 hover:text-blue-800"
+      = link_to "view report", project_analytics_cycle_times_path(@project), class: "text-xs text-blue-600 hover:text-blue-800"
     p.text-xs.text-gray-500.mb-2 Typical time between Start and Accept
 
     .flex.flex-col.md:flex-row
@@ -64,7 +64,7 @@
   .p-4
     .flex.justify-between.items-center.mb-2
       h3.text-sm.font-medium.text-gray-700 Rejection rate
-      = link_to "view report", project_analytics_cycle_time_index_path(@project, display: "rejection"), class: "text-xs text-blue-600 hover:text-blue-800"
+      = link_to "view report", project_analytics_cycle_times_path(@project, display: "rejection"), class: "text-xs text-blue-600 hover:text-blue-800"
     p.text-xs.text-gray-500.mb-2 Percentage of rejections vs. acceptances and rejections
 
     .flex.flex-col.md:flex-row
