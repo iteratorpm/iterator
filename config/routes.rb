@@ -54,7 +54,9 @@ Rails.application.routes.draw do
 
     namespace :analytics do
       resources :overview, only: [:index]
-      resources :epics, only: [:index]
+      resources :epics, only: [:index, :show] do
+        get :csv, on: :collection
+      end
       resources :releases, only: [:index]
       resources :stories, only: [:index]
       resources :projections, only: [:index]

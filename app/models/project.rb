@@ -28,6 +28,7 @@ class Project < ApplicationRecord
   has_many :memberships, class_name: "ProjectMembership", dependent: :destroy
   has_many :users, through: :memberships
   has_many :integrations, dependent: :destroy
+  has_many :epics, dependent: :destroy
   has_many :iterations, dependent: :destroy
   has_many :webhooks, dependent: :destroy
   has_many :stories, dependent: :destroy

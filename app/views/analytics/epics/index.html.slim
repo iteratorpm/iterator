@@ -1,0 +1,81 @@
+.flex.min-h-screen
+  = render 'analytics/sidebar', project: @project
+
+  .flex-1.p-8
+    .pt-13
+      .border.border-aebccb
+        / Header
+        header.text-base.font-bold.text-515151.px-13.bg-white.min-h-42.border-b.border-d2dadf.box-border.flex.justify-between.items-center
+          div Epics Report
+          .flex
+            = link_to project_analytics_epics_path(@project, format: :csv), title: "CSV Export", class: "ml-2 opacity-100 cursor-pointer"
+              / SVG for CSV icon
+              svg width="17px" height="18px" viewBox="0 0 17 18" xmlns="http://www.w3.org/2000/svg"
+                / SVG paths from original code
+            a.ml-2.opacity-100.cursor-pointer
+              / SVG for print icon
+              svg width="18px" height="18px" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"
+                / SVG paths from original code
+
+        / Display options
+        .px-13.bg-f8f9fa
+          .opacity-100
+            span.min-w-60.inline-block.font-semibold.text-515151 Display options:
+            form.inline
+              label.cursor-pointer.ml-11.select-none
+                input type="radio" name="pointsPreference" checked=""
+                | Points
+              label.cursor-pointer.ml-11.select-none
+                input type="radio" name="pointsPreference"
+                | Stories
+
+    / Epics Table
+    .pt-13
+      .relative
+        .border.border-b-0.border-aebccb.bg-white.relative.pt-23.px-10.pb-8
+          .absolute.right-117.bottom-3.inline-block
+            .inline-block.border-t-2.border-l-2.border-bcbcbc.w-89.h-10.relative.right-3.-mb-7.mr-6
+            span.inline-block.text-11.font-bold Point progress
+            .inline-block.border-t-2.border-r-2.border-bcbcbc.w-89.h-10.relative.left-3.-mb-7.ml-6
+
+        table.w-full.table-fixed.text-xs.relative.border-collapse.font-normal
+          thead
+            tr.border.border-l-0.border-r.border-aebccb.bg-white.select-none
+              th.align-bottom colspan="329"
+                span.text-black.no-underline.cursor-default.font-normal.text-11.inline-block.text-left.w-full.relative.pl-11.pb-5
+                  span.font-semibold.text-14 Epic Backlog
+              th.align-bottom colspan="68"
+                a.text-3472a4.no-underline.cursor-pointer.font-normal.text-11.inline-block.text-center.w-full.relative.pb-5.opacity-100 Total
+              th.align-bottom colspan="68"
+                a.text-3472a4.no-underline.cursor-pointer.font-normal.text-11.inline-block.text-center.w-full.relative.border-b-2.border-40bd15.pb-3.opacity-100 Accepted
+              th.align-bottom colspan="68"
+                a.text-3472a4.no-underline.cursor-pointer.font-normal.text-11.inline-block.text-center.w-full.relative.border-b-2.border-e4ce41.pb-3.opacity-100 In-progress
+              th.align-bottom colspan="68"
+                a.text-3472a4.no-underline.cursor-pointer.font-normal.text-11.inline-block.text-center.w-full.relative.border-b-2.border-9ca4af.pb-3.opacity-100 Unstarted
+              th.align-bottom colspan="68"
+                a.text-3472a4.no-underline.cursor-pointer.font-normal.text-11.inline-block.text-center.w-full.relative.border-b-2.border-7cafe7.pb-3.opacity-100 Iceboxed
+              th.align-bottom colspan="84"
+                a.text-3472a4.no-underline.cursor-pointer.font-normal.text-11.inline-block.text-center.w-full.relative.pb-5.opacity-100 Completion
+
+          tbody
+            - @epics.each do |epic|
+              tr.border-t.border-b.border-c0ced6.h-56.bg-f8f9fa
+                td.border.border-r.border-c0ced6.border-l-aebccb.text-center.align-middle.font-medium.text-11.relative colspan="329"
+                  .pr-5.pl-18
+                    .block.float-left.w-17.mt-6.h-18.opacity-100
+                      / Epic icon SVG
+                      svg viewBox="0 0 17 18" xmlns="http://www.w3.org/2000/svg"
+                        / SVG paths from original code
+                    = link_to "view report", analytics_project_epic_path(@project, epic), class: "block absolute right-7 top-6 text-3472a4 no-underline opacity-100 cursor-pointer"
+                    .w-calc-100-30.float-right
+                      .pb-7.overflow-hidden.whitespace-nowrap.text-ellipsis.text-12.max-w-calc-100-77.float-left= epic.name
+                      .clear-both
+                      .h-10.leading-0.relative
+                      .clear-both
+                    .clear-both
+                td.border.border-r.border-c0ced6.text-center.align-middle.font-semibold.text-14.relative colspan="68"= epic.total_points
+                td.border.border-r.border-c0ced6.text-center.align-middle.font-medium.text-14.relative colspan="68"= epic.accepted_points
+                td.border.border-r.border-c0ced6.text-center.align-middle.font-medium.text-14.relative colspan="68"= epic.in_progress_points
+                td.border.border-r.border-c0ced6.text-center.align-middle.font-medium.text-14.relative colspan="68"= epic.unstarted_points
+                td.border.border-r.border-c0ced6.text-center.align-middle.font-medium.text-14.relative colspan="68"= epic.iceboxed_points
+                td.border.border-r.border-aebccb.border-l-c0ced6.text-center.align-middle.font-medium.text-11.relative colspan="84"= "#{epic.completion_percentage}%"
