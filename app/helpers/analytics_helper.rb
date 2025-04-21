@@ -22,4 +22,26 @@ module AnalyticsHelper
     else 'bg-white'
     end
   end
+
+  def story_icon(story)
+    case story.story_type
+    when 'feature' then svg_inline('star', class: 'w-4 h-4')
+    when 'bug' then svg_inline('bug', class: 'w-4 h-4')
+    when 'chore' then svg_inline('chore', class: 'w-4 h-4')
+    else svg_inline('default', class: 'w-4 h-4')
+    end
+  end
+
+  def activity_color(event)
+    case event
+    when 'accepted' then 'green'
+    when 'delivered' then 'yellow'
+    when 'finished' then 'blue'
+    when 'started' then 'yellow'
+    when 'unscheduled' then 'blue'
+    when 'scheduled' then 'gray'
+    when 'deleted' then 'red'
+    else 'gray'
+    end
+  end
 end

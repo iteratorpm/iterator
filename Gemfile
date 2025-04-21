@@ -61,6 +61,7 @@ gem 'data_migrate'
 gem "mission_control-jobs"
 gem 'fast_blank'
 gem 'kramdown'
+gem 'paper_trail'
 
 group :development, :test do
   gem "amazing_print"

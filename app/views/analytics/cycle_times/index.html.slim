@@ -1,99 +1,102 @@
-.container.mx-auto.px-4.max-w-4xl
-  .mb-8
+.flex.min-h-screen
+  = render 'analytics/sidebar', project: @project
+
+  .flex-1.p-8
+    .mb-8
+      .pt-4
+        .border.border-gray-300.rounded
+          header.bg-white.p-4.border-b.border-gray-200
+            .flex.items-center.justify-between
+              h1.text-lg.font-bold.text-gray-700 Cycle Time
+              .flex.items-center
+                = link_to "CSV Export", project_analytics_cycle_times_path(format: :csv), class: "ml-2 text-blue-700 hover:text-blue-900", target: "_blank"
+                button.ml-2.text-blue-700.hover:text-blue-900
+                  svg.w-5.h-5[fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"]
+                    path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"]
+
+          .bg-gray-50.p-4
+            .mb-2
+              span.inline-block.w-16.font-semibold.text-gray-700.text-sm Display:
+              = select_tag :display, options_for_select([['Median cycle time', 'typical'], ['Cycle time by state', 'state'], ['Cycle time by point', 'estimate'], ['Cycle time by story type', 'storyType'], ['Rejection rate', 'rejection']]), class: "h-8 bg-white border border-gray-300 rounded px-2 py-1 text-sm w-64"
+
+            .text-xs.text-gray-500
+              | *excludes weekends, based on #{Time.zone.name}
+
+    .mb-8
+      .pt-4
+        .border.border-gray-300.rounded
+          header.bg-white.p-4.border-b.border-gray-200
+            h1.text-lg.font-bold.text-gray-700 Median Cycle Time by Iteration
+
+          .bg-gray-50.p-4
+            = line_chart @chart_data.map { |d| { name: d[:name], data: [d[:start_date], d[:median_cycle_time]] } },\
+                         library: {\
+                           height: '210px',\
+                           colors: ['#6CABFB'],\
+                           curve: false,\
+                           points: { show: true },\
+                           xaxis: { type: 'datetime', title: 'Iteration Start Date' },\
+                           yaxis: { title: 'Hours' }\
+                         }
+
     .pt-4
-      .border.border-gray-300.rounded
-        header.bg-white.p-4.border-b.border-gray-200
-          .flex.items-center.justify-between
-            h1.text-lg.font-bold.text-gray-700 Cycle Time
-            .flex.items-center
-              = link_to "CSV Export", project_analytics_cycle_times_path(format: :csv), class: "ml-2 text-blue-700 hover:text-blue-900", target: "_blank"
-              button.ml-2.text-blue-700.hover:text-blue-900
-                svg.w-5.h-5[fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"]
-                  path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"]
+      .border-t.border-x.border-gray-300.bg-white.relative.p-3
+        .flex.items-center.justify-between
+          span.font-semibold.text-sm Story Cycle Time Details
+          .inline-flex.items-center.float-right.mr-8
+            .inline-block.border-t-2.border-l-2.border-gray-400.w-12.h-3.relative.-right-1.-mb-9.mr-2.z-10
+            span.inline-block.text-xs.z-10.-mb-7.relative.font-bold Time spent in state
+            .inline-block.border-t-2.border-r-2.border-gray-400.w-12.h-3.relative.left-1.-mb-9.ml-2.z-10
 
-        .bg-gray-50.p-4
-          .mb-2
-            span.inline-block.w-16.font-semibold.text-gray-700.text-sm Display:
-            = select_tag :display, options_for_select([['Median cycle time', 'typical'], ['Cycle time by state', 'state'], ['Cycle time by point', 'estimate'], ['Cycle time by story type', 'storyType'], ['Rejection rate', 'rejection']]), class: "h-8 bg-white border border-gray-300 rounded px-2 py-1 text-sm w-64"
+      table.w-full.text-sm.border-collapse
+        thead
+          tr.bg-white.border.border-gray-300
+            th.col-span-4.text-left.py-2.px-3
+              .text-xs.py-2
+                span.inline-block.w-16.font-semibold.text-gray-700 Iteration:
+                = select_tag :iteration_id, options_for_select(@iterations.map { |i| [i.display_name, i.id] }), class: "h-8 bg-white border border-gray-300 rounded px-2 py-1 text-sm w-48"
+            th.py-2.px-1.text-center.font-normal.text-blue-700
+              = link_to "Cycle time", "#", class: "block w-full"
+            th.py-2.px-1.text-center.font-normal.text-blue-700
+              = link_to "Rejections", "#", class: "block w-full"
+            th.py-2.px-1.text-center.font-normal.text-blue-700
+              = link_to "Started", "#", class: "block w-full"
+            th.py-2.px-1.text-center.font-normal.text-blue-700
+              = link_to "Finished", "#", class: "block w-full"
+            th.py-2.px-1.text-center.font-normal.text-blue-700
+              = link_to "Delivered", "#", class: "block w-full"
+            th.py-2.px-1.text-center.font-normal.text-blue-700
+              = link_to "Rejected", "#", class: "block w-full"
 
-          .text-xs.text-gray-500
-            | *excludes weekends, based on #{Time.zone.name}
+        tbody
+          - @stories.each do |story|
+            tr.border-t.border-b.border-gray-300.h-14.bg-yellow-50
+              td.col-span-4.border-r.border-gray-300.align-middle.px-3
+                .text-sm.py-3.overflow-hidden
+                  .float-left.mb-1
+                    .w-8.text-center
+                      .h-5.-mt-1
+                        - if story.estimate.present?
+                          svg.w-4.h-4.mx-auto[viewBox="0 0 17 17" xmlns="http://www.w3.org/2000/svg"]
+                            g[fill="none" fill-rule="evenodd"]
+                              path[stroke="#D7C053" stroke-width=".929" stroke-linejoin="round" fill="#E0C85E" d="M8.422 11.695l-4.15 2.91L5.71 9.687 2 6.412l4.745.028L8.43 2l1.67 4.44 4.9.03-3.865 3.218 1.435 4.916z"]
+                      .text-xs.text-gray-500
+                        = "#{story.estimate}pt" if story.estimate.present?
 
-  .mb-8
-    .pt-4
-      .border.border-gray-300.rounded
-        header.bg-white.p-4.border-b.border-gray-200
-          h1.text-lg.font-bold.text-gray-700 Median Cycle Time by Iteration
+                  .w-calc-full-minus-40.float-right
+                    .block
+                      = story.name
+                      - if story.owner
+                        = " (#{link_to story.owner.initials, '#', class: 'text-blue-700 hover:text-blue-900'})"
+                      = " [#{link_to "##{story.id}", project_story_path(@project, story), class: 'text-blue-700 hover:text-blue-900'}]"
+                    - if story.labels.any?
+                      .block.mt-1
+                        - story.labels.each do |label|
+                          span.font-bold.text-xs.text-green-700.mr-2 = label.name
 
-        .bg-gray-50.p-4
-          = line_chart @chart_data.map { |d| { name: d[:name], data: [[d[:start_date], d[:median_cycle_time]] } },
-                       library: {
-                         height: '210px',
-                         colors: ['#6CABFB'],
-                         curve: false,
-                         points: { show: true },
-                         xaxis: { type: 'datetime', title: 'Iteration Start Date' },
-                         yaxis: { title: 'Hours' }
-                       }
-
-  .pt-4
-    .border-t.border-x.border-gray-300.bg-white.relative.p-3
-      .flex.items-center.justify-between
-        span.font-semibold.text-sm Story Cycle Time Details
-        .inline-flex.items-center.float-right.mr-8
-          .inline-block.border-t-2.border-l-2.border-gray-400.w-12.h-3.relative.-right-1.-mb-9.mr-2.z-10
-          span.inline-block.text-xs.z-10.-mb-7.relative.font-bold Time spent in state
-          .inline-block.border-t-2.border-r-2.border-gray-400.w-12.h-3.relative.left-1.-mb-9.ml-2.z-10
-
-    table.w-full.text-sm.border-collapse
-      thead
-        tr.bg-white.border.border-gray-300
-          th.col-span-4.text-left.py-2.px-3
-            .text-xs.py-2
-              span.inline-block.w-16.font-semibold.text-gray-700 Iteration:
-              = select_tag :iteration_id, options_for_select(@iterations.map { |i| [i.display_name, i.id] }), class: "h-8 bg-white border border-gray-300 rounded px-2 py-1 text-sm w-48"
-          th.py-2.px-1.text-center.font-normal.text-blue-700
-            = link_to "Cycle time", "#", class: "block w-full"
-          th.py-2.px-1.text-center.font-normal.text-blue-700
-            = link_to "Rejections", "#", class: "block w-full"
-          th.py-2.px-1.text-center.font-normal.text-blue-700
-            = link_to "Started", "#", class: "block w-full"
-          th.py-2.px-1.text-center.font-normal.text-blue-700
-            = link_to "Finished", "#", class: "block w-full"
-          th.py-2.px-1.text-center.font-normal.text-blue-700
-            = link_to "Delivered", "#", class: "block w-full"
-          th.py-2.px-1.text-center.font-normal.text-blue-700
-            = link_to "Rejected", "#", class: "block w-full"
-
-      tbody
-        - @stories.each do |story|
-          tr.border-t.border-b.border-gray-300.h-14.bg-yellow-50
-            td.col-span-4.border-r.border-gray-300.align-middle.px-3
-              .text-sm.py-3.overflow-hidden
-                .float-left.mb-1
-                  .w-8.text-center
-                    .h-5.-mt-1
-                      - if story.estimate.present?
-                        svg.w-4.h-4.mx-auto[viewBox="0 0 17 17" xmlns="http://www.w3.org/2000/svg"]
-                          g[fill="none" fill-rule="evenodd"]
-                            path[stroke="#D7C053" stroke-width=".929" stroke-linejoin="round" fill="#E0C85E" d="M8.422 11.695l-4.15 2.91L5.71 9.687 2 6.412l4.745.028L8.43 2l1.67 4.44 4.9.03-3.865 3.218 1.435 4.916z"]
-                    .text-xs.text-gray-500
-                      = "#{story.estimate}pt" if story.estimate.present?
-
-                .w-calc-full-minus-40.float-right
-                  .block
-                    = story.name
-                    - if story.owner
-                      = " (#{link_to story.owner.initials, '#', class: 'text-blue-700 hover:text-blue-900'})"
-                    = " [#{link_to "##{story.id}", project_story_path(@project, story), class: 'text-blue-700 hover:text-blue-900'}]"
-                  - if story.labels.any?
-                    .block.mt-1
-                      - story.labels.each do |label|
-                        span.font-bold.text-xs.text-green-700.mr-2 = label.name
-
-            td.text-center.font-bold.align-middle.px-1 = "#{story.cycle_time} hours"
-            td.text-center.align-middle.px-1 = story.rejections_count if story.rejections_count > 0
-            td.text-center.align-middle.px-1 = "#{story.time_in_state(:started)} hours" if story.started_at
-            td.text-center.align-middle.px-1 = "#{story.time_in_state(:finished)} hours" if story.finished_at
-            td.text-center.align-middle.px-1 = "#{story.time_in_state(:delivered)} hours" if story.delivered_at
-            td.text-center.align-middle.px-1 = "#{story.time_in_state(:rejected)} hours" if story.rejected_at
+              td.text-center.font-bold.align-middle.px-1 = "#{story.cycle_time} hours"
+              td.text-center.align-middle.px-1 = story.rejections_count if story.rejections_count > 0
+              td.text-center.align-middle.px-1 = "#{story.time_in_state(:started)} hours" if story.started_at
+              td.text-center.align-middle.px-1 = "#{story.time_in_state(:finished)} hours" if story.finished_at
+              td.text-center.align-middle.px-1 = "#{story.time_in_state(:delivered)} hours" if story.delivered_at
+              td.text-center.align-middle.px-1 = "#{story.time_in_state(:rejected)} hours" if story.rejected_at

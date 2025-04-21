@@ -1,5 +1,7 @@
 class Story < ApplicationRecord
- include Discard::Model
+  include Discard::Model
+  has_paper_trail
+
 
   # Enums
   enum :story_type, { feature: 0, bug: 1, chore: 2, release: 3 }

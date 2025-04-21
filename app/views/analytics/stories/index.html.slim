@@ -1,0 +1,62 @@
+.flex.min-h-screen
+  = render 'analytics/sidebar', project: @project
+
+  .flex-1.p-8
+    div.border.border-gray-300.rounded
+      header.bg-white.p-4.border-b.border-gray-200
+        h1.text-lg.font-bold.text-gray-700 Story Activity Report
+        div.flex.items-center.justify-end.space-x-2
+          = inline_svg_tag('icons/export.svg', class: 'w-5 h-5 text-gray-600 cursor-pointer')
+          = inline_svg_tag('printer.svg', class: 'w-5 h-5 text-gray-600 cursor-pointer')
+
+      div.bg-gray-50.p-4
+        div.mb-4
+          label.inline-flex.items-center
+            input type="radio" name="selection" checked="checked"
+            span.ml-2
+              span.font-semibold.text-gray-700 Iteration:
+              = select_tag :iteration, options_for_select(@iterations.map { |i| [i.display_name, i.id] }, @selected_iteration.id), class: 'ml-2 bg-white border border-gray-300 rounded px-2 py-1'
+
+          label.inline-flex.items-center.ml-4
+            input type="radio" name="selection"
+            span.ml-2
+              span.font-semibold.text-gray-700 Dates
+              / Date picker would go here
+
+        div.flex.flex-wrap.-mx-2
+          div.w-full.md:w-1/2.px-2
+            .bg-white.border.border-gray-300.rounded.p-2.text-xs
+              span.font-semibold.text-gray-700 Story types
+              span.text-gray-700 (all)
+
+          div.w-full.md:w-1/2.px-2
+            .bg-white.border.border-gray-300.rounded.p-2.text-xs
+              span.font-semibold.text-gray-700 Story activity level
+              span.text-gray-700 (low)
+
+  div.pt-4
+    - @activities.each do |date, stories|
+      div.mb-4
+        div.bg-white.border.border-gray-300.rounded-t.px-4.py-5
+          h2.text-lg.font-semibold.text-gray-700
+            = l(date, format: :long)
+            span.float-right.text-xs.text-gray-500.font-normal
+              | All timestamps are shown in the project timezone (#{@project.time_zone})
+
+        div.border.border-t-0.border-gray-300.rounded-b.bg-gray-50
+          - stories.each do |story|
+            div.px-2.py-3.border-b.border-gray-200
+              div.flex
+                div.w-8.text-center
+                  div.h-5
+                    = story_icon(story)
+                  div.text-xs.text-gray-500
+                    = story.estimate.present? ? "#{story.estimate}pts" : ''
+
+                div.flex-1.pl-2
+                  div
+                    = link_to "#{story.title} [##{story.id}]", project_story_path(@project, story), class: 'text-blue-600 hover:underline', target: '_blank'
+
+                  - story.activities.order(created_at: :desc).each do |activity|
+                    div.relative.pl-4.mt-1
+                      div.absolute.left-2.top-3.h-full.w-px
