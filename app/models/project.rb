@@ -76,8 +76,13 @@ class Project < ApplicationRecord
     iterations.completed.order(start_date: :desc).limit(5)
   end
 
+  def current_scope
+    0
+  end
+
   def current_iteration_cycle_time
-    current_iteration&.average_cycle_time || 0
+    0
+    # current_iteration&.average_cycle_time || 0
   end
 
   def average_cycle_time(iteration_count)

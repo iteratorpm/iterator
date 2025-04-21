@@ -1,50 +1,61 @@
-aside.sidebar.w-64.bg-gray-700.border-r.border-gray-200.flex.flex-col.h-full[aria-label="sidebar"]
-  = link_to project_analytics_overview_index_path, class: "flex items-center px-4 py-3 text-white #{current_page?(project_analytics_overview_index_path) ? 'bg-[#3a3f42]' : 'hover:bg-[#3a3f42]'}" do
-    span.mr-3
-      = inline_svg_tag('icons/star.svg', class: "w-5 h-5 #{current_page?(project_analytics_overview_index_path) ? 'text-[#8ac5ff]' : 'text-[#c1c1c1]'}")
-    span Project Overview
+aside.sidebar.w-64.bg-gray-100.border-r.border-gray-200.flex.flex-col.h-full[aria-label="sidebar"]
 
-  = link_to project_analytics_iteration_path(project, :current), class: "flex items-center px-4 py-3 text-white #{current_page?(project_analytics_iteration_path(project, :current)) ? 'bg-[#3a3f42]' : 'hover:bg-[#3a3f42]'}" do
-    span.mr-3
-      = inline_svg_tag('icons/iteration.svg', class: "w-5 h-5 #{current_page?(project_analytics_iteration_path(project, :current)) ? 'text-[#8ac5ff]' : 'text-[#c1c1c1]'}")
-    span Iteration
+  / Nav Items
+  .flex-1.overflow-y-auto
+    section
+      ul.space-y-1
+        li
+          = link_to project_analytics_overview_index_path, class: "flex items-center px-4 py-2 rounded hover:bg-gray-200 #{current_page?(project_analytics_overview_index_path) ? 'bg-gray-300' : ''}" do
+            span.mr-3
+              = inline_svg_tag('icons/star.svg', class: "w-5 h-5 #{current_page?(project_analytics_overview_index_path) ? 'text-blue-500' : 'text-gray-500'}")
+            span.text-gray-800.text-sm Project Overview
 
-  = link_to project_analytics_epics_path(project), class: "flex items-center px-4 py-3 text-white #{current_page?(project_analytics_epics_path(project)) ? 'bg-[#3a3f42]' : 'hover:bg-[#3a3f42]'}" do
-    span.mr-3
-      = inline_svg_tag('icons/epic.svg', class: "w-5 h-5 #{current_page?(project_analytics_epics_path(project)) ? 'text-[#8ac5ff]' : 'text-[#c1c1c1]'}")
-    span Epics
+        li
+          = link_to project_analytics_iteration_path(project, :current), class: "flex items-center px-4 py-2 rounded hover:bg-gray-200 #{current_page?(project_analytics_iteration_path(project, :current)) ? 'bg-gray-300' : ''}" do
+            span.mr-3
+              = inline_svg_tag('icons/iteration.svg', class: "w-5 h-5 #{current_page?(project_analytics_iteration_path(project, :current)) ? 'text-blue-500' : 'text-gray-500'}")
+            span.text-gray-800.text-sm Iteration
 
-  = link_to project_analytics_releases_path(project), class: "flex items-center px-4 py-3 text-white #{current_page?(project_analytics_releases_path(project)) ? 'bg-[#3a3f42]' : 'hover:bg-[#3a3f42]'}" do
-    span.mr-3
-      = inline_svg_tag('icons/release.svg', class: "w-5 h-5 #{current_page?(project_analytics_releases_path(project)) ? 'text-[#8ac5ff]' : 'text-[#c1c1c1]'}")
-    span Releases & Burndowns
+        li
+          = link_to project_analytics_epics_path(project), class: "flex items-center px-4 py-2 rounded hover:bg-gray-200 #{current_page?(project_analytics_epics_path(project)) ? 'bg-gray-300' : ''}" do
+            span.mr-3
+              = inline_svg_tag('icons/epic.svg', class: "w-5 h-5 #{current_page?(project_analytics_epics_path(project)) ? 'text-blue-500' : 'text-gray-500'}")
+            span.text-gray-800.text-sm Epics
 
-  = link_to project_analytics_stories_path(project), class: "flex items-center px-4 py-3 text-white #{current_page?(project_analytics_stories_path(project)) ? 'bg-[#3a3f42]' : 'hover:bg-[#3a3f42]'}" do
-    span.mr-3
-      = inline_svg_tag('icons/activity.svg', class: "w-5 h-5 #{current_page?(project_analytics_stories_path(project)) ? 'text-[#8ac5ff]' : 'text-[#c1c1c1]'}")
-    span Story Activity
+        li
+          = link_to project_analytics_releases_path(project), class: "flex items-center px-4 py-2 rounded hover:bg-gray-200 #{current_page?(project_analytics_releases_path(project)) ? 'bg-gray-300' : ''}" do
+            span.mr-3
+              = inline_svg_tag('icons/release.svg', class: "w-5 h-5 #{current_page?(project_analytics_releases_path(project)) ? 'text-blue-500' : 'text-gray-500'}")
+            span.text-gray-800.text-sm Releases & Burndowns
 
-  = link_to project_analytics_cycle_times_path(project), class: "flex items-center px-4 py-3 text-white #{current_page?(project_analytics_cycle_times_path(project)) ? 'bg-[#3a3f42]' : 'hover:bg-[#3a3f42]'}" do
-    span.mr-3
-      = inline_svg_tag('icons/cycle.svg', class: "w-5 h-5 #{current_page?(project_analytics_cycle_times_path(project)) ? 'text-[#8ac5ff]' : 'text-[#c1c1c1]'}")
-    span Cycle Time
+        li
+          = link_to project_analytics_stories_path(project), class: "flex items-center px-4 py-2 rounded hover:bg-gray-200 #{current_page?(project_analytics_stories_path(project)) ? 'bg-gray-300' : ''}" do
+            span.mr-3
+              = inline_svg_tag('icons/activity.svg', class: "w-5 h-5 #{current_page?(project_analytics_stories_path(project)) ? 'text-blue-500' : 'text-gray-500'}")
+            span.text-gray-800.text-sm Story Activity
 
-  = link_to project_analytics_projections_path(project), class: "flex items-center px-4 py-3 text-white #{current_page?(project_analytics_projections_path(project)) ? 'bg-[#3a3f42]' : 'hover:bg-[#3a3f42]'}" do
-    span.mr-3
-      = inline_svg_tag('icons/projection.svg', class: "w-5 h-5 #{current_page?(project_analytics_projections_path(project)) ? 'text-[#8ac5ff]' : 'text-[#c1c1c1]'}")
-    span
-      | Projections
-      sup.text-red.font-bold.text-xs.ml-1 BETA
+        li
+          = link_to project_analytics_cycle_times_path(project), class: "flex items-center px-4 py-2 rounded hover:bg-gray-200 #{current_page?(project_analytics_cycle_times_path(project)) ? 'bg-gray-300' : ''}" do
+            span.mr-3
+              = inline_svg_tag('icons/cycle.svg', class: "w-5 h-5 #{current_page?(project_analytics_cycle_times_path(project)) ? 'text-blue-500' : 'text-gray-500'}")
+            span.text-gray-800.text-sm Cycle Time
 
-  .w-full.border-b-4.mb-0.5
+        li
+          = link_to project_analytics_projections_path(project), class: "flex items-center px-4 py-2 rounded hover:bg-gray-200 #{current_page?(project_analytics_projections_path(project)) ? 'bg-gray-300' : ''}" do
+            span.mr-3
+              = inline_svg_tag('icons/projection.svg', class: "w-5 h-5 #{current_page?(project_analytics_projections_path(project)) ? 'text-blue-500' : 'text-gray-500'}")
+            span.text-gray-800.text-sm
+              | Projections
+              sup.text-red-500.font-bold.text-xs.ml-1 BETA
 
-  .flex.items-center.justify-between.px-4.py-3.text-white
-    .flex.items-center
-      span.mr-3
-        = inline_svg_tag('icons/refresh.svg', class: "w-4 h-4 text-[#7f8582]")
-      span Auto-Refresh
-    .relative.w-7.h-3
-      .absolute.top-0.5.w-7.h-2.5.rounded-full.overflow-hidden
-        .h-full.w-full
-          .h-full.float-left.w-0.transition-all.duration-100.ease-in-out
-      .absolute.w-3.h-3.rounded-full.left-0.transition-all.duration-100.ease-in-out
+  / Bottom Toggle Section
+  .p-4.border-t.border-gray-200
+    .flex.items-center.justify-between
+      .flex.items-center
+        span.mr-3
+          = inline_svg_tag('icons/refresh.svg', class: "w-4 h-4 text-gray-500")
+        span.text-sm.text-gray-700 Auto-Refresh
+      .relative.w-7.h-3
+        .absolute.top-0.5.w-7.h-2.5.bg-gray-300.rounded-full
+          .h-full.w-full
+        .absolute.w-3.h-3.bg-white.rounded-full.left-0.transition-all.duration-100.ease-in-out
