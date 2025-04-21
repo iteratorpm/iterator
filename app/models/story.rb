@@ -41,6 +41,14 @@ class Story < ApplicationRecord
   scope :by_owner, ->(user_id) { joins(:story_owners).where(story_owners: { user_id: user_id }) }
   scope :by_label, ->(label_id) { joins(:story_labels).where(story_labels: { label_id: label_id }) }
 
+  scope :features, -> { where(story_type: :feature) }
+  scope :bugs, -> { where(story_type: :bug) }
+  scope :chores, -> { where(story_type: :chore) }
+  scope :accepted, -> { where(status: :accepted) }
+  scope :created_in_current_iteration, ->(project) {
+    where(created_at: project.current_iteration.start_date..project.current_iteration.end_date)
+  }
+
   after_update :notify_if_delivered, if: :saved_change_to_state?
 
   # Methods
@@ -62,6 +70,16 @@ class Story < ApplicationRecord
 
   def completed_tasks
     tasks.where(completed: true).count
+  end
+
+  def cycle_time
+    # Calculate cycle time in hours
+    return 0 unless finished_at && started_at
+    ((finished_at - started_at) / 1.hour).round
+  end
+
+  def time_in_state(state)
+    # Calculate time spent in a particular state
   end
 
   private

@@ -52,9 +52,18 @@ Rails.application.routes.draw do
     end
     resources :recover_stories, only: [:index, :create], module: 'projects'
 
-    resources :analytics do
-      get :overview
-      get :charts, on: :member
+    namespace :analytics do
+      resources :overview, only: [:index]
+      resources :cycle_time, only: [:index] do
+        collection do
+          get :export
+        end
+      end
+    end
+
+    namespace :charts do
+      get 'velocity', to: 'projects/charts#update'
+      get 'composition', to: 'projects/charts#composition'
     end
 
     resources :description_templates, path:'templates', module: 'projects', except: [:show] do

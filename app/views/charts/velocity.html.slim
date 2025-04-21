@@ -1,0 +1,97 @@
+.flex.min-h-screen
+  = render 'analytics/sidebar'
+
+  .flex-1.p-8
+    div class="pt-4"
+      div class="border border-gray-300 rounded"
+        header class="text-base font-bold text-gray-600 px-4 bg-white min-h-12 border-b border-gray-200"
+          div class="flex justify-between items-center"
+            | Velocity Chart
+            button class="flex items-center ml-2 opacity-100 cursor-pointer"
+              = inline_svg_tag('printer.svg', class: 'w-5 h-5')
+
+        div class="px-4 bg-gray-50"
+          div class="-mx-4 px-4"
+            a href="#" class="text-xs cursor-pointer leading-6 text-blue-600 no-underline opacity-100"
+              | + filter by epic/label
+
+    div class="pt-4"
+      div class="border border-gray-300 rounded"
+        div class="text-sm font-semibold px-4 bg-white text-gray-600"
+          div class="my-3"
+            div class="mb-2" Points Accepted
+            div class="text-xs font-normal text-gray-500 opacity-100"
+              | Volatility:
+              span.font-bold 100%
+              |  - Standard Deviation:
+              span.font-bold 1pts
+              |  (based on past 3 iterations)
+
+        div class="border-0 border-b border-l border-r border-gray-300 bg-gray-50"
+          div class="pl-8 pt-4 pb-2"
+            div class="text-xs select-none inline-block relative"
+              span class="border-t-4 border-blue-500 w-3 inline-block"
+              span class="ml-1 mr-5 opacity-100" Accepted points
+            div class="text-xs select-none inline-block relative"
+              span class="inline-block h-3"
+                = inline_svg_tag('running_velocity.svg', class: 'w-4 h-3')
+              span class="ml-1 mr-5 opacity-100" Running velocity
+
+          div class="velocity-chart h-96 relative"
+            = line_chart @velocity_data[:iterations].map { |i| [i[:date], i[:points]] },
+              library: {
+                colors: ['#5199D4', '#FF692F'],
+                line: {
+                  classes: ['pointsAccepted', 'velocity'],
+                  types: { pointsAccepted: 'bar', velocity: 'line' }
+                },
+                axis: {
+                  x: { label: { text: 'Iteration start date', position: 'outer-center' } },
+                  y: { label: { text: 'Points accepted', position: 'outer-middle' } }
+                },
+                tooltip: {
+                  format: {
+                    title: function(d) { return d === 2 ? 'Current Iteration' : @velocity_data[:iterations][d][:date] },
+                    value: function(value, ratio, id) {
+                      return id === 'velocity' ? value + ' pts' : value + ' pts';
+                    }
+                  }
+                }
+              }
+
+    div class="pt-4"
+      div class="border-0 border-b border-l border-r border-gray-300 text-sm font-semibold px-4 bg-white text-gray-600"
+        div class="pt-5 pb-3" Accepted Story Type Composition
+
+      div class="border-0 border-b border-l border-r border-gray-300 bg-gray-50"
+        div class="pl-8 pt-4 pb-2"
+          div class="text-xs select-none inline-block relative"
+            span class="border-t-4 border-yellow-500 w-3 inline-block"
+            span class="ml-1 mr-5 opacity-100" Features
+          div class="text-xs select-none inline-block relative"
+            span class="border-t-4 border-red-500 w-3 inline-block"
+            span class="ml-1 mr-5 opacity-100" Bugs
+          div class="text-xs select-none inline-block relative"
+            span class="border-t-4 border-gray-500 w-3 inline-block"
+            span class="ml-1 mr-5 opacity-100" Chores
+
+        div class="p-4 pr-0"
+          div class="story-composition-chart h-32 relative"
+            = bar_chart @stories_data[:iterations].map { |i|
+                [
+                  i[:date],
+                  { name: 'Features', data: i[:features] },
+                  { name: 'Bugs', data: i[:bugs] },
+                  { name: 'Chores', data: i[:chores] }
+                ]
+              },
+              stacked: true,
+              library: {
+                colors: ['#E0C85E', '#D87350', '#999999'],
+                axis: {
+                  x: { label: { text: 'Iteration start date', position: 'outer-center' } },
+                  y: { label: { text: 'Stories accepted', position: 'outer-middle' } }
+                }
+              }
+
+    / Story Details section would go here

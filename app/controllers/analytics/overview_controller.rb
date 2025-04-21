@@ -1,21 +1,9 @@
-class AnalyticsController < ApplicationController
+class Analytics::OverviewController < ApplicationController
   before_action :authenticate_user!
   before_action :set_project
-  before_action :calculate_report_data, only: :overview
+  before_action :calculate_report_data
 
-  def overview
-  end
-
-  def velocity
-    # Velocity report specific logic
-  end
-
-  def composition
-    # Composition report specific logic
-  end
-
-  def cycle_time
-    # Cycle time report specific logic
+  def index
   end
 
   private

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_20_151025) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_21_103405) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -148,11 +148,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_20_151025) do
   end
 
   create_table "iterations", force: :cascade do |t|
-    t.date "starts_on"
-    t.date "ends_on"
+    t.date "start_date"
+    t.date "end_date"
     t.integer "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "length_weeks"
     t.index ["project_id"], name: "index_iterations_on_project_id"
   end
 
