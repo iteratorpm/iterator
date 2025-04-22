@@ -7,7 +7,7 @@ RSpec.describe "Projects", type: :request do
   login_user
 
   before do
-    current_user.organizations << organization
+    create :membership, user: current_user, organization: organization, role: :owner
     current_user.update(current_organization_id: organization.id)
   end
 
@@ -34,10 +34,10 @@ RSpec.describe "Projects", type: :request do
     it "initializes project with default values" do
       get new_project_path
       expect(assigns(:project)).to have_attributes(
-        iteration_start_day: 0,
-        time_zone: 0,
-        point_scale: 0,
-        velocity_strategy: 0,
+        iteration_start_day: "monday",
+        time_zone: "Eastern Time (US & Canada)",
+        point_scale: "linear_0123",
+        velocity_scheme: "past_iters_1",
         initial_velocity: 10,
         iteration_length: 1,
         done_iterations_to_show: 4
@@ -56,17 +56,17 @@ RSpec.describe "Projects", type: :request do
     let(:valid_attributes) do
       {
         project: {
-          title: "New Project",
+          name: "New Project",
           description: "Project description",
           organization_id: organization.id,
           public: false,
-          iteration_start_day: 1,
+          iteration_start_day: :tuesday,
           start_date: Date.today,
           time_zone: "UTC",
           iteration_length: 2,
           point_scale: "fibonacci",
           initial_velocity: 8,
-          velocity_strategy: "average"
+          velocity_scheme: "past_iters_2"
         }
       }
     end
@@ -74,7 +74,7 @@ RSpec.describe "Projects", type: :request do
     let(:invalid_attributes) do
       {
         project: {
-          title: "",
+          name: "",
           organization_id: organization.id
         }
       }
@@ -95,7 +95,7 @@ RSpec.describe "Projects", type: :request do
       it "creates project membership for current user as owner" do
         post projects_path, params: valid_attributes
         project = Project.last
-        membership = project.project_memberships.find_by(user: current_user)
+        membership = project.memberships.find_by(user: current_user)
         expect(membership.owner?).to be true
       end
 
@@ -127,11 +127,10 @@ RSpec.describe "Projects", type: :request do
     context "when unauthorized" do
       it "does not allow creating project for organization user doesn't belong to" do
         other_org = create(:organization)
-        expect {
-          post projects_path, params: {
-            project: valid_attributes[:project].merge(organization_id: other_org.id)
-          }
-        }.to raise_error(CanCan::AccessDenied)
+        post projects_path, params: {
+          project: valid_attributes[:project].merge(organization_id: other_org.id)
+        }
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -142,6 +141,17 @@ RSpec.describe "Projects", type: :request do
     it "returns http success" do
       get project_path(project)
       expect(response).to have_http_status(:success)
+    end
+
+    context "when user is org admin" do
+      it "returns http success" do
+        current_user.memberships.destroy_all
+
+        create :membership, user: current_user, organization: organization, role: :admin
+
+        get project_path(project)
+        expect(response).to have_http_status(:success)
+      end
     end
 
     context "when project is public" do
@@ -157,9 +167,9 @@ RSpec.describe "Projects", type: :request do
     context "when unauthorized" do
       it "denies access to users not in organization" do
         other_project = create(:project)
-        expect {
-          get project_path(other_project)
-        }.to raise_error(CanCan::AccessDenied)
+        get project_path(other_project)
+
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -179,11 +189,11 @@ RSpec.describe "Projects", type: :request do
 
     context "when unauthorized" do
       it "denies access to non-owners" do
-        project.project_memberships.create(user: member, role: :member)
+        project.memberships.create(user: member, role: :viewer)
         sign_in member
-        expect {
-          get edit_project_path(project)
-        }.to raise_error(CanCan::AccessDenied)
+        get edit_project_path(project)
+
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -192,10 +202,10 @@ RSpec.describe "Projects", type: :request do
     let(:project) { create(:project, organization: organization) }
     let(:new_attributes) do
       {
-        title: "Updated Project Title",
+        name: "Updated Project Title",
         description: "Updated description",
         iteration_length: 3,
-        point_scale: "linear"
+        point_scale: "tshirt_sizes"
       }
     end
 
@@ -203,7 +213,7 @@ RSpec.describe "Projects", type: :request do
       it "updates the requested project" do
         patch project_path(project), params: { project: new_attributes }
         project.reload
-        expect(project.title).to eq("Updated Project Title")
+        expect(project.name).to eq("Updated Project Title")
         expect(project.description).to eq("Updated description")
         expect(project.iteration_length).to eq(3)
       end
@@ -216,24 +226,23 @@ RSpec.describe "Projects", type: :request do
 
     context "with invalid parameters" do
       it "renders edit template with unprocessable_entity status" do
-        patch project_path(project), params: { project: { title: "" } }
+        patch project_path(project), params: { project: { name: "" } }
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response).to render_template(:edit)
       end
 
       it "loads organizations for the form" do
-        patch project_path(project), params: { project: { title: "" } }
+        patch project_path(project), params: { project: { name: "" } }
         expect(assigns(:organizations)).to eq([organization])
       end
     end
 
     context "when unauthorized" do
       it "denies access to non-owners" do
-        project.project_memberships.create(user: member, role: :member)
+        project.memberships.create(user: member, role: :viewer)
         sign_in member
-        expect {
-          patch project_path(project), params: { project: new_attributes }
-        }.to raise_error(CanCan::AccessDenied)
+        patch project_path(project), params: { project: new_attributes }
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -254,11 +263,10 @@ RSpec.describe "Projects", type: :request do
 
     context "when unauthorized" do
       it "denies access to non-owners" do
-        project.project_memberships.create(user: member, role: :member)
+        project.memberships.create(user: member, role: :member)
         sign_in member
-        expect {
-          delete project_path(project)
-        }.to raise_error(CanCan::AccessDenied)
+        delete project_path(project)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

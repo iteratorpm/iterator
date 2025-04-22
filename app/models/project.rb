@@ -1,12 +1,7 @@
 class Project < ApplicationRecord
   enum :iteration_start_day, {
-    sunday: 0, monday: 1, tuesday: 2, wednesday: 3,
-    thursday: 4, friday: 5, saturday: 6
-  }
-
-  enum :time_zone, {
-    eastern: 0, central: 1, mountain: 2, pacific: 3
-    # ...expand as needed
+    monday: 0, tuesday: 1, wednesday: 2,
+    thursday: 3, friday: 4, saturday: 5, sunday: 6
   }
 
   enum :point_scale, {
@@ -37,6 +32,7 @@ class Project < ApplicationRecord
   has_many :csv_exports, dependent: :destroy
 
   validates :organization, presence: true
+  validates :name, length: { minimum: 1, maximum: 50 }
 
   def releases
     stories.releases

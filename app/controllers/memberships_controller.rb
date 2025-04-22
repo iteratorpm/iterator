@@ -1,10 +1,12 @@
 class MembershipsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_organization
-  load_and_authorize_resource
+  authorize_resource
 
   def index
-    @memberships = @organization.memberships.includes(:user)
+    @q = @organization.memberships.ransack(user_username_or_user_name_or_user_email_cont: params[:q])
+    @memberships = @q.result.includes(:user)
+
     apply_filters
   end
 
@@ -18,7 +20,7 @@ class MembershipsController < ApplicationController
     if user
       # Existing user flow
       @membership = @organization.memberships.build(user: user)
-      if @membership.update(membership_params.except(:email, :name, :initials))
+      if @membership.update(membership_params.except(:email))
         redirect_to organization_memberships_path(@organization), notice: 'Member was successfully added.'
       else
         render :new, alert: @membership.errors.full_messages.join(', ')
@@ -56,7 +58,7 @@ class MembershipsController < ApplicationController
 
   def update
     @membership = @organization.memberships.find(params[:id])
-    if @membership.update(membership_params)
+    if @membership.update(membership_params.except(:email))
       redirect_to organization_memberships_path(@organization), notice: 'Member was successfully updated.'
     else
       render :edit, alert: @membership.errors.full_messages.join(', ')
@@ -99,14 +101,7 @@ class MembershipsController < ApplicationController
     end
 
     if params[:hide_non_collaborators] == '1'
-      @memberships = @memberships.joins(:projects).distinct
-    end
-
-    if params[:search].present?
-      @memberships = @memberships.joins(:user).where(
-        "users.name ILIKE :search OR users.email ILIKE :search",
-        search: "%#{params[:search]}%"
-      )
+      @memberships = @memberships.where.not(role: :member)
     end
   end
 

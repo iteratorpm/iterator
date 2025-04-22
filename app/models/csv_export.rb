@@ -1,7 +1,7 @@
 class CsvExport < ApplicationRecord
   belongs_to :project
 
-  enum :status, {
+  enum :state, {
     queued: 0,
     processing: 1,
     completed: 2,

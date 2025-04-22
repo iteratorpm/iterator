@@ -56,9 +56,9 @@
                     span= "#{project.stories_count} #{'story'.pluralize(project.stories_count)}"
 
                 .flex.space-x-4.text-sm
-                  = link_to "Members", memberships_projects_path(project), class: "text-blue-600 hover:underline"
-                  = link_to "Settings", edit_projects_path(project), class: "text-blue-600 hover:underline"
-                  = link_to "Archive", archive_projects_path(project),
+                  = link_to "Members", project_memberships_path(project), class: "text-blue-600 hover:underline"
+                  = link_to "Settings", edit_project_path(project), class: "text-blue-600 hover:underline"
+                  = link_to "Archive", archive_project_path(project),
                             method: :post,
                             data: { confirm: "Archive #{project.name}?" },
                             class: "text-blue-600 hover:underline"

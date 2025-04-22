@@ -118,7 +118,7 @@ Rails.application.routes.draw do
     post :mark_all_as_read, on: :collection
   end
 
-  resources :notification_settings, only: [:edit, :update, :show] do
+  resources :notification_settings, only: [:edit, :update, :index] do
     post :toggle_mute_project, on: :collection
   end
 

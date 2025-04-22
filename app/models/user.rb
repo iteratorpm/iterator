@@ -1,7 +1,7 @@
 class User < ApplicationRecord
 
   def self.ransackable_attributes(auth_object = nil)
-    %w[name email]
+    %w[name email username]
   end
 
   # Optionally limit associations that can be searched
@@ -76,10 +76,6 @@ class User < ApplicationRecord
   def set_initials_if_blank
     if initials.blank? && name.present?
       self.initials.split.map(&:first).join.upcase
-    end
-
-    if username.blank? && name.present?
-      self.username = name.gsub " ", ""
     end
   end
 end

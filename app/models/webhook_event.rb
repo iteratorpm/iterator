@@ -5,7 +5,7 @@ class WebhookEvent < ApplicationRecord
   enum :event_type, [:push, :pull_request, :issue, :commit_comment, :unknown]
 
   # Store the payload
-  serialize :payload, JSON
+  # serialize :payload, JSON
 
   # For tracking processing attempts
   attribute :attempts, :integer, default: 0

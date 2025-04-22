@@ -21,16 +21,18 @@ class Ability
     cannot [:update, :destroy], Membership, user_id: user.id
 
     # Project creation
-    can :create, Project
-    can :create, Organization
-    can :create, Membership
-    can :create, ProjectMembership
-    can :create, Integration
-    can :create, Webhook
+    can :new, Project
+    can :new, Organization
+    can :new, Membership
+    can :new, ProjectMembership
+    can :new, Integration
+    can :new, Webhook
 
     can :manage, Integration, { user_id: user.id, role: :owner }
 
     # Project-level access
+    can :create, Project, organization: { memberships: { user_id: user.id, role: [:owner, :project_creator, :admin] } }
+
     can :manage, Project, memberships: { user_id: user.id, role: :owner }
     can [:read, :update], Project, memberships: { user_id: user.id, role: :member }
     can :read, Project, memberships: { user_id: user.id, role: :viewer }

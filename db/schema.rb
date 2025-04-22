@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_22_080244) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_22_103251) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -264,7 +264,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_080244) do
     t.boolean "public", default: false
     t.integer "iteration_start_day", default: 0
     t.date "start_date"
-    t.integer "time_zone", default: 0
+    t.string "time_zone"
     t.integer "iteration_length", default: 1
     t.integer "point_scale", default: 0
     t.string "point_scale_custom", default: ""

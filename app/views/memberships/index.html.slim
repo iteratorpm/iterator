@@ -35,7 +35,7 @@
 
       .flex.items-center
         h4.text-sm.font-medium.text-gray-700.mr-2 Filter:
-        = text_field_tag :search, params[:search], placeholder: "Search members", class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm", data: { action: "keyup->members#filter" }
+        = text_field_tag :search, params[:q], placeholder: "Search members", class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm", data: { action: "keyup->members#filter" }
 
     .overflow-x-auto
       table.min-w-full.divide-y.divide-gray-200

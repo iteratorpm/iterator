@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  load_and_authorize_resource
+  load_and_authorize_resource except: [:new, :create]
   before_action :authenticate_user!, only: [:index]
 
   def index
@@ -7,20 +7,25 @@ class ProjectsController < ApplicationController
 
   def new
     @project = Project.new(
-      iteration_start_day: 0,
-      time_zone: 0,
+      iteration_start_day: :monday,
+      time_zone: "Eastern Time (US & Canada)",
       point_scale: 0,
-      velocity_strategy: 0,
+      velocity_scheme: 0,
       initial_velocity: 10,
       iteration_length: 1,
       done_iterations_to_show: 4,
-      organization_id: params[:organization_id]
+      organization_id: params[:organization_id] || current_user.current_organization_id
     )
+
+    authorize! :new, @project
+
     @organizations = current_user.organizations.order(:name)
   end
 
   def create
-    @project.organization_id ||= current_user.current_organization_id
+    @project = Project.new project_params
+
+    authorize! :create, @project
 
     if @project.save
       # Add current user as owner
@@ -28,7 +33,7 @@ class ProjectsController < ApplicationController
 
       redirect_to @project, notice: 'Project was successfully created.'
     else
-      @organizations = current_user.organizations
+      @organizations = current_user.organizations.order(:name)
       render :new, status: :unprocessable_entity
     end
   end
@@ -61,7 +66,7 @@ class ProjectsController < ApplicationController
 
   def project_params
     params.require(:project).permit(
-      :title,
+      :name,
       :description,
       :organization_id,
       :public,
@@ -72,7 +77,7 @@ class ProjectsController < ApplicationController
       :point_scale,
       :point_scale_custom,
       :initial_velocity,
-      :velocity_strategy,
+      :velocity_scheme,
       :done_iterations_to_show,
       :auto_iteration_planning,
       :allow_api_access,
