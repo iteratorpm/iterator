@@ -62,6 +62,7 @@ gem "mission_control-jobs"
 gem 'fast_blank'
 gem 'kramdown'
 gem 'paper_trail'
+gem "cocoon"
 
 group :development, :test do
   gem "amazing_print"
