@@ -55,7 +55,7 @@
 
                 div.flex-1.pl-2
                   div
-                    = link_to "#{story.title} [##{story.id}]", project_story_path(@project, story), class: 'text-blue-600 hover:underline', target: '_blank'
+                    = link_to "#{story.name} [##{story.id}]", project_story_path(@project, story), class: 'text-blue-600 hover:underline', target: '_blank'
 
                   - story.activities.order(created_at: :desc).each do |activity|
                     div.relative.pl-4.mt-1

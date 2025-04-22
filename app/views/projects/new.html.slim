@@ -5,8 +5,8 @@
     = form_with model: @project, local: true, data: { controller: 'organizations', action: 'organizations#toggleNewOrganization' } do |f|
       / Project Name Field
       .mb-6
-        = f.label :title, "Project Name", class: "block mb-2 text-sm font-medium text-gray-700"
-        = f.text_field :title, class: "w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500", placeholder: "Enter a name for your project", required: true
+        = f.label :name, "Project Name", class: "block mb-2 text-sm font-medium text-gray-700"
+        = f.text_field :name, class: "w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500", placeholder: "Enter a name for your project", required: true
 
       / Organization Selector
       .mb-6 data-organizations-target="organizationSection"

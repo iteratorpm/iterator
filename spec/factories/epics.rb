@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :epic do
-    title { "MyString" }
+    name { "MyString" }
     description { "MyText" }
     project { nil }
     external_link { "MyString" }

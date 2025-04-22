@@ -1,7 +1,25 @@
 FactoryBot.define do
   factory :iteration do
-    starts_on { "2025-04-15" }
-    ends_on { "2025-04-15" }
-    project { nil }
+    project
+    sequence(:number)
+    start_date { Date.current.beginning_of_week }
+    end_date { start_date + 6.days }
+    velocity { project.velocity }
+
+    trait :current do
+      start_date { Date.current.beginning_of_week }
+      end_date { start_date + 6.days }
+      current { true }
+    end
+
+    trait :past do
+      start_date { Date.current.beginning_of_week - 2.weeks }
+      end_date { start_date + 6.days }
+    end
+
+    trait :future do
+      start_date { Date.current.beginning_of_week + 1.week }
+      end_date { start_date + 6.days }
+    end
   end
 end

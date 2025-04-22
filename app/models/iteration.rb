@@ -33,7 +33,7 @@ class Iteration < ApplicationRecord
 
       unless iteration
         # Create a new current iteration if none exists
-        iteration = project.iterations.create_current_iteration
+        iteration = project.create_current_iteration
       end
     end
 

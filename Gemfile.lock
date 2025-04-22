@@ -308,6 +308,9 @@ GEM
     phlex-rails (2.2.0)
       phlex (~> 2.2.1)
       railties (>= 7.1, < 9)
+    positioning (0.4.5)
+      activerecord (>= 6.1)
+      activesupport (>= 6.1)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -607,6 +610,7 @@ DEPENDENCIES
   mission_control-jobs
   oj
   paper_trail
+  positioning
   propshaft
   pry
   pry-nav

@@ -37,7 +37,7 @@ Rails.application.routes.draw do
       post :archive
     end
 
-    resources :panels, module: "projects", only: [:show] do
+    resources :panels, module: "projects", only: [:show], param: :panel do
     end
 
     resources :csv_exports, path: "export", module: "projects", only: [:index, :create] do

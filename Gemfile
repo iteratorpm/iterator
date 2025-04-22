@@ -55,6 +55,7 @@ gem 'redcarpet'
 gem 'validate_url'
 gem 'discard', '~> 1.4'
 gem 'groupdate'
+gem 'positioning'
 
 gem 'data_migrate'
 

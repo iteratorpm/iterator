@@ -29,7 +29,7 @@ class Story < ApplicationRecord
   has_many :attachments, as: :attachable, dependent: :destroy
 
   # Validations
-  validates :title, presence: true
+  validates :name, presence: true
   validates :story_type, presence: true
   validates :state, presence: true
   validates :priority, presence: true

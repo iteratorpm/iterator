@@ -148,7 +148,7 @@ class Analytics::IterationsController < ApplicationController
     iteration&.stories&.delivered&.map do |story|
       {
         id: story.id,
-        title: story.title,
+        name: story.name,
         points: story.points,
         owner: story.owner_initials
       }
@@ -159,7 +159,7 @@ class Analytics::IterationsController < ApplicationController
     iteration&.stories&.finished&.map do |story|
       {
         id: story.id,
-        title: story.title,
+        name: story.name,
         points: story.points,
         owner: story.owner_initials
       }
@@ -170,7 +170,7 @@ class Analytics::IterationsController < ApplicationController
     iteration&.stories&.started&.map do |story|
       {
         id: story.id,
-        title: story.title,
+        name: story.name,
         points: story.points,
         owner: story.owner_initials,
         labels: story.labels.pluck(:name)

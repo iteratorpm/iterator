@@ -30,7 +30,7 @@ class CsvExportJob < ApplicationJob
   def generate_csv(export)
     project = export.project
     CSV.generate do |csv|
-      csv << ["Id", "Title", "Labels", "Type", "Estimate", "Current State", "Created at", "Description"]
+      csv << ["Id", "Name", "Labels", "Type", "Estimate", "Current State", "Created at", "Description"]
 
       if export.options.include?('include_done_stories')
         project.stories.where(state: 'accepted').each do |story|
@@ -54,7 +54,7 @@ class CsvExportJob < ApplicationJob
         project.epics.each do |epic|
           csv << [
             epic.id,
-            epic.title,
+            epic.name,
             epic.label,
             'epic',
             nil,
@@ -70,7 +70,7 @@ class CsvExportJob < ApplicationJob
   def story_to_csv_row(story)
     [
       story.id,
-      story.title,
+      story.name,
       story.labels.pluck(:name).join(','),
       story.story_type,
       story.estimate,
