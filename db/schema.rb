@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_21_171543) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_22_054301) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -82,7 +82,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_171543) do
     t.integer "project_id", null: false
     t.string "filename"
     t.integer "filesize"
-    t.integer "status", default: 0, null: false
+    t.integer "state", default: 0, null: false
     t.text "options"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -201,9 +201,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_171543) do
     t.integer "blockers", default: 1
     t.integer "comment_reactions", default: 1
     t.integer "reviews", default: 1
-    t.integer "in_app_status", default: 1
-    t.integer "email_status", default: 1
-    t.integer "mute_status", default: 0
+    t.integer "in_app_state", default: 1
+    t.integer "email_state", default: 1
+    t.integer "mute_state", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_notification_settings_on_project_id"
@@ -293,7 +293,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_171543) do
   end
 
   create_table "reviews", force: :cascade do |t|
-    t.integer "status", default: 0
+    t.integer "state", default: 0
     t.text "comment"
     t.integer "story_id", null: false
     t.integer "reviewer_id", null: false
@@ -307,9 +307,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_171543) do
     t.string "name", null: false
     t.text "description"
     t.integer "story_type", default: 0
-    t.integer "status", default: 0
+    t.integer "state", default: 0
     t.integer "priority", default: 2
-    t.integer "points"
+    t.integer "estimate"
     t.integer "project_id", null: false
     t.integer "requester_id"
     t.integer "epic_id"
@@ -328,7 +328,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_171543) do
     t.index ["priority"], name: "index_stories_on_priority"
     t.index ["project_id"], name: "index_stories_on_project_id"
     t.index ["requester_id"], name: "index_stories_on_requester_id"
-    t.index ["status"], name: "index_stories_on_status"
+    t.index ["state"], name: "index_stories_on_state"
     t.index ["story_type"], name: "index_stories_on_story_type"
   end
 
@@ -410,7 +410,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_171543) do
 
   create_table "webhook_events", force: :cascade do |t|
     t.integer "integration_id", null: false
-    t.integer "status", default: 0
+    t.integer "state", default: 0
     t.integer "event_type", default: 0
     t.json "payload"
     t.integer "attempts", default: 0
