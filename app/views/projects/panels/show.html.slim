@@ -1,0 +1,30 @@
+- panel_id = "#{@panel_type}_#{@project.id}"
+.panel.w-64.flex-shrink-0.border-r.border-gray-200.flex.flex-col.h-full[data-panel-id=panel_id data-controller="panel" data-panel-type=@panel_type]
+  header.bg-gray-800.text-white.p-2.flex.items-center.justify-between
+    h2.font-medium = @panel_config[:title]
+    .flex.items-center
+      - if @panel_type == 'current'
+        button.flex.items-center.text-xs.bg-gray-700.px-2.py-1.rounded.mr-2
+          = inline_svg_tag 'icons/checkmark'
+          span 10
+      button.flex.items-center.text-xs.bg-blue-500.px-2.py-1.rounded
+        = inline_svg_tag 'icons/plus'
+        span = @panel_type == 'epics' ? 'Add Epic' : 'Add Story'
+
+  section.flex-1.overflow-y-auto.p-2
+    - if @panel_type == 'icebox'
+      = render 'projects/story', story: { id: 152382132, name: 'Add controller support', estimate: 3, labels: ['ui'], state: 'unscheduled' }
+
+    - if @panel_config[:render_iterations]
+      - recent_iterations.each do |iteration|
+        = render 'projects/iteration', iteration: iteration
+
+    - if @panel_config[:render_iteration]
+      = render 'projects/iteration', iteration: current_iteration
+
+    - if @panel_type == 'epics'
+      .item.p-2.text-sm.text-center
+        a.text-blue-500 Show 7 done epics
+
+    - if @stories&.any?
+      = render partial: 'projects/story', collection: @stories

@@ -5,7 +5,7 @@ class Story < ApplicationRecord
 
   # Enums
   enum :story_type, { feature: 0, bug: 1, chore: 2, release: 3 }
-  enum :status, { unstarted: 0, started: 1, finished: 2, delivered: 3, accepted: 4, rejected: 5 }
+  enum :state, { unstarted: 0, started: 1, finished: 2, delivered: 3, accepted: 4, rejected: 5 }
   enum :priority, { p1_highest: 0, p2_high: 1, p3_medium: 2, p4_low: 3 }
 
   # Associations
@@ -31,13 +31,13 @@ class Story < ApplicationRecord
   # Validations
   validates :title, presence: true
   validates :story_type, presence: true
-  validates :status, presence: true
+  validates :state, presence: true
   validates :priority, presence: true
   validates :project, presence: true
   validates :requester, presence: true
 
   # Scopes for common queries (performance optimization)
-  scope :by_status, ->(status) { where(status: status) }
+  scope :by_state, ->(state) { where(state: state) }
   scope :by_story_type, ->(type) { where(story_type: type) }
   scope :by_priority, ->(priority) { where(priority: priority) }
   scope :by_owner, ->(user_id) { joins(:story_owners).where(story_owners: { user_id: user_id }) }
@@ -47,12 +47,29 @@ class Story < ApplicationRecord
   scope :features, -> { where(story_type: :feature) }
   scope :bugs, -> { where(story_type: :bug) }
   scope :chores, -> { where(story_type: :chore) }
-  scope :accepted, -> { where(status: :accepted) }
+  scope :accepted, -> { where(state: :accepted) }
   scope :created_in_current_iteration, ->(project) {
     where(created_at: project.current_iteration.start_date..project.current_iteration.end_date)
   }
+  scope :backlog, -> { where(iteration: nil) }
+  scope :unstarted, -> { where(state: 'unstarted') }
+  scope :started, -> { where(state: 'started') }
+  scope :accepted, -> { where(state: 'accepted') }
+  scope :done, -> { where(state: 'done') }
+  scope :estimated, -> { where.not(estimate: nil) }
+  scope :unestimated, -> { where(estimate: nil) }
+  scope :ranked, -> { order(priority: :asc) }
 
   after_update :notify_if_delivered, if: :saved_change_to_state?
+  after_save :update_iteration, if: -> { saved_change_to_state? || saved_change_to_estimate? }
+
+  def estimated?
+    estimate.present?
+  end
+
+  def unestimated?
+    estimate.blank?
+  end
 
   # Methods
   def add_owner(user)
@@ -87,7 +104,7 @@ class Story < ApplicationRecord
 
   private
   def notify_if_delivered
-    if delivered? && status_before_last_save != 'delivered'
+    if delivered? && state_before_last_save != 'delivered'
       # Notify requester
       if requester && requester != user
         NotificationService.notify(requester, :story_delivered, self)
@@ -100,25 +117,17 @@ class Story < ApplicationRecord
     end
   end
 
-  # TODO: add release methods
-  # def total_points
-  #   stories.sum(:estimate)
-  # end
-  #
-  # def completed_points
-  #   stories.where(state: 'accepted').sum(:estimate)
-  # end
-  #
-  # def points_remaining
-  #   total_points - completed_points
-  # end
-  #
-  # def completion_percentage
-  #   return 0 if total_points.zero?
-  #   ((completed_points.to_f / total_points) * 100).round
-  # end
-  #
-  # def progress_width
-  #   completion_percentage.clamp(0, 100)
-  # end
+  def update_iteration
+    if started? && iteration.nil?
+      # When a story is started, move it to current iteration
+      update(iteration: project.iterations.current.first)
+    elsif accepted? && iteration&.current?
+      # When current iteration ends, these will be moved to done
+    end
+
+    # Recalculate iterations if estimate changed
+    if saved_change_to_estimate? && project.automatic_planning?
+      project.recalculate_iterations
+    end
+  end
 end

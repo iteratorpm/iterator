@@ -6,5 +6,7 @@
 .main.flex.h-screen
   = yield :sidebar
 
-  article.main.flex-1.overflow-hidden
-    = render 'projects/panels', project: @project
+  .main.flex-1.overflow-hidden
+    section.panels.flex.overflow-x-auto.h-full data-controller="project"
+      - %w[icebox current done].each do |panel|
+        = turbo_frame_tag "panel_#{panel}", src: project_panel_path(@project, panel: panel), loading: :lazy

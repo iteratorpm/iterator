@@ -68,6 +68,49 @@ class Project < ApplicationRecord
     iterations.current.first
   end
 
+  def create_current_iteration
+    iterations.create_current_iteration
+  end
+
+  # Recalculates all future iterations based on current velocity
+  def recalculate_iterations
+    return unless automatic_planning?
+
+    current_iteration = iterations.current.first
+    return unless current_iteration
+
+    # Get all unstarted stories not in current iteration
+    remaining_stories = stories.unstarted.where.not(iteration: current_iteration).ranked
+
+    # Clear all future iterations
+    iterations.backlog.destroy_all
+
+    # Create new iterations and assign stories
+    iteration = current_iteration
+    while remaining_stories.any?
+      iteration = iterations.create(
+        start_date: iteration.end_date + 1.day,
+        end_date: iteration.end_date + (iteration_length || 1).weeks
+      )
+
+      # Fill the iteration with stories up to velocity
+      points_remaining = velocity || 0
+
+      remaining_stories.each do |story|
+        break if points_remaining <= 0
+
+        if story.estimate && story.estimate <= points_remaining
+          story.update(iteration: iteration)
+          points_remaining -= story.estimate
+        elsif story.unestimated?
+          story.update(iteration: iteration)
+        end
+      end
+
+      remaining_stories = stories.unstarted.where.not(iteration: [current_iteration, iteration]).ranked
+    end
+  end
+
   def current_iteration_points
     current_iteration&.points_accepted || 0
   end
