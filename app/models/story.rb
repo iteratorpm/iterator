@@ -4,9 +4,16 @@ class Story < ApplicationRecord
 
   # Enums
   enum :story_type, { feature: 0, bug: 1, chore: 2, release: 3 }
-  enum :state, { unstarted: 0, started: 1, finished: 2, delivered: 3, accepted: 4, rejected: 5 }
+  enum :state, {
+    unscheduled: 0,  # Icebox
+    unstarted: 1,    # Backlog
+    started: 2,      # Current
+    finished: 3,     # Current
+    delivered: 4,    # Current
+    accepted: 5,     # Done
+    rejected: 6      # Current
+  }
   enum :priority, { p1_highest: 0, p2_high: 1, p3_medium: 2, p4_low: 3 }
-  enum :panel, { icebox: 0, backlog: 1, current: 2, done: 3 }
 
   # Associations
   belongs_to :project, counter_cache: true
@@ -52,15 +59,15 @@ class Story < ApplicationRecord
     where(created_at: project.current_iteration.start_date..project.current_iteration.end_date)
   }
 
-  # panels
-  scope :done, -> { where(panel: 'done') }
-  scope :backlog, -> { where(panel: "backlog") }
-  scope :icebox, -> { where(panel: "icebox") }
-  scope :current, -> { where(panel: "current") }
+  scope :done, -> { where(state: :accepted) }
+  scope :backlog, -> { where(state: :unstarted) }
+  scope :icebox, -> { where(state: :unscheduled) }
+  scope :current, -> { where(state: [:started, :finished, :delivered, :rejected]) }
 
-  scope :unstarted, -> { where(state: 'unstarted') }
-  scope :started, -> { where(state: 'started') }
-  scope :accepted, -> { where(state: 'accepted') }
+  scope :unstarted, -> { where(state: :unstarted) }
+  scope :started, -> { where(state: :started) }
+  scope :rejected, -> { where(state: :rejected) }
+  scope :accepted, -> { where(state: :accepted) }
   scope :estimated, -> { where.not(estimate: nil) }
   scope :unestimated, -> { where(estimate: nil) }
   scope :ranked, -> { order(position: :asc) }

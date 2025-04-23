@@ -19,6 +19,9 @@ class Project < ApplicationRecord
     icebox_only: 0, all_panels: 1
   }
 
+  scope :active, -> { where(archived: false) }
+  scope :archived, -> { where(archived: true) }
+
   belongs_to :organization
   has_many :memberships, class_name: "ProjectMembership", dependent: :destroy
   has_many :users, through: :memberships
@@ -93,42 +96,24 @@ class Project < ApplicationRecord
     end
   end
 
-  # Recalculates all future iterations based on current velocity
-  def recalculate_iterations
-    return unless automatic_planning?
+  def calculated_velocity
+    # Calculate based on last N completed iterations (velocity_strategy)
+    completed_iterations = iterations.done.limit(velocity_strategy)
+    return initial_velocity if completed_iterations.empty?
 
-    current_iteration = iterations.current.first
-    return unless current_iteration
+    total_normalized_points = completed_iterations.sum do |i|
+      i.points_accepted / (i.team_strength / 100.0)
+    end
 
-    # Get all unstarted stories not in current iteration
-    remaining_stories = stories.unstarted.where.not(iteration: current_iteration).ranked
+    total_weeks = completed_iterations.sum(&:length_in_weeks)
+    (total_normalized_points / total_weeks * iteration_length).floor
+  end
 
-    # Clear all future iterations
-    iterations.backlog.destroy_all
-
-    # Create new iterations and assign stories
-    iteration = current_iteration
-    while remaining_stories.any?
-      iteration = iterations.create(
-        start_date: iteration.end_date + 1.day,
-        end_date: iteration.end_date + (iteration_length || 1).weeks
-      )
-
-      # Fill the iteration with stories up to velocity
-      points_remaining = velocity || initial_velocity
-
-      remaining_stories.each do |story|
-        break if points_remaining <= 0
-
-        if story.estimate && story.estimate <= points_remaining
-          story.update(iteration: iteration)
-          points_remaining -= story.estimate
-        elsif story.unestimated?
-          story.update(iteration: iteration)
-        end
-      end
-
-      remaining_stories = stories.unstarted.where.not(iteration: [current_iteration, iteration]).ranked
+ def recalculate_iterations
+    # Re-plan all future iterations based on current backlog priority
+    transaction do
+      iterations.backlog.destroy_all
+      plan_future_iterations
     end
   end
 
@@ -220,4 +205,39 @@ class Project < ApplicationRecord
   def set_velocity
     self.velocity = initial_velocity || 10
   end
+
+  def plan_future_iterations
+    Time.use_zone(time_zone) do
+      velocity = calculated_velocity
+      remaining_stories = stories.backlog.ranked.estimated
+
+      current_date = Time.zone.today
+      iteration_number = iterations.maximum(:number).to_i + 1
+
+      while remaining_stories.any?
+        # Create new iteration
+        iteration = iterations.create!(
+          start_date: current_date,
+          end_date: current_date + (iteration_length.weeks - 1.day),
+          number: iteration_number,
+          velocity: velocity
+        )
+
+        # Fill iteration with stories up to velocity
+        points_remaining = velocity
+        remaining_stories.each do |story|
+          break if points_remaining <= 0
+          if story.estimate <= points_remaining
+            story.update!(iteration: iteration)
+            points_remaining -= story.estimate
+          end
+        end
+
+        current_date += iteration_length.weeks
+        iteration_number += 1
+        remaining_stories = stories.backlog.ranked.estimated
+      end
+    end
+  end
+
 end

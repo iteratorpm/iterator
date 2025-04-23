@@ -21,7 +21,7 @@ class Iteration < ApplicationRecord
   validates :start_date, presence: true
   validates :end_date, presence: true
   validates :number, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :velocity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :velocity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
 
   validate :end_date_after_start_date
 
@@ -45,17 +45,21 @@ class Iteration < ApplicationRecord
     end
   end
 
-  def completed_points
+  def points_accepted
     stories.where(state: 'accepted').sum(:estimate)
   end
 
+  def length_in_weeks
+    ((end_date - start_date).to_i + 1) / 7
+  end
+
   def points_remaining
-    total_points - completed_points
+    total_points - points_accepted
   end
 
   def completion_percentage
     return 0 if total_points.zero?
-    ((completed_points.to_f / total_points) * 100).round
+    ((points_accepted.to_f / total_points) * 100).round
   end
 
   def progress_width
@@ -69,41 +73,53 @@ class Iteration < ApplicationRecord
 
   # Check if the iteration is full based on project velocity
   def full?
+    return false if velocity.nil?
+
     total_points >= velocity
+  end
+
+  def calculated_velocity
+    update! velocity: project.calculated_velocity
   end
 
   # Move stories from backlog to this iteration until it's full
   def fill_from_backlog
+    if self.current
+      # fill everything that has started
+      available_stories = project.stories
+        .current
+
+      available_stories.each do |story|
+        story.update(iteration: self)
+      end
+
+      return
+    end
+
     return if full? || !project.automatic_planning?
 
     # Get unstarted stories from backlog, ordered by priority
-    available_stories = project.stories.backlog.unstarted.ranked
+    available_stories = project.stories
+                                .backlog
+                                .ranked
 
     available_stories.each do |story|
       break if full?
-      next unless story.estimated? # Skip unestimated stories unless they're bugs/chores
+      next if !story.estimated? # Skip unestimated stories unless they're bugs/chores
 
       story.update(iteration: self)
     end
 
     # Allow unestimated bugs/chores to be added even if iteration is full
-    unless total_points >= project.velocity
+    unless total_points >= velocity
       available_stories.unestimated.each do |story|
         story.update(iteration: self)
       end
     end
   end
 
-  # Move accepted stories to done when iteration ends
   def complete!
-    return unless end_date <= Date.current
-
-    transaction do
-      stories.accepted.each do |story|
-        story.update(iteration: nil, state: 'done')
-      end
-      update(current: false)
-    end
+    update!(current: false)
   end
 
   def points_accepted

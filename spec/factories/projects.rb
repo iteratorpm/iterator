@@ -6,6 +6,8 @@ FactoryBot.define do
     iteration_start_day { 0 }
     time_zone { "Eastern Time (US & Canada)" }
     automatic_planning { true }
+    velocity { 10 }
+    initial_velocity { 10 }
 
     trait :with_members do
       after(:create) do |project|

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_23_081955) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_23_135524) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -328,11 +328,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_23_081955) do
     t.date "deadline"
     t.date "completion_date"
     t.integer "position", null: false
-    t.integer "panel", default: 0, null: false
     t.index ["discarded_at"], name: "index_stories_on_discarded_at"
     t.index ["epic_id"], name: "index_stories_on_epic_id"
     t.index ["iteration_id"], name: "index_stories_on_iteration_id"
-    t.index ["panel"], name: "index_stories_on_panel"
     t.index ["priority"], name: "index_stories_on_priority"
     t.index ["project_id", "position"], name: "index_stories_on_project_id_and_position", unique: true
     t.index ["project_id"], name: "index_stories_on_project_id"

@@ -4,7 +4,7 @@ FactoryBot.define do
     sequence(:number)
     start_date { Date.current.beginning_of_week }
     end_date { start_date + 6.days }
-    velocity { project.velocity }
+    velocity { 10 }
 
     trait :blank do
       start_date { nil }

@@ -13,26 +13,24 @@ FactoryBot.define do
     end
 
     trait :done do
-      panel { :done }
       state { "accepted" }
       accepted_at { 1.week.ago }
       association :iteration, factory: [:iteration, :past]
     end
 
     trait :current do
-      panel { :current }
+      state { :started }
       association :iteration, factory: [:iteration, :current]
     end
 
     trait :backlog do
-      panel { :backlog }
+      state { :unstarted }
       association :iteration, factory: [:iteration, :future]
     end
 
     trait :icebox do
-      panel { :ciebox }
+      state { :unscheduled }
       iteration { nil }
-      state { "unstarted" }
     end
 
     trait :estimated do

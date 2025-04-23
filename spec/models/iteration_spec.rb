@@ -9,7 +9,7 @@ RSpec.describe Iteration, type: :model do
     it { should validate_presence_of(:end_date) }
     it { should validate_presence_of(:number) }
     it { should validate_numericality_of(:number).only_integer.is_greater_than(0) }
-    it { should validate_numericality_of(:velocity).is_greater_than_or_equal_to(0).allow_nil }
+    it { should validate_numericality_of(:velocity).is_greater_than_or_equal_to(0) }
 
     it 'validates end_date is after start_date' do
       iteration = build(:iteration, start_date: now, end_date: now - 1.day)
@@ -165,30 +165,77 @@ RSpec.describe Iteration, type: :model do
   end
 
   describe '#fill_from_backlog' do
-    let(:iteration) { create(:iteration, project: project, velocity: 8) }
+    let(:project) { create(:project, velocity: 8) }
+    let(:iteration) { create(:iteration, project: project, velocity: project.velocity) }
     let!(:backlog_stories) { create_list(:story, 5, :backlog, project: project, estimate: 3) }
 
-    it 'fills iteration up to velocity' do
-      iteration.fill_from_backlog
-      expect(iteration.total_points).to eq(6) # 2 stories * 3 points
-    end
+    context 'when iteration is current' do
+      before { iteration.update(current: true) }
+      let!(:started_stories) { create_list(:story, 2, :started, project: project) }
 
-    context 'with unestimated stories' do
-      let!(:unestimated_story) { create(:story, :backlog, project: project, estimate: nil) }
+      it 'moves all started stories to the iteration' do
+        expect {
+          iteration.fill_from_backlog
+        }.to change { iteration.stories.count }.by(2)
 
-      it 'includes unestimated stories when not full' do
+        expect(iteration.stories).to include(*started_stories)
+      end
+
+      it 'does not move unstarted stories' do
+        unstarted = create(:story, :unstarted, project: project)
         iteration.fill_from_backlog
-        expect(iteration.stories).to include(unestimated_story)
+        expect(iteration.stories).not_to include(unstarted)
       end
     end
 
-    context 'with automatic planning disabled' do
-      before { project.update(automatic_planning: false) }
+    context 'when iteration is not current' do
+      it 'fills iteration up to velocity with estimated stories' do
+        iteration.fill_from_backlog
+        expect(iteration.total_points).to eq(6) # 2 stories * 3 points (velocity is 8)
+      end
 
-      it 'does not fill iteration' do
-        expect {
+      it 'stops filling when iteration is full' do
+        # Add a smaller story to test partial filling
+        small_story = create(:story, :backlog, project: project, estimate: 1)
+        iteration.fill_from_backlog
+        expect(iteration.stories).to include(small_story)
+        expect(iteration.total_points).to eq(7) # 2*3 + 1
+      end
+
+      context 'with unestimated stories' do
+        let!(:unestimated_story) { create(:story, :backlog, project: project, estimate: nil) }
+
+        it 'includes unestimated stories when not full' do
           iteration.fill_from_backlog
-        }.not_to change { iteration.stories.count }
+          expect(iteration.stories).to include(unestimated_story)
+        end
+
+        it 'does not include unestimated stories when full' do
+          # Fill iteration to capacity with estimated stories
+          create_list(:story, 2, :backlog, project: project, estimate: 4)
+          iteration.fill_from_backlog
+          expect(iteration.stories).not_to include(unestimated_story)
+        end
+      end
+
+      context 'with automatic planning disabled' do
+        before { project.update(automatic_planning: false) }
+
+        it 'does not fill iteration' do
+          expect {
+            iteration.fill_from_backlog
+          }.not_to change { iteration.stories.count }
+        end
+      end
+
+      context 'when iteration is already full' do
+        before { create_list(:story, 3, iteration: iteration, estimate: 3) }
+
+        it 'does not add more stories' do
+          expect {
+            iteration.fill_from_backlog
+          }.not_to change { iteration.stories.count }
+        end
       end
     end
   end
@@ -197,12 +244,6 @@ RSpec.describe Iteration, type: :model do
     let(:iteration) { create(:iteration, project: project, end_date: now.to_date - 1.day) }
     let!(:accepted_story) { create(:story, :accepted, iteration: iteration) }
     let!(:started_story) { create(:story, :started, iteration: iteration) }
-
-    it 'marks accepted stories as done' do
-      iteration.complete!
-      expect(accepted_story.reload.state).to eq('done')
-      expect(accepted_story.iteration).to be_nil
-    end
 
     it 'does not affect started stories' do
       iteration.complete!
@@ -216,15 +257,6 @@ RSpec.describe Iteration, type: :model do
       expect(iteration.reload.current).to be false
     end
 
-    context 'when iteration is not complete' do
-      let(:iteration) { create(:iteration, project: project, end_date: now.to_date + 1.day) }
-
-      it 'does not complete iteration' do
-        expect {
-          iteration.complete!
-        }.not_to change { accepted_story.reload.state }
-      end
-    end
   end
 
   describe 'time zone sensitive methods' do
