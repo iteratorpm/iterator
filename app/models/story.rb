@@ -73,7 +73,6 @@ class Story < ApplicationRecord
   scope :ranked, -> { order(position: :asc) }
 
   after_update :notify_if_delivered, if: :saved_change_to_state?
-  after_save :update_iteration, if: -> { saved_change_to_state? || saved_change_to_estimate? }
 
   def estimated?
     estimate.present?
@@ -129,17 +128,4 @@ class Story < ApplicationRecord
     end
   end
 
-  def update_iteration
-    if started? && iteration.nil?
-      # When a story is started, move it to current iteration
-      update(iteration: project.iterations.current.first)
-    elsif accepted? && iteration&.current?
-      # When current iteration ends, these will be moved to done
-    end
-
-    # Recalculate iterations if estimate changed
-    if saved_change_to_estimate? && project.automatic_planning?
-      project.recalculate_iterations
-    end
-  end
 end

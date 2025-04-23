@@ -15,15 +15,17 @@ FactoryBot.define do
     trait :current do
       start_date { Date.current.beginning_of_week }
       end_date { start_date + 6.days }
-      current { true }
+      state { :current }
     end
 
     trait :past do
+      state { :done }
       start_date { Date.current.beginning_of_week - 2.weeks }
       end_date { start_date + 6.days }
     end
 
     trait :future do
+      state { :backlog }
       start_date { Date.current.beginning_of_week + 1.week }
       end_date { start_date + 6.days }
     end

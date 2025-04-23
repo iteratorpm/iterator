@@ -1,17 +1,14 @@
 class Iteration < ApplicationRecord
-  scope :current, -> {
-    now = Time.current
-    where("start_date <= ? AND end_date >= ?", now, now)
+
+  enum :state, {
+    backlog: 0,
+    current: 1,
+    done: 2
   }
 
-  scope :past, -> { completed.order(start_date: :desc) }
-  scope :in_range, ->(start_date, end_date) {
-    where("start_date >= ? AND end_date <= ?", start_date, end_date)
-  }
-
-  scope :current, -> { where(current: true) }
-  scope :backlog, -> { where("start_date > ?", Date.current).order(:start_date) }
-  scope :done, -> { where("end_date < ?", Date.current).order(start_date: :desc) }
+  scope :current, -> { where(state: :current) }
+  scope :backlog, -> { where(state: :backlog).order(number: :asc) }
+  scope :done, -> { where(state: :done).order(number: :asc) }
   scope :for_date, ->(date) { where("start_date <= ? AND end_date >= ?", date, date) }
 
   belongs_to :project
@@ -78,79 +75,20 @@ class Iteration < ApplicationRecord
     total_points >= velocity
   end
 
-  def calculated_velocity
-    update! velocity: project.calculated_velocity
-  end
-
-  # Move stories from backlog to this iteration until it's full
-  def fill_from_backlog
-    if self.current
-      # fill everything that has started
-      available_stories = project.stories
-        .current
-
-      available_stories.each do |story|
-        story.update(iteration: self)
-      end
-
-      return
-    end
-
-    return if full? || !project.automatic_planning?
-
-    # Get unstarted stories from backlog, ordered by priority
-    available_stories = project.stories
-                                .backlog
-                                .ranked
-
-    available_stories.each do |story|
-      break if full?
-      next if !story.estimated? # Skip unestimated stories unless they're bugs/chores
-
-      story.update(iteration: self)
-    end
-
-    # Allow unestimated bugs/chores to be added even if iteration is full
-    unless total_points >= velocity
-      available_stories.unestimated.each do |story|
-        story.update(iteration: self)
-      end
-    end
-  end
-
   def complete!
-    update!(current: false)
+    update!(state: :done)
   end
 
   def points_accepted
-    stories.accepted.sum(:points)
+    stories.accepted.sum(:estimate)
   end
 
   def rejection_rate
-    completed_stories = stories.where(status: ['accepted', 'rejected'])
+    completed_stories = stories.where(state: ['accepted', 'rejected'])
     return 0.0 if completed_stories.empty?
 
-    rejected_count = completed_stories.where(status: 'rejected').count
+    rejected_count = completed_stories.where(state: 'rejected').count
     (rejected_count.to_f / completed_stories.count * 100).round(1)
-  end
-
-  def current?(project)
-    Time.use_zone(project.time_zone) do
-      now = Time.current
-      start_date <= now && end_date >= now
-    end
-  end
-
-  def past?(project)
-    Time.use_zone(project.time_zone) do
-      end_date < Time.current
-    end
-  end
-
-  def future?(project)
-    Time.use_zone(project.time_zone) do
-      start_date > Time.current
-    end
   end
 
   def duration
@@ -175,7 +113,7 @@ class Iteration < ApplicationRecord
 
   def display_name
     Time.use_zone(project.time_zone) do
-      if current?(project)
+      if current?
         "#{start_date.in_time_zone.strftime('%b %d')} – #{end_date.in_time_zone.strftime('%b %d')} (current)"
       else
         "#{start_date.in_time_zone.strftime('%b %d')} – #{end_date.in_time_zone.strftime('%b %d')} (##{number})"

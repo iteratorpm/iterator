@@ -6,7 +6,7 @@
       - if @panel_type == 'current' && @project.velocity.present?
         button.flex.items-center.text-xs.bg-gray-700.px-2.py-1.rounded.mr-2
           = inline_svg_tag 'icons/checkmark'
-          span = "#{current_iteration_data[:points]}/#{@project.velocity}"
+          span = "#{@current_iteration_data[:points]}/#{@project.velocity}"
       button.flex.items-center.text-xs.bg-blue-500.px-2.py-1.rounded
         = inline_svg_tag 'icons/plus'
         span = @panel_type == 'epics' ? 'Add Epic' : 'Add Story'
@@ -26,9 +26,9 @@
       - if @panel_type.in?(%w[current current_backlog backlog])
         .iteration.mb-4
           .iteration-header.text-xs.text-gray-500.font-medium.mb-2
-            - if current_iteration_data
-              = "Iteration #{current_iteration_data[:number]} (#{current_iteration_data[:start_date]} - #{current_iteration_data[:end_date]})"
-              span.ml-2 = "#{current_iteration_data[:points]}/#{current_iteration_data[:velocity]} points"
+            - if @current_iteration_data
+              = "Iteration #{@current_iteration_data[:number]} (#{@current_iteration_data[:start_date]} - #{@current_iteration_data[:end_date]})"
+              span.ml-2 = "#{@current_iteration_data[:points]}/#{@current_iteration_data[:velocity]} points"
             - else
               = "No current iteration"
           - if @stories&.any?

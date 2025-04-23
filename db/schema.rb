@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_23_135524) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_23_165253) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -156,9 +156,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_23_135524) do
     t.integer "length_weeks"
     t.integer "number", default: 0, null: false
     t.integer "velocity"
-    t.boolean "current", default: false, null: false
     t.integer "team_strength", default: 100, null: false
+    t.integer "state", default: 0, null: false
+    t.index ["number"], name: "index_iterations_on_number"
     t.index ["project_id"], name: "index_iterations_on_project_id"
+    t.index ["state"], name: "index_iterations_on_state"
   end
 
   create_table "labels", force: :cascade do |t|

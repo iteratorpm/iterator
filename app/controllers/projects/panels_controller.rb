@@ -15,6 +15,7 @@ class Projects::PanelsController < ApplicationController
     respond_to do |format|
       format.html {
         @done_iterations = done_iterations
+        @current_iteration_data = current_iteration_data
       }
       format.json { render json: panel_json }
     end
@@ -41,19 +42,19 @@ class Projects::PanelsController < ApplicationController
       @project.stories.done.includes(:iteration).order('iterations.start_date ASC, stories.position ASC')
     when 'current'
       # Current iteration shows stories in the current iteration
-      current_iteration = Iteration.current_iteration(@project)
-      current_iteration&.stories&.ranked || Story.none
+      current_iteration = @project.find_or_create_current_iteration
+      current_iteration.stories.ranked || Story.none
     when 'current_backlog'
       # Current + next iterations (backlog)
-      current_iteration = Iteration.current_iteration(@project)
-      iteration_ids = [current_iteration&.id] + @project.iterations.backlog.pluck(:id)
+      current_iteration = @project.find_or_create_current_iteration
+      iteration_ids = [current_iteration.id] + @project.iterations.backlog.pluck(:id)
       @project.stories.where(iteration_id: iteration_ids).ranked
     when 'backlog'
       # All stories in future iterations
       @project.stories.where(iteration: @project.iterations.backlog).ranked
     when 'icebox'
       # Stories without iteration and unscheduled state
-      @project.stories.where(iteration: nil, state: 'unscheduled').ranked
+      @project.stories.where(state: 'unscheduled').ranked
     when 'epics'
       # Epics would be handled differently
       nil
@@ -81,8 +82,7 @@ class Projects::PanelsController < ApplicationController
   end
 
   def current_iteration_data
-    iteration = Iteration.current_iteration(@project)
-    return nil unless iteration
+    iteration = @project.find_or_create_current_iteration
 
     {
       id: iteration.id,
@@ -91,7 +91,7 @@ class Projects::PanelsController < ApplicationController
       end_date: iteration.end_date.to_s,
       points: iteration.total_points,
       velocity: @project.velocity,
-      team_strength: 100 # You might want to calculate this based on team members
+      team_strength: iteration.team_strength
     }
   end
 end

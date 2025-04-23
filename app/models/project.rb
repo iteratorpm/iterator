@@ -87,11 +87,11 @@ class Project < ApplicationRecord
         start_date: start_date,
         end_date: end_date,
         number: new_number,
-        current: true,
+        state: :current,
         velocity: velocity || initial_velocity
       ).tap do |iteration|
         # Ensure only one current iteration exists
-        iterations.where.not(id: iteration.id).update_all(current: false)
+        iterations.where.not(id: iteration.id).where(state: :current).update_all(state: :done)
       end
     end
   end
@@ -109,16 +109,20 @@ class Project < ApplicationRecord
     (total_normalized_points / total_weeks * iteration_length).floor
   end
 
- def recalculate_iterations
+  def recalculate_iterations
+    available_stories = stories.current
+
+    available_stories.update_all iteration: find_or_create_current_iteration
+
     # Re-plan all future iterations based on current backlog priority
     transaction do
-      iterations.backlog.destroy_all
+      iterations.backlog.destroy_alk
       plan_future_iterations
     end
   end
 
   def current_iteration_points
-    current_iteration&.points_accepted || 0
+    find_or_create_current_iteration&.points_accepted || 0
   end
 
   def average_velocity(iteration_count)
@@ -136,7 +140,7 @@ class Project < ApplicationRecord
 
   def current_iteration_cycle_time
     0
-    # current_iteration&.average_cycle_time || 0
+    # find_or_create_current_iteration&.average_cycle_time || 0
   end
 
   def average_cycle_time(iteration_count)
@@ -145,7 +149,7 @@ class Project < ApplicationRecord
   end
 
   def current_iteration_rejection_rate
-    current_iteration&.rejection_rate || 0
+    find_or_create_current_iteration&.rejection_rate || 0
   end
 
   def average_rejection_rate(iteration_count)
@@ -209,7 +213,7 @@ class Project < ApplicationRecord
   def plan_future_iterations
     Time.use_zone(time_zone) do
       velocity = calculated_velocity
-      remaining_stories = stories.backlog.ranked.estimated
+      remaining_stories = stories.backlog.ranked
 
       current_date = Time.zone.today
       iteration_number = iterations.maximum(:number).to_i + 1
@@ -227,15 +231,19 @@ class Project < ApplicationRecord
         points_remaining = velocity
         remaining_stories.each do |story|
           break if points_remaining <= 0
-          if story.estimate <= points_remaining
+          if story.estimated?
+            if story.estimate <= points_remaining
+              story.update!(iteration: iteration)
+              points_remaining -= story.estimate
+            end
+          else
             story.update!(iteration: iteration)
-            points_remaining -= story.estimate
           end
         end
 
         current_date += iteration_length.weeks
         iteration_number += 1
-        remaining_stories = stories.backlog.ranked.estimated
+        remaining_stories = stories.backlog.ranked
       end
     end
   end

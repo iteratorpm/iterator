@@ -5,13 +5,9 @@ class IterationService
       project.iterations.where("end_date <= ?", Time.zone.today).each(&:complete!)
 
       # Find or create current iteration
-      current_iteration = project.iterations.current.first ||
-                         project.iterations.for_date(Time.zone.today).first ||
-                         project.create_current_iteration
+      current_iteration = project.find_or_create_current_iteration
 
-      # Fill current iteration
-      current_iteration.calculated_velocity
-      current_iteration.fill_from_backlog
+      project.recalculate_iterations
 
       current_iteration
     end
