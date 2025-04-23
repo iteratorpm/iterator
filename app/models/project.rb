@@ -1,14 +1,14 @@
 class Project < ApplicationRecord
   enum :iteration_start_day, {
-    monday: 0, tuesday: 1, wednesday: 2,
-    thursday: 3, friday: 4, saturday: 5, sunday: 6
+    sunday: 0, monday: 1, tuesday: 2, wednesday: 3,
+    thursday: 4, friday: 5, saturday: 6
   }
 
   enum :point_scale, {
     linear_0123: 0, fibonacci: 1, tshirt_sizes: 2, powers_of_2: 3, custom: 4
   }
 
-  enum :velocity_scheme, {
+  enum :velocity_strategy, {
     past_iters_1: 0,
     past_iters_2: 1,
     past_iters_3: 2,
@@ -33,6 +33,11 @@ class Project < ApplicationRecord
 
   validates :organization, presence: true
   validates :name, length: { minimum: 1, maximum: 50 }
+  validates :time_zone, presence: true, inclusion: { in: ActiveSupport::TimeZone.all.map(&:name) }
+
+  validates :velocity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
+
+  before_validation :set_velocity, if: -> { velocity.nil? || velocity.zero? }
 
   def releases
     stories.releases
@@ -60,12 +65,32 @@ class Project < ApplicationRecord
     memberships.create(user: user, role: role)
   end
 
-  def current_iteration
-    iterations.current.first
+  def find_or_create_current_iteration
+    Iteration.find_or_create_current_iteration(self)
   end
 
   def create_current_iteration
-    iterations.create_current_iteration
+    Time.use_zone(time_zone) do
+      # Determine the correct start date based on project settings
+      start_date = calculate_iteration_start_date
+      end_date = start_date + (iteration_length || 1).weeks - 1.day
+
+      # Get the next iteration number
+      last_number = iterations.maximum(:number) || 0
+      new_number = last_number + 1
+
+      # Create and return the new iteration
+      iterations.create!(
+        start_date: start_date,
+        end_date: end_date,
+        number: new_number,
+        current: true,
+        velocity: velocity || initial_velocity
+      ).tap do |iteration|
+        # Ensure only one current iteration exists
+        iterations.where.not(id: iteration.id).update_all(current: false)
+      end
+    end
   end
 
   # Recalculates all future iterations based on current velocity
@@ -90,7 +115,7 @@ class Project < ApplicationRecord
       )
 
       # Fill the iteration with stories up to velocity
-      points_remaining = velocity || 0
+      points_remaining = velocity || initial_velocity
 
       remaining_stories.each do |story|
         break if points_remaining <= 0
@@ -176,5 +201,23 @@ class Project < ApplicationRecord
         }
       end
     }
+  end
+
+  def calculate_iteration_start_date
+    Time.use_zone(time_zone) do
+      now = Time.zone.today
+      preferred_wday = iteration_start_day_before_type_cast.to_i
+
+      # Calculate days since last preferred weekday (including today if it matches)
+      days_since_start_day = (now.wday - preferred_wday) % 7
+
+      # Subtract to get to the most recent preferred weekday
+      now - days_since_start_day
+    end
+  end
+
+  private
+  def set_velocity
+    self.velocity = initial_velocity || 10
   end
 end

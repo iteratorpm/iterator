@@ -6,6 +6,12 @@ FactoryBot.define do
     end_date { start_date + 6.days }
     velocity { project.velocity }
 
+    trait :blank do
+      start_date { nil }
+      end_date { nil }
+      number { nil }
+    end
+
     trait :current do
       start_date { Date.current.beginning_of_week }
       end_date { start_date + 6.days }

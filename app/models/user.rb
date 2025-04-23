@@ -27,6 +27,7 @@ class User < ApplicationRecord
   validates :name, length: { minimum: 1, maximum: 30 }
   validates :username, length: { minimum: 1, maximum: 30 }
   validates :password, length: { minimum: 8 }, if: -> { password.present? }
+  validates :time_zone, presence: true, inclusion: { in: ActiveSupport::TimeZone.all.map(&:name) }
 
   before_save :set_initials_if_blank
 
@@ -78,4 +79,5 @@ class User < ApplicationRecord
       self.initials.split.map(&:first).join.upcase
     end
   end
+
 end

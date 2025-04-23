@@ -12,15 +12,25 @@ FactoryBot.define do
       accepted_at { 1.week.ago }
     end
 
+    trait :done do
+      panel { :done }
+      state { "accepted" }
+      accepted_at { 1.week.ago }
+      association :iteration, factory: [:iteration, :past]
+    end
+
     trait :current do
+      panel { :current }
       association :iteration, factory: [:iteration, :current]
     end
 
     trait :backlog do
+      panel { :backlog }
       association :iteration, factory: [:iteration, :future]
     end
 
     trait :icebox do
+      panel { :ciebox }
       iteration { nil }
       state { "unstarted" }
     end

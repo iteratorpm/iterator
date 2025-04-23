@@ -17,27 +17,32 @@ class Iteration < ApplicationRecord
   belongs_to :project
   has_many :stories, dependent: :nullify
 
+  validates :project, presence: true
   validates :start_date, presence: true
   validates :end_date, presence: true
   validates :number, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :velocity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
+  validate :end_date_after_start_date
+
   before_validation :set_dates, if: -> { start_date.blank? && project.present? }
 
-  def self.current_iteration(project)
-    iteration = project.iterations.current.first
-
-    unless iteration
-      # Find the most recent iteration that hasn't ended yet
-      iteration = project.iterations.for_date(Date.current).first
+  def self.find_or_create_current_iteration(project)
+    Time.use_zone(project.time_zone) do
+      iteration = project.iterations.current.first
 
       unless iteration
-        # Create a new current iteration if none exists
-        iteration = project.create_current_iteration
-      end
-    end
+        # Find the most recent iteration that hasn't ended yet
+        iteration = project.iterations.for_date(Time.zone.today).first
 
-    iteration
+        unless iteration
+          # Create a new current iteration if none exists
+          iteration = project.create_current_iteration
+        end
+      end
+
+      iteration
+    end
   end
 
   def completed_points
@@ -64,8 +69,7 @@ class Iteration < ApplicationRecord
 
   # Check if the iteration is full based on project velocity
   def full?
-    return false unless project.velocity.present?
-    total_points >= project.velocity
+    total_points >= velocity
   end
 
   # Move stories from backlog to this iteration until it's full
@@ -83,7 +87,7 @@ class Iteration < ApplicationRecord
     end
 
     # Allow unestimated bugs/chores to be added even if iteration is full
-    unless project.velocity.present? && total_points >= project.velocity
+    unless total_points >= project.velocity
       available_stories.unestimated.each do |story|
         story.update(iteration: self)
       end
@@ -114,17 +118,23 @@ class Iteration < ApplicationRecord
     (rejected_count.to_f / completed_stories.count * 100).round(1)
   end
 
-  def current?
-    now = Time.current
-    start_date <= now && end_date >= now
+  def current?(project)
+    Time.use_zone(project.time_zone) do
+      now = Time.current
+      start_date <= now && end_date >= now
+    end
   end
 
-  def past?
-    end_date < Time.current
+  def past?(project)
+    Time.use_zone(project.time_zone) do
+      end_date < Time.current
+    end
   end
 
-  def future?
-    start_date > Time.current
+  def future?(project)
+    Time.use_zone(project.time_zone) do
+      start_date > Time.current
+    end
   end
 
   def duration
@@ -132,7 +142,9 @@ class Iteration < ApplicationRecord
   end
 
   def to_s
-    "Iteration ##{number}: #{start_date.strftime('%b %d')} - #{end_date.strftime('%b %d')}"
+    Time.use_zone(project.time_zone) do
+      "Iteration ##{number}: #{start_date.in_time_zone.strftime('%b %d')} - #{end_date.in_time_zone.strftime('%b %d')}"
+    end
   end
 
   def override?
@@ -146,10 +158,12 @@ class Iteration < ApplicationRecord
   end
 
   def display_name
-    if current?
-      "#{start_date.strftime("%b %d")} – #{end_date} (current)"
-    else
-      "#{start_date.strftime("%b %d")} – #{end_date} (\##{number})"
+    Time.use_zone(project.time_zone) do
+      if current?(project)
+        "#{start_date.in_time_zone.strftime('%b %d')} – #{end_date.in_time_zone.strftime('%b %d')} (current)"
+      else
+        "#{start_date.in_time_zone.strftime('%b %d')} – #{end_date.in_time_zone.strftime('%b %d')} (##{number})"
+      end
     end
   end
 
@@ -169,11 +183,18 @@ class Iteration < ApplicationRecord
     if last_iteration
       self.start_date = last_iteration.end_date + 1.day
     else
-      # First iteration starts on project start date or today
-      self.start_date = project.start_date || Date.current
+      self.start_date = (project.start_date || project.calculate_iteration_start_date)
     end
 
     self.end_date = start_date + (project.iteration_length || 1).weeks - 1.day
     self.number = last_iteration ? last_iteration.number + 1 : 1
+  end
+
+  def end_date_after_start_date
+    return if start_date.blank? || end_date.blank?
+
+    if end_date < start_date
+      errors.add(:end_date, "must be after start date")
+    end
   end
 end

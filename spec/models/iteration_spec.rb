@@ -1,5 +1,326 @@
 require 'rails_helper'
 
 RSpec.describe Iteration, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:project) { create(:project, time_zone: 'Eastern Time (US & Canada)', automatic_planning: true) }
+  let(:now) { Time.current.in_time_zone(project.time_zone) }
+
+  describe 'validations' do
+    it { should validate_presence_of(:start_date) }
+    it { should validate_presence_of(:end_date) }
+    it { should validate_presence_of(:number) }
+    it { should validate_numericality_of(:number).only_integer.is_greater_than(0) }
+    it { should validate_numericality_of(:velocity).is_greater_than_or_equal_to(0).allow_nil }
+
+    it 'validates end_date is after start_date' do
+      iteration = build(:iteration, start_date: now, end_date: now - 1.day)
+      expect(iteration).not_to be_valid
+      expect(iteration.errors[:end_date]).to include('must be after start date')
+    end
+  end
+
+  describe 'associations' do
+    it { should belong_to(:project) }
+    it { should have_many(:stories).dependent(:nullify) }
+  end
+
+  describe 'scopes' do
+    let!(:past_iteration) { create(:iteration, :past, project: project) }
+    let!(:current_iteration) { create(:iteration, :current, project: project) }
+    let!(:future_iteration) { create(:iteration, :future, project: project) }
+
+    describe '.current' do
+      it 'returns iterations marked as current' do
+        expect(project.iterations.current).to eq([current_iteration])
+      end
+    end
+
+    describe '.backlog' do
+      it 'returns future iterations ordered by start_date' do
+        expect(project.iterations.backlog).to eq([future_iteration])
+      end
+    end
+
+    describe '.done' do
+      it 'returns past iterations ordered by start_date desc' do
+        expect(project.iterations.done).to eq([past_iteration])
+      end
+    end
+
+    describe '.for_date' do
+      it 'returns iterations for a specific date' do
+        date = current_iteration.start_date + 1.day
+        expect(project.iterations.for_date(date)).to eq([current_iteration])
+      end
+    end
+  end
+
+  describe '.find_or_create_current_iteration' do
+    context 'when current iteration exists' do
+      let!(:current_iteration) { create(:iteration, :current, project: project) }
+
+      it 'returns the existing current iteration' do
+        expect(Iteration.find_or_create_current_iteration(project)).to eq(current_iteration)
+      end
+    end
+
+    context 'when no current iteration exists but one includes today' do
+      let!(:active_iteration) { create(:iteration, project: project, start_date: now - 1.day, end_date: now + 5.days) }
+
+      it 'returns the iteration that includes today' do
+        expect(Iteration.find_or_create_current_iteration(project)).to eq(active_iteration)
+      end
+    end
+
+    context 'when no relevant iteration exists' do
+      it 'creates a new current iteration' do
+        expect {
+          Iteration.find_or_create_current_iteration(project)
+        }.to change { project.iterations.count }.by(1)
+      end
+
+      it 'returns the newly created iteration' do
+        iteration = Iteration.find_or_create_current_iteration(project)
+        expect(iteration).to be_persisted
+        expect(iteration.current).to be true
+      end
+    end
+
+    context 'with time zone considerations' do
+      let(:tokyo_project) { create(:project, time_zone: 'Tokyo') }
+      let(:tokyo_now) { Time.current.in_time_zone(tokyo_project.time_zone) }
+
+      it 'respects project time zone when finding iterations' do
+        # Create iteration that's current in Tokyo time but not in UTC
+        iteration = create(:iteration, project: tokyo_project,
+                           start_date: tokyo_now.to_date - 1.day,
+                           end_date: tokyo_now.to_date + 5.days)
+
+        # Test at a time when it's different dates in different zones
+        Time.use_zone('UTC') do
+          test_time = tokyo_now.end_of_day - 1.hour # Still same date in Tokyo, but previous date in UTC
+          travel_to(test_time) do
+            expect(Iteration.find_or_create_current_iteration(tokyo_project)).to eq(iteration)
+          end
+        end
+      end
+    end
+  end
+
+  describe '#set_dates' do
+    context 'for first iteration' do
+      it 'uses project start date' do
+        project.update(
+          start_date: now.to_date - 1.week,
+          iteration_start_day: 'wednesday'
+        )
+        iteration = build(:iteration, :blank, project: project)
+        iteration.save
+
+        expect(iteration.start_date).to eq(project.start_date)
+        expect(iteration.end_date).to eq(project.start_date + (project.iteration_length || 1).weeks - 1.day)
+        expect(iteration.number).to eq(1)
+      end
+
+      it 'uses current date when no project start date' do
+        project.update(start_date: nil, iteration_start_day: 'monday')
+        iteration = build(:iteration, :blank, project: project)
+        iteration.save
+
+        expect(iteration.start_date).to eq(Time.zone.today.beginning_of_week)
+        expect(iteration.end_date).to eq(Time.zone.today.beginning_of_week + (project.iteration_length || 1).weeks - 1.day)
+        expect(iteration.number).to eq(1)
+      end
+    end
+
+    context 'for subsequent iterations' do
+      let!(:first_iteration) { create(:iteration, project: project, start_date: now.to_date - 1.week, end_date: now.to_date - 1.day) }
+
+      it 'sets dates based on last iteration' do
+        iteration = build(:iteration, :blank, project: project)
+        iteration.save
+        expect(iteration.start_date).to eq(now.to_date)
+        expect(iteration.end_date).to eq(now.to_date + 6.days)
+        expect(iteration.number).to eq(project.iterations.first.number + 1)
+      end
+    end
+  end
+
+  describe '#full?' do
+    let(:iteration) { create(:iteration, project: project, velocity: 10) }
+
+    it 'returns false when no velocity set' do
+      iteration.update(velocity: nil)
+      expect(iteration.full?).to be false
+    end
+
+    it 'returns false when total points < velocity' do
+      create(:story, iteration: iteration, estimate: 5)
+      expect(iteration.full?).to be false
+    end
+
+    it 'returns true when total points >= velocity' do
+      create_list(:story, 2, iteration: iteration, estimate: 5)
+      expect(iteration.full?).to be true
+    end
+  end
+
+  describe '#fill_from_backlog' do
+    let(:iteration) { create(:iteration, project: project, velocity: 8) }
+    let!(:backlog_stories) { create_list(:story, 5, :backlog, project: project, estimate: 3) }
+
+    it 'fills iteration up to velocity' do
+      iteration.fill_from_backlog
+      expect(iteration.total_points).to eq(6) # 2 stories * 3 points
+    end
+
+    context 'with unestimated stories' do
+      let!(:unestimated_story) { create(:story, :backlog, project: project, estimate: nil) }
+
+      it 'includes unestimated stories when not full' do
+        iteration.fill_from_backlog
+        expect(iteration.stories).to include(unestimated_story)
+      end
+    end
+
+    context 'with automatic planning disabled' do
+      before { project.update(automatic_planning: false) }
+
+      it 'does not fill iteration' do
+        expect {
+          iteration.fill_from_backlog
+        }.not_to change { iteration.stories.count }
+      end
+    end
+  end
+
+  describe '#complete!' do
+    let(:iteration) { create(:iteration, project: project, end_date: now.to_date - 1.day) }
+    let!(:accepted_story) { create(:story, :accepted, iteration: iteration) }
+    let!(:started_story) { create(:story, :started, iteration: iteration) }
+
+    it 'marks accepted stories as done' do
+      iteration.complete!
+      expect(accepted_story.reload.state).to eq('done')
+      expect(accepted_story.iteration).to be_nil
+    end
+
+    it 'does not affect started stories' do
+      iteration.complete!
+      expect(started_story.reload.state).to eq('started')
+      expect(started_story.iteration).to eq(iteration)
+    end
+
+    it 'marks iteration as not current' do
+      iteration.update(current: true)
+      iteration.complete!
+      expect(iteration.reload.current).to be false
+    end
+
+    context 'when iteration is not complete' do
+      let(:iteration) { create(:iteration, project: project, end_date: now.to_date + 1.day) }
+
+      it 'does not complete iteration' do
+        expect {
+          iteration.complete!
+        }.not_to change { accepted_story.reload.state }
+      end
+    end
+  end
+
+  describe 'time zone sensitive methods' do
+    let(:iteration) { create(:iteration, project: project, start_date: now.to_date, end_date: now.to_date + 6.days) }
+
+    describe '#current?' do
+      it 'returns true for current iteration' do
+        expect(iteration.current?(project)).to be true
+      end
+
+      it 'respects project time zone' do
+        # Create a project in Tokyo time zone (UTC+9)
+        tokyo_project = create(:project, time_zone: 'Asia/Tokyo')
+        tokyo_now = Time.current.in_time_zone(tokyo_project.time_zone)
+        iteration = create(:iteration, project: tokyo_project,
+                           start_date: tokyo_now.to_date,
+                           end_date: (tokyo_now + 6.days).to_date)
+
+        # Test at a time when it's different dates in different zones
+        Time.use_zone('UTC') do
+          test_time = tokyo_now.end_of_day - 1.hour # Still same date in Tokyo, but previous date in UTC
+          travel_to(test_time) do
+            expect(iteration.current?(tokyo_project)).to be true
+          end
+        end
+      end
+    end
+
+    describe '#past?' do
+      let(:past_iteration) { create(:iteration, :past, project: project) }
+
+      it 'returns true for past iteration' do
+        expect(past_iteration.past?(project)).to be true
+      end
+    end
+
+    describe '#future?' do
+      let(:future_iteration) { create(:iteration, :future, project: project) }
+
+      it 'returns true for future iteration' do
+        expect(future_iteration.future?(project)).to be true
+      end
+    end
+
+    describe '#to_s' do
+      it 'formats dates in project time zone' do
+        expected_format = "Iteration ##{iteration.number}: #{now.strftime('%b %d')} - #{(now + 6.days).strftime('%b %d')}"
+        expect(iteration.to_s).to eq(expected_format)
+      end
+    end
+  end
+
+  describe '#shift!' do
+    let(:iteration) { create(:iteration, project: project, start_date: now.to_date, end_date: now.to_date + 6.days) }
+
+    it 'shifts iteration dates by specified weeks' do
+      expect {
+        iteration.shift!(weeks: 1)
+      }.to change { iteration.start_date }.by(7.days)
+        .and change { iteration.end_date }.by(7.days)
+    end
+  end
+
+  describe 'point calculations' do
+    let(:iteration) { create(:iteration, project: project) }
+    let!(:accepted_story) { create(:story, :accepted, iteration: iteration, estimate: 3) }
+    let!(:started_story) { create(:story, :started, iteration: iteration, estimate: 2) }
+    let!(:rejected_story) { create(:story, :rejected, iteration: iteration, estimate: 1) }
+
+    describe '#completed_points' do
+      it 'returns sum of accepted story points' do
+        expect(iteration.completed_points).to eq(3)
+      end
+    end
+
+    describe '#points_remaining' do
+      it 'returns difference between total and completed points' do
+        expect(iteration.points_remaining).to eq(3) # (3+2+1) - 3
+      end
+    end
+
+    describe '#completion_percentage' do
+      it 'returns percentage of completed points' do
+        expect(iteration.completion_percentage).to eq(50) # 3/6 * 100
+      end
+
+      it 'returns 0 when no points' do
+        iteration.stories.update_all(estimate: nil)
+        expect(iteration.completion_percentage).to eq(0)
+      end
+    end
+
+    describe '#rejection_rate' do
+      it 'returns percentage of rejected stories' do
+        expect(iteration.rejection_rate).to eq(50.0) # 1 rejected out of 2 completed (accepted + rejected)
+      end
+    end
+  end
 end

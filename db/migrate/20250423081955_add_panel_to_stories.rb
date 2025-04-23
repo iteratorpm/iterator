@@ -1,0 +1,6 @@
+class AddPanelToStories < ActiveRecord::Migration[8.0]
+  def change
+    add_column :stories, :panel, :integer, default: 0, null: false
+    add_index :stories, :panel
+  end
+end

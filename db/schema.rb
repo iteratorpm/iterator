@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_22_145018) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_23_081955) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -157,6 +157,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_145018) do
     t.integer "number", default: 0, null: false
     t.integer "velocity"
     t.boolean "current", default: false, null: false
+    t.integer "team_strength", default: 100, null: false
     t.index ["project_id"], name: "index_iterations_on_project_id"
   end
 
@@ -264,12 +265,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_145018) do
     t.boolean "public", default: false
     t.integer "iteration_start_day", default: 0
     t.date "start_date"
-    t.string "time_zone"
+    t.string "time_zone", default: "Eastern Time (US & Canada)", null: false
     t.integer "iteration_length", default: 1
     t.integer "point_scale", default: 0
     t.string "point_scale_custom", default: ""
     t.integer "initial_velocity", default: 10
-    t.integer "velocity_scheme", default: 0
+    t.integer "velocity_strategy", default: 0
     t.integer "done_iterations_to_show", default: 4
     t.boolean "auto_iteration_planning", default: true
     t.boolean "allow_api_access", default: true
@@ -282,7 +283,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_145018) do
     t.integer "stories_count", default: 0
     t.boolean "archived", default: false
     t.text "profile_content"
-    t.integer "velocity"
+    t.integer "velocity", null: false
     t.boolean "automatic_planning", default: true
     t.index ["organization_id"], name: "index_projects_on_organization_id"
   end
@@ -327,9 +328,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_145018) do
     t.date "deadline"
     t.date "completion_date"
     t.integer "position", null: false
+    t.integer "panel", default: 0, null: false
     t.index ["discarded_at"], name: "index_stories_on_discarded_at"
     t.index ["epic_id"], name: "index_stories_on_epic_id"
     t.index ["iteration_id"], name: "index_stories_on_iteration_id"
+    t.index ["panel"], name: "index_stories_on_panel"
     t.index ["priority"], name: "index_stories_on_priority"
     t.index ["project_id", "position"], name: "index_stories_on_project_id_and_position", unique: true
     t.index ["project_id"], name: "index_stories_on_project_id"
@@ -395,7 +398,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_145018) do
     t.string "initials", default: "", null: false
     t.boolean "admin", default: false
     t.integer "current_organization_id"
-    t.string "time_zone"
+    t.string "time_zone", default: "Eastern Time (US & Canada)", null: false
     t.string "api_token"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["current_organization_id"], name: "index_users_on_current_organization_id"

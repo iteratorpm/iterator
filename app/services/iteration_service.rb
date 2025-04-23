@@ -10,7 +10,6 @@ class IterationService
     # Create new current iteration if needed
     unless current_iteration
       current_iteration = project.create_current_iteration
-      current_iteration.update(current: true)
     end
 
     # Fill current iteration with stories

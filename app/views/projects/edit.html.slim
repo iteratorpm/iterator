@@ -80,13 +80,13 @@
             = f.number_field :initial_velocity, class: 'mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm md:col-span-2'
 
           .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :velocity_scheme, 'Velocity Strategy', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            = f.select :velocity_scheme, options_for_select([\
+            = f.label :velocity_strategy, 'Velocity Strategy', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
+            = f.select :velocity_strategy, options_for_select([\
               ['Average of 1 iteration', 'past_iters_1'],\
               ['Average of 2 iterations', 'past_iters_2'],\
               ['Average of 3 iterations', 'past_iters_3'],\
               ['Average of 4 iterations', 'past_iters_4']\
-            ], @project.velocity_scheme), {}, class: 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm md:col-span-2'
+            ], @project.velocity_strategy), {}, class: 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm md:col-span-2'
 
           .grid.grid-cols-1.md:grid-cols-3.gap-4
             = f.label :number_of_done_iterations_to_show, 'Number of Done Iterations to Show', class: 'block text-sm font-medium text-gray-700 md:col-span-1'

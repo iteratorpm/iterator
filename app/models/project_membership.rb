@@ -1,5 +1,5 @@
 class ProjectMembership < ApplicationRecord
-  belongs_to :project
+  belongs_to :project, counter_cache: true
   belongs_to :user
 
   enum :role, {
