@@ -68,6 +68,10 @@ class Project < ApplicationRecord
     memberships.create(user: user, role: role)
   end
 
+  def current_iteration
+    find_or_create_current_iteration
+  end
+
   def find_or_create_current_iteration
     Iteration.find_or_create_current_iteration(self)
   end

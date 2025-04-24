@@ -1,0 +1,19 @@
+= turbo_frame_tag @panel_id do
+  .panel.flex-grow.border-r.border-gray-200.flex-col.h-full.bg-gray-50[
+    data-panel-id=@panel_id
+    data-controller="panel resizable"
+    data-action="mousedown->resizable#startResize"
+  ]
+
+    = render "panel_header", add_story: true, close: true, actions: true, title: "Icebox"
+
+    / Panel content area
+    section.flex-1.overflow-y-auto.p-2.space-y-2
+      = render "add_story_form"
+
+      - if @stories&.any?
+        = render partial: 'story_preview', collection: @stories
+      - else
+        .empty-state.text-center.text-gray-400.py-8.text-sm
+          .mb-1 No stories in icebox
+          button.text-blue-500.text-xs data-action="click->panel#addStory" + Add story

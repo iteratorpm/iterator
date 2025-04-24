@@ -1,0 +1,7 @@
+/ "Add story" card (hidden by default)
+.add-story-card.hidden.bg-white.border.border-dashed.border-gray-300.rounded.p-3.mb-2 data-panel-target="addStoryCard"
+  = form_with model: [@project, Story.new], class: "space-y-2" do |f|
+    = f.text_area :title, class: "w-full text-sm border-gray-300 rounded", placeholder: "Add a new story..."
+    .flex.justify-end.space-x-2
+      = f.button "Cancel", type: :button, class: "text-sm text-gray-600 hover:text-gray-800", data: { action: "click->panel#cancelAddStory" }
+      = f.submit "Save", class: "text-sm bg-blue-500 text-white px-3 py-1 rounded"

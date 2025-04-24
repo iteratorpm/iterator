@@ -7,6 +7,7 @@
   = yield :sidebar
 
   .main.flex-1.overflow-hidden
-    section.panels.flex.overflow-x-auto.h-full data-controller="project"
-      - %w[icebox current done].each do |panel|
-        = turbo_frame_tag "panel_#{panel}", src: project_panel_path(@project, panel: panel), loading: :lazy
+    section.panels.overflow-x-auto.h-full.w-full.gap-1.flex data-controller="project" data-project-panels-resizable-value="true"
+      = turbo_frame_tag "done_panel", src: done_panel_project_path(@project), loading: :lazy, class: "panel-wrapper"
+      = turbo_frame_tag "current_backlog_panel", src: current_backlog_panel_project_path(@project), loading: :lazy, class: "panel-wrapper"
+      = turbo_frame_tag "icebox_panel", src: icebox_panel_project_path(@project), loading: :lazy, class: "panel-wrapper"

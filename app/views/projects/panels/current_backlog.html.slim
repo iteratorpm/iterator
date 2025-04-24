@@ -1,0 +1,20 @@
+= turbo_frame_tag @panel_id do
+  .panel.flex-grow.border-r.border-gray-200.flex-col.h-full.bg-gray-50[
+    data-panel-id=@panel_id
+    data-controller="panel resizable"
+    data-action="mousedown->resizable#startResize"
+  ]
+
+    = render "panel_header", velocity: true, close: true, actions: true, title: "Current Iteration/Backlog"
+
+    / Panel content area
+    section.flex-1.overflow-y-auto.p-2.space-y-2
+      = render "add_story_form"
+
+      / Current iteration stories
+      - if @panel_type.in?(%w[current current_backlog backlog])
+
+        = render "current_iteration", current_iteration: @current_iteration
+
+        - if @stories&.any?
+          = render partial: 'story_preview', collection: @stories

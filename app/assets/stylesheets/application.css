@@ -8,3 +8,22 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+.panel {
+  transition: width 0.2s ease;
+}
+
+.panel-resize-handle {
+  width: 4px;
+  cursor: col-resize;
+  transition: background-color 0.2s ease;
+}
+
+.panel-resize-handle:hover {
+  background-color: #3182ce;
+}
+
+/* Sortable.js styles */
+.sortable-ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
+}

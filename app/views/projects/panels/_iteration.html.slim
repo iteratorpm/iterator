@@ -1,0 +1,5 @@
+.iteration-header.text-xs.text-gray-500.font-medium.mb-2.flex.items-center
+  .flex-1
+    = "Iteration #{iteration['number']} (#{iteration['start_date']} - #{iteration['end_date']})"
+    span.ml-2.text-gray-400 = "#{iteration['total_points']} pts"
+  = inline_svg_tag 'icons/chevron-down', class: "w-3 h-3 text-gray-400"
