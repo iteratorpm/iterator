@@ -1,9 +1,14 @@
-.text-xs.text-gray-500.font-medium.mb-2.flex.items-center
-  .flex-1
-    - if current_iteration
-      = "Iteration #{current_iteration[:number]} (#{current_iteration[:start_date]} - #{current_iteration[:end_date]})"
-      span.ml-2.text-gray-400 = "#{current_iteration[:points]}/#{current_iteration[:velocity]} pts"
-    - else
-      = "No current iteration"
+.text-sm.text-white.bg-gray-500.flex.items-center.justify-between.px-4.py-2
+  / Left section: icon + points + iteration number
+  .flex.items-center.gap-4
+    = inline_svg_tag 'icons/calendar-day.svg', class: "w-4 h-4"
+    span.text-gray-200.font-medium #{iteration.points_accepted} of #{iteration.total_points} points
+    span.text-gray-300.font-medium ##{iteration.number}
+    span.text-gray-300 •
+    span.text-gray-200= iteration_time_from(iteration)
 
-  = inline_svg_tag 'icons/chevron-down', class: "w-3 h-3 text-gray-400"
+  / Right section: team strength
+  .flex.items-center.gap-2.ml-2
+    span.text-gray-300 •
+    = inline_svg_tag 'icons/users.svg', class: "w-4 h-4"
+    span.font-semibold 100%

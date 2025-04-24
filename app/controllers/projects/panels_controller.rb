@@ -16,19 +16,19 @@ class Projects::PanelsController < ApplicationController
   end
 
   def current_backlog
-    current_iteration = @project.find_or_create_current_iteration
-    iteration_ids = [current_iteration.id] + @project.iterations.backlog.pluck(:id)
-    @stories = @project.stories.where(iteration_id: iteration_ids).ranked
+    @current_iteration = @project.find_or_create_current_iteration
+    @iterations = @project.iterations.backlog.includes(:stories)
     render_panel
   end
 
   def backlog
+    @iterations = @project.iterations.backlog
     @stories = @project.stories.where(iteration: @project.iterations.backlog).ranked
     render_panel
   end
 
   def icebox
-    @stories = @project.stories.where(state: :unscheduled).ranked
+    @stories = @project.stories.icebox.ranked
     render_panel
   end
 

@@ -5,16 +5,15 @@
     data-action="mousedown->resizable#startResize"
   ]
 
-    = render "panel_header", velocity: true, close: true, actions: true, title: "Current Iteration/Backlog"
+    = render "panel_header", velocity: true, close: true, actions: true, add_story: true, title: "Current Iteration/Backlog"
 
-    / Panel content area
-    section.flex-1.overflow-y-auto.p-2.space-y-2
+    section.flex-1.overflow-y-auto.space-y-2
       = render "add_story_form"
 
-      / Current iteration stories
-      - if @panel_type.in?(%w[current current_backlog backlog])
+      = render "current_iteration", iteration: @current_iteration
 
-        = render "current_iteration", current_iteration: @current_iteration
+      - @iterations.each do |i|
+        = render "iteration", iteration: i
 
-        - if @stories&.any?
-          = render partial: 'story_preview', collection: @stories
+        - if i.stories.any?
+          = render partial: 'story_preview', collection: i.stories

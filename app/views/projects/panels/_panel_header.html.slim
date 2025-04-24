@@ -1,13 +1,13 @@
-header.flex.items-center.justify-between.p-3.text-white.select-none.cursor-move.bg-gray-800
+header.flex.items-center.justify-between.p-3.text-white.select-none.cursor-move.bg-gray-800.space-x-2
   .flex.items-center
-    h2.text-sm.font-semibold
+    h2.text-sm.font-semibold.mr-6
       span = title
 
   - if local_assigns[:velocity]
     button.flex.items-center.text-large.leading.text-gray-400.hover:text-gray-300.bg-transparent.border-none.cursor-pointer
       span.flex.items-center
         span.inline-block.h-4
-          = inline_svg_tag "icons/velocity", class: "color-red"
+          = inline_svg_tag "icons/velocity.svg"
         span = @project.current_iteration.velocity
 
   - if local_assigns[:add_story]
