@@ -13,7 +13,7 @@ class Story < ApplicationRecord
     accepted: 5,     # Done
     rejected: 6      # Current
   }
-  enum :priority, { p1_highest: 0, p2_high: 1, p3_medium: 2, p4_low: 3 }
+  enum :priority, { none: 0, critical: 1, high: 2, medium: 3, low: 4 }, prefix: :priority
 
   # Associations
   belongs_to :project, counter_cache: true
@@ -29,11 +29,14 @@ class Story < ApplicationRecord
   has_many :story_labels, dependent: :destroy
   has_many :labels, through: :story_labels
   has_many :blockers, dependent: :destroy
+  has_many :blocking_stories, class_name: "Blocker", foreign_key: "blocker_story_id"
   has_many :followers, class_name: 'StoryFollower', dependent: :destroy
   has_many :reviews, dependent: :destroy
 
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :attachments, as: :attachable, dependent: :destroy
+
+  positioned on: :project
 
   # Validations
   validates :name, presence: true
@@ -42,6 +45,8 @@ class Story < ApplicationRecord
   validates :priority, presence: true
   validates :project, presence: true
   validates :requester, presence: true
+
+  validates :project_story_id, uniqueness: { scope: :project_id }
 
   # Scopes for common queries (performance optimization)
   scope :by_state, ->(state) { where(state: state) }
@@ -73,13 +78,38 @@ class Story < ApplicationRecord
   scope :ranked, -> { order(position: :asc) }
 
   after_update :notify_if_delivered, if: :saved_change_to_state?
+  before_create :set_project_story_id
 
   def estimated?
     estimate.present?
   end
 
+  def estimatable?
+    # Features are typically estimatable, bugs might be, chores usually aren't
+    feature? || bug?
+  end
+
   def unestimated?
     estimate.blank?
+  end
+
+  def has_blockers?
+    blockers.any?
+  end
+
+  def priority_label
+    case priority
+    when "priority_critical"
+      "P1 - Critical"
+    when "priority_high"
+      "P2 - High"
+    when "priority_medium"
+      "P3 - Medium"
+    when "priority_low"
+      "P4 - Low"
+    else
+      "Unprioritized"
+    end
   end
 
   # Methods
@@ -128,4 +158,8 @@ class Story < ApplicationRecord
     end
   end
 
+  def set_project_story_id
+    max_id = project.stories_count
+    self.project_story_id = max_id + 1
+  end
 end

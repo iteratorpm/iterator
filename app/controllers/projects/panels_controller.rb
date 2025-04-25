@@ -5,25 +5,22 @@ class Projects::PanelsController < ApplicationController
 
   def done
     @iterations = @project.iterations.done.includes(:stories).order(start_date: :asc)
-    @stories = @project.stories.done.includes(:iteration).order('iterations.start_date ASC, stories.position ASC')
     render_panel
   end
 
   def current
     @current_iteration = @project.find_or_create_current_iteration
-    @stories = @current_iteration.stories.ranked
     render_panel
   end
 
   def current_backlog
     @current_iteration = @project.find_or_create_current_iteration
-    @iterations = @project.iterations.backlog.includes(:stories)
+    @backlog_iterations = @project.iterations.backlog.includes(:stories)
     render_panel
   end
 
   def backlog
-    @iterations = @project.iterations.backlog
-    @stories = @project.stories.where(iteration: @project.iterations.backlog).ranked
+    @iterations = @project.iterations.backlog.includes(:stories)
     render_panel
   end
 

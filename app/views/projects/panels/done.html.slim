@@ -17,4 +17,4 @@
         - iteration_stories = @stories.select { |s| s.iteration_id == iteration['id'] }
 
         - if iteration_stories.any?
-          = render partial: 'story_preview', collection: iteration_stories
+          = render partial: 'story_preview', collection: iteration_stories, as: :story

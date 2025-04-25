@@ -7,12 +7,11 @@
 
     = render "panel_header", add_story: true, close: true, actions: true, title: "Icebox"
 
-    / Panel content area
     section.flex-1.overflow-y-auto.p-2.space-y-2
-      = render "add_story_form"
+      = render "story_form"
 
       - if @stories&.any?
-        = render partial: 'story_preview', collection: @stories
+        = render partial: 'story_preview', collection: @stories, as: :story
       - else
         .empty-state.text-center.text-gray-400.py-8.text-sm
           .mb-1 No stories in icebox

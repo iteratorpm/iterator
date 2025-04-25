@@ -1,17 +1,56 @@
-.story.bg-white.rounded.border.border-gray-200.mb-2.overflow-hidden data-id=story.id
-  .story-header.px-3.py-2.bg-gray-50.border-b.border-gray-200.flex.items-center.justify-between
-    .flex.items-center
-      span.text-xs.font-medium.text-gray-500 = "##{story.id}"
-      - if story.story_type == 'feature'
-        span.ml-2.text-xs.bg-blue-100.text-blue-800.px-1.rounded = story.estimate || '?'
-    = inline_svg_tag 'icons/grip-vertical', class: "w-3 h-3 text-gray-400 cursor-move"
+.story-preview-item class="#{story_classes(story)}" draggable="false" data-aid="StoryPreviewItem" data-selected="false" data-id="#{story.id}" aria-describedby="reorder-help" aria-label=story.name
+  header.preview.flex.items-center.px-2.py-2.border-l-4 class="#{border_color_class(story)}" tabindex="0" data-aid="StoryPreviewItem__preview"
+    .meta.flex.items-center.mr-2
+      .meta-top.flex.flex-col.mr-2
+        / Story type icon (feature, bug, chore, etc.)
+        - if story.story_type.present?
+          .story-type.mb-1
+            = inline_svg_tag("icons/#{story.story_type}.svg", class: "h-4 w-4", title: story.story_type.capitalize)
 
-  .story-content.p-3
-    p.text-sm.text-gray-800 = story.title
-    - if story.labels.any?
-      .story-labels.mt-2.flex.flex-wrap.gap-1
-        - story.labels.each do |label|
-          span.text-xs.bg-gray-100.text-gray-600.px-1.rounded = label.name
+        / Show estimate if present, otherwise show nothing
+        - if story.estimate.present? && story.estimate > 0
+          .estimate-icon.mb-1
+            = inline_svg_tag("icons/estimate-#{story.estimate}.svg", class: "h-4 w-4", title: "Estimate: #{story.estimate}")
 
-  .flex.justify-end.mt-2
-    button.bg-green-500.text-white.text-xs.px-3.py-1.rounded.hover:bg-green-600 Start
+      / Show blocker icon if applicable
+      - if story.has_blockers?
+        .blocker-icon data-aid="StoryPreviewBlocker" aria-label="Story has blockers"
+          = inline_svg_tag("icons/blocker.svg", class: "h-4 w-4", title: "Has blockers")
+
+    .name.flex-grow.flex.flex-col
+      .story-name.font-medium.text-gray-800
+        span.tracker-markup data-aid="StoryPreviewItem__title" = story.name
+
+      .metadata.flex.flex-wrap.items-center.mt-1
+        / Priority button
+        - if story.priority.present?
+          button.priority.px-1.text-xs.rounded.bg-gray-200.mr-2 data-aid="StoryPreviewPriority" title="Priority: #{story.priority_label}"
+            = story.priority
+
+        / Labels
+        - if story.labels.any?
+          span.labels.flex.flex-wrap.gap-1
+            - story.labels.each do |label|
+              a.label.px-2.py-0.5.text-xs.rounded.bg-blue-100.text-blue-800 tabindex="-1" = label.name
+
+        / Review statuses
+        - if story.reviews.any?
+          span.review-list.flex.items-center.ml-2.gap-2
+            - story.reviews.each do |review|
+              span.review-item.flex.items-center
+                = inline_svg_tag("icons/#{review_status_icon(review)}", class: "h-4 w-4 mr-1", title: review.status.capitalize)
+                span.review-type.text-xs.text-gray-600 data-aid="StoryPreviewItemReview__reviewType" = review.review_type
+
+    / Only show estimate buttons if story is estimatable and has no estimate yet
+    - if story.estimatable? && story.estimate.nil?
+      span.estimate.flex.gap-1
+        - [0, 1, 2, 3].each do |point_value|
+          button.estimate-item.p-1 data-point-value=point_value tabindex="-1" title=point_value
+            = inline_svg_tag("icons/point-#{point_value}#{point_value == 0 ? '.png' : '-linear.svg'}",
+                             class: "h-4 w-4",
+                             title: "Estimate #{point_value}")
+
+    / Selector for bulk actions
+    svg.selector.undraggable.ml-2.text-gray-500.cursor-pointer width="24" height="24" title="Select this story for bulk actions"
+      svg width="24" height="24"
+        rect stroke="#7D7D7D" fill="#FFF" x="5.5" y="5.5" width="13" height="13" rx="1" fill-rule="evenodd"
