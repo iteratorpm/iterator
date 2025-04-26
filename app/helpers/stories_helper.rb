@@ -58,15 +58,30 @@ module StoriesHelper
   def border_color_class(story)
     case story.story_type
     when "feature"
-      "border-green-500"
+      "border-yellow-500"
     when "bug"
       "border-red-500"
     when "chore"
       "border-gray-500"
     when "release"
-      "border-purple-500"
-    else
       "border-blue-500"
+    else
+      "border-purple-500"
+    end
+  end
+
+  def story_color_class(story)
+    case story.story_type
+    when "feature"
+      "text-yellow-500"
+    when "bug"
+      "text-red-500"
+    when "chore"
+      "text-gray-500"
+    when "release"
+      "text-blue-500"
+    else
+      "text-purple-500"
     end
   end
 

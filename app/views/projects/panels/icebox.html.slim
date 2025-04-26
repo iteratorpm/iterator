@@ -1,5 +1,5 @@
 = turbo_frame_tag @panel_id do
-  .panel.flex-grow.border-r.border-gray-200.flex-col.h-full.bg-gray-50[
+  .flex-grow.border-r.border-gray-200.flex-col.h-full.bg-gray-50.min-w-xs[
     data-panel-id=@panel_id
     data-controller="panel resizable"
     data-action="mousedown->resizable#startResize"
@@ -7,7 +7,7 @@
 
     = render "panel_header", add_story: true, close: true, actions: true, title: "Icebox"
 
-    section.flex-1.overflow-y-auto.p-2.space-y-2
+    section.flex-1.overflow-y-auto.space-y-2
       = render "story_form"
 
       - if @stories&.any?
