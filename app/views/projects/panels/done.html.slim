@@ -15,4 +15,4 @@
         = render "iteration", iteration: iteration
 
         - if iteration.stories.any?
-          = render partial: 'story_preview', collection: iteration.stories, as: :story
+          = render partial: 'projects/stories/story', collection: iteration.stories, as: :story

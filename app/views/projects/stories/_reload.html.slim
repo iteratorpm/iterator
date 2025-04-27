@@ -1,0 +1,10 @@
+/ = turbo_stream.reload "histories"
+= turbo_stream.reload "story-histories"
+= turbo_stream.reload "current"
+= turbo_stream.reload "current_backlog"
+= turbo_stream.reload "icebox"
+/ = turbo_stream.reload "search"
+/ = turbo_stream.reload "labels"
+/ = turbo_stream.reload "epics"
+/ - if local_assigns[:epic_id]
+/   = turbo_stream.reload "epic_#{epic_id}_stories"

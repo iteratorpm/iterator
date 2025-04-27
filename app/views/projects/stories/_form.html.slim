@@ -1,204 +1,211 @@
-.hidden.bg-white.rounded-lg.border.border-gray-200.overflow-hidden.mb-4 data-panel-target="addStoryForm" data-controller="story-form autofocus_first_element"
-  .edit-details.px-3.py-2
-    section.edit
-      section.model-details
-        = form_with model: [story.project, story] do |f|
-          section.story-header.flex.items-start.mb-4
-            button.collapse-button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action="click->story#close"
-              = inline_svg_tag 'icons/arrow-up.svg', class: "w-4 h-4 text-gray-500"
+.bg-white.rounded-lg.border.border-gray-200.overflow-hidden.mb-4.px-3.py-2 data-panel-target="addStoryForm" data-controller="story-form autofocus_first_element" class=(story.id? ? nil : "hidden")
+  section.model-details
+    = form_with model: [story.project, story] do |f|
+      section.story-header.flex.items-start.mb-4
+        button.collapse-button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action="click->story#close"
+          = inline_svg_tag 'icons/arrow-up.svg', class: "w-4 h-4 text-gray-500"
 
-            fieldset.name.flex-1.ml-1
-              .autosize-textarea
-                = f.text_area :name, \
-                  class: "w-full px-2 py-1 text-base border border-gray-300 rounded resize-none overflow-hidden", \
-                  placeholder: "Story title", \
-                  data: { \
-                    controller: "autofocus-first-element autoresize", \
-                    autofocus_first_element_target: "element", \
-                    action: "input->autoresize#resize" \
-                  }
+        fieldset.name.flex-1.ml-1
+          .autosize-textarea
+            = f.text_area :name, \
+              class: "w-full px-2 py-1 text-base border border-gray-300 rounded resize-none overflow-hidden", \
+              placeholder: "Story title", \
+              data: { \
+                controller: "autofocus-first-element autoresize", \
+                autofocus_first_element_target: "element", \
+                action: "input->autoresize#resize" \
+              }
 
-            button.maximize-button.p-1.rounded.hover:bg-gray-100.ml-2 type="button"
-              = inline_svg_tag 'icons/full-screen.svg', class: "w-4 h-4 text-gray-500"
+        button.maximize-button.p-1.rounded.hover:bg-gray-100.ml-2 type="button"
+          = inline_svg_tag 'icons/full-screen.svg', class: "w-4 h-4 text-gray-500"
 
-          aside.sidebar.flex
-            .wrapper.w-64.flex-shrink-0.ml-4
-              nav.edit-actions.mb-4
-                section.controls.flex.justify-between.items-center
+      aside.sidebar.flex
+        .wrapper.w-64.flex-shrink-0.ml-4
+          nav.edit-actions.mb-4
+            section.controls.flex.justify-between.items-center
 
-                  .actions.flex.items-center.border.border-gray-200.rounded-md.overflow-hidden
-                    button.link-button.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="Copy story link"
-                      = inline_svg_tag 'icons/link.svg', class: "w-4 h-4 text-gray-500"
-                    button.id.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="Copy story link"
-                      = inline_svg_tag 'icons/hashtag.svg', class: "w-4 h-4 text-gray-500"
-                    input readonly="" class="h-5.5 w-[69px] px-0.5 rounded-r-sm text-xms font-normal text-gray-600 bg-white" value=(story.id? ? story.project_story_id : nil)
-                    button.clone-button.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="Clone story" disabled=true
-                      = inline_svg_tag 'icons/clone.svg', class: "w-4 h-4 text-gray-500"
-                    button.history-button.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="View history" disabled=true
-                      = inline_svg_tag 'icons/history.svg', class: "w-4 h-4 text-gray-500"
-                    button.delete-button.p-2.hover:bg-gray-100 type="button" title="Delete story" disabled=true
-                      = inline_svg_tag 'icons/trash.svg', class: "w-4 h-4 text-gray-500"
+              .actions.flex.items-center.border.border-gray-200.rounded-md.overflow-hidden
+                button.link-button.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="Copy story link"
+                  = inline_svg_tag 'icons/link.svg', class: "w-4 h-4 text-gray-500"
+                button.id.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="Copy story link"
+                  = inline_svg_tag 'icons/hashtag.svg', class: "w-4 h-4 text-gray-500"
+                input readonly="" class="h-5.5 w-[69px] px-0.5 rounded-r-sm text-xms font-normal text-gray-600 bg-white" value=(story.id? ? story.project_story_id : nil)
+                button.clone-button.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="Clone story" disabled=true
+                  = inline_svg_tag 'icons/clone.svg', class: "w-4 h-4 text-gray-500"
+                button.history-button.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="View history" disabled=true
+                  = inline_svg_tag 'icons/history.svg', class: "w-4 h-4 text-gray-500"
+                button.delete-button.p-2.hover:bg-gray-100 type="button" title="Delete story" disabled=true
+                  = inline_svg_tag 'icons/trash.svg', class: "w-4 h-4 text-gray-500"
 
-                  .flex
-                    - if story.id?
-                      = f.button "Collapse", \
-                        type: :button, \
-                        class: "text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600",
-                        data: { action: "click->story-form#close" }
-                    - else
-                      = f.button "Cancel", \
-                        type: :button, \
-                        class: "text-sm text-gray-600 hover:text-gray-800 mr-2", \
-                        data: { action: "click->story-form#close" }
-                      = f.submit "Save", \
-                        class: "text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600",
-                        data: { action: "click->story-form#save" }
-
-              .info-box.bg-gray-50.p-4.rounded-lg
-                .story-state.mb-4
-                  .state-row.flex.items-center.mb-2
-                    em.text-xs.text-gray-500.mr-2 Status
-                    span.text-xs.font-medium.bg-gray-100.px-2.py-0.5.rounded Unstarted
-
-                .story-info
-                  .type-row.flex.items-center.mb-3
-                    em.text-xs.text-gray-500.mr-2.w-20 Story Type
-                    .dropdown.relative
-                      = f.hidden_field :story_type, value: "feature"
-                      button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
-                        span.feature-label.text-blue-600 feature
-                        = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
-                      .dropdown-menu.absolute.z-10.hidden.bg-white.shadow-lg.rounded-md.mt-1.w-full
-                        .search-item.p-2.border-b
-                          input.search-input.w-full.px-2.py-1.text-sm.border.border-gray-300.rounded type="text" placeholder="Search"
-                        ul
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="feature"
-                            span.text-blue-600 feature
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="bug"
-                            span.text-red-600 bug
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="chore"
-                            span.text-gray-600 chore
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="release"
-                            span.text-purple-600 release
-
-                  .priority-row.flex.items-center.mb-3
-                    em.text-xs.text-gray-500.mr-2.w-20 Priority
-                    .dropdown.relative
-                      = f.hidden_field :priority, value: "p3"
-                      button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
-                        span.p3-label P3 - Low
-                        = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
-                      .dropdown-menu.absolute.z-10.hidden.bg-white.shadow-lg.rounded-md.mt-1.w-full
-                        ul
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p0"
-                            span P0 - Critical
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p1"
-                            span P1 - High
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p2"
-                            span P2 - Medium
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer.selected data-value="p3"
-                            span P3 - Low
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="none"
-                            span None
-
-                  .estimate-row.flex.items-center.mb-3
-                    em.text-xs.text-gray-500.mr-2.w-20 Points
-                    .dropdown.relative
-                      = f.hidden_field :estimate, value: "-1"
-                      button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
-                        span.unestimated-label unestimated
-                        = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
-                      .dropdown-menu.absolute.z-10.hidden.bg-white.shadow-lg.rounded-md.mt-1.w-full
-                        ul
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer.selected data-value="-1"
-                            span unestimated
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="0"
-                            span 0 points
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="1"
-                            span 1 point
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="2"
-                            span 2 points
-                          li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="3"
-                            span 3 points
-
-                  .requester-row.flex.items-center.mb-3
-                    em.text-xs.text-gray-500.mr-2.w-20 Requester
-                    .dropdown.relative
-                      = f.hidden_field :requested_by_id, value: current_user.id
-                      button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
-                        .flex.items-center
-                          span.mr-2 = current_user.initials
-                          span = current_user.name
-                        = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
-
-                  .owner-row.flex.items-center.mb-3
-                    em.text-xs.text-gray-500.mr-2.w-20 Owners
-                    .flex.items-center
-                      button.add-owner.text-xs.text-blue-500.hover:text-blue-700 type="button" + Add owner
-
-                  .followers-row.flex.items-center
-                    em.text-xs.text-gray-500.mr-2.w-20 Follow
-                    .flex.items-center
-                      = f.check_box :following, checked: true, class: "mr-2"
-                      span.text-xs.text-gray-600 1 follower
-
-          section.blockers.mb-6.mt-4
-            h4.text-sm.font-medium.text-gray-700.mb-2 Blockers
-            .add-blocker.flex.items-center.text-sm.text-gray-500.hover:text-gray-700.cursor-pointer
-              = inline_svg_tag 'icons/plus.svg', class: "w-4 h-4 mr-1"
-              span Add blocker or impediment
-
-          section.description.mb-6
-            h4.text-sm.font-medium.text-gray-700.mb-2 Description
-            .description-editor
-              .tabs.flex.border-b.border-gray-200.mb-2
-                button.tab.active.px-3.py-1.text-sm.font-medium.text-blue-600.border-b-2.border-blue-500 Write
-                button.tab.px-3.py-1.text-sm.font-medium.text-gray-500.disabled Preview
-              .editor-container
-                = f.text_area :description, \
-                  class: "w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500", \
-                  placeholder: "Add a description", \
-                  rows: 4
-              .editor-footer.flex.justify-between.items-center.mt-2
-                .actions
-                  = f.button "Add description", \
-                    type: :submit, \
-                    class: "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+              .flex
+                - if story.id?
+                  = f.button "Collapse", \
+                    type: :button, \
+                    class: "text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600",
+                    data: { action: "click->story#close" }
+                - else
                   = f.button "Cancel", \
                     type: :button, \
-                    class: "ml-2 text-gray-600 px-3 py-1 rounded text-sm hover:text-gray-800"
-                .tools.flex.items-center
-                  button.emoji-button.p-1.rounded.hover:bg-gray-100 type="button"
-                    = inline_svg_tag 'icons/smile.svg', class: "w-4 h-4 text-gray-500"
-                  button.template-button.p-1.rounded.hover:bg-gray-100.ml-1 type="button"
-                    = inline_svg_tag 'icons/template.svg', class: "w-4 h-4 text-gray-500"
+                    class: "text-sm text-gray-600 hover:text-gray-800 mr-2", \
+                    data: { action: "click->story#close" }
+                  = f.submit "Save", \
+                    class: "text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
 
-          section.labels.mb-6
-            h4.text-sm.font-medium.text-gray-700.mb-2 Labels
-            .labels-input.flex.items-center
-              input.w-full.px-3.py-1.text-sm.border.border-gray-300.rounded-md type="text" placeholder="Add a label"
-              button.add-label-button.p-1.rounded.hover:bg-gray-100.ml-2 type="button"
-                = inline_svg_tag 'icons/plus.svg', class: "w-4 h-4 text-gray-500"
+          .info-box.bg-gray-50.p-4.rounded-lg
+            - if story.id?
+              .story-state.mb-4
+                .state-row.flex.items-center.mb-2
+                  em.text-xs.text-gray-500.mr-2 Status
+                  span.text-xs.font-medium.bg-gray-100.px-2.py-0.5.rounded Unstarted
 
-          section.tasks.mb-6
-            h4.text-sm.font-medium.text-gray-700.mb-2 Tasks (0/0)
-            .add-task.flex.items-center.text-sm.text-gray-500.hover:text-gray-700.cursor-pointer
-              = inline_svg_tag 'icons/plus.svg', class: "w-4 h-4 mr-1"
-              span Add a task
+            .story-info
+              .type-row.flex.items-center.mb-3
+                em.text-xs.text-gray-500.mr-2.w-20 Story Type
+                .dropdown.relative
+                  = f.hidden_field :story_type, value: "feature"
+                  button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
+                    span.feature-label.text-blue-600 feature
+                    = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
+                  .dropdown-menu.absolute.z-10.hidden.bg-white.shadow-lg.rounded-md.mt-1.w-full
+                    .search-item.p-2.border-b
+                      input.search-input.w-full.px-2.py-1.text-sm.border.border-gray-300.rounded type="text" placeholder="Search"
+                    ul
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="feature"
+                        span.text-blue-600 feature
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="bug"
+                        span.text-red-600 bug
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="chore"
+                        span.text-gray-600 chore
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="release"
+                        span.text-purple-600 release
 
-          section.activity
-            h4.text-sm.font-medium.text-gray-700.mb-2 Activity
-            .comment-editor.border.border-gray-200.rounded-md.p-3
-              .tabs.flex.border-b.border-gray-200.mb-3.pb-2
-                button.tab.active.px-3.py-1.text-sm.font-medium.text-blue-600 Write
-                button.tab.px-3.py-1.text-sm.font-medium.text-gray-500.disabled Preview
-              textarea.w-full.px-2.py-1.text-sm.border.border-gray-300.rounded.mb-2 placeholder="Add a comment or paste an image" rows="2"
-              .comment-footer.flex.justify-between.items-center
-                .tools.flex.items-center
-                  button.mention-button.p-1.rounded.hover:bg-gray-100 type="button"
-                    = inline_svg_tag 'icons/mention.svg', class: "w-4 h-4 text-gray-500"
-                  button.attachment-button.p-1.rounded.hover:bg-gray-100.ml-1 type="button"
-                    = inline_svg_tag 'icons/paperclip.svg', class: "w-4 h-4 text-gray-500"
-                  button.emoji-button.p-1.rounded.hover:bg-gray-100.ml-1 type="button"
-                    = inline_svg_tag 'icons/smile.svg', class: "w-4 h-4 text-gray-500"
-                button.post-button.bg-blue-500.text-white.px-3.py-1.rounded.text-sm.hover:bg-blue-600.disabled.opacity-50 type="button" disabled Post comment
+              .priority-row.flex.items-center.mb-3
+                em.text-xs.text-gray-500.mr-2.w-20 Priority
+                .dropdown.relative
+                  = f.hidden_field :priority, value: "p3"
+                  button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
+                    span.p3-label P3 - Low
+                    = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
+                  .dropdown-menu.absolute.z-10.hidden.bg-white.shadow-lg.rounded-md.mt-1.w-full
+                    ul
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p0"
+                        span P0 - Critical
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p1"
+                        span P1 - High
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p2"
+                        span P2 - Medium
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer.selected data-value="p3"
+                        span P3 - Low
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="none"
+                        span None
+
+              .estimate-row.flex.items-center.mb-3
+                em.text-xs.text-gray-500.mr-2.w-20 Points
+                .dropdown.relative
+                  = f.hidden_field :estimate, value: "-1"
+                  button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
+                    span.unestimated-label unestimated
+                    = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
+                  .dropdown-menu.absolute.z-10.hidden.bg-white.shadow-lg.rounded-md.mt-1.w-full
+                    ul
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer.selected data-value="-1"
+                        span unestimated
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="0"
+                        span 0 points
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="1"
+                        span 1 point
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="2"
+                        span 2 points
+                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="3"
+                        span 3 points
+
+              .requester-row.flex.items-center.mb-3
+                em.text-xs.text-gray-500.mr-2.w-20 Requester
+                .dropdown.relative
+                  = f.hidden_field :requested_by_id, value: current_user.id
+                  button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
+                    .flex.items-center
+                      span.mr-2 = current_user.initials
+                      span = current_user.name
+                    = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
+
+              .owner-row.flex.items-center.mb-3
+                em.text-xs.text-gray-500.mr-2.w-20 Owners
+                .flex.items-center
+                  button.add-owner.text-xs.text-blue-500.hover:text-blue-700 type="button" + Add owner
+
+              .followers-row.flex.items-center
+                em.text-xs.text-gray-500.mr-2.w-20 Follow
+                .flex.items-center
+                  = f.check_box :following, checked: true, class: "mr-2"
+                  span.text-xs.text-gray-600 1 follower
+
+              - if story.id?
+                .flex.flex-col.items-start.mt-2.text-xs.text-gray-500.space-y-1 data-controller="timestamp-cycle"
+                  div data-timestamp-cycle-target="timestamp" data-type="updated"
+                    | Updated:
+                    span data-millis="1745569658000" = story.updated_at
+                  .hidden data-timestamp-cycle-target="timestamp" data-type="requested"
+                    | Requested:
+                    span data-millis="1744267347000" = story.created_at
+
+      section.blockers.mb-6.mt-4
+        h4.text-sm.font-medium.text-gray-700.mb-2 Blockers
+        .add-blocker.flex.items-center.text-sm.text-gray-500.hover:text-gray-700.cursor-pointer
+          = inline_svg_tag 'icons/plus.svg', class: "w-4 h-4 mr-1"
+          span Add blocker or impediment
+
+      section.description.mb-6
+        h4.text-sm.font-medium.text-gray-700.mb-2 Description
+        .description-editor
+          .tabs.flex.border-b.border-gray-200.mb-2
+            button.tab.active.px-3.py-1.text-sm.font-medium.text-blue-600.border-b-2.border-blue-500 Write
+            button.tab.px-3.py-1.text-sm.font-medium.text-gray-500.disabled Preview
+          .editor-container
+            = f.text_area :description, \
+              class: "w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500", \
+              placeholder: "Add a description", \
+              rows: 4
+          .editor-footer.flex.justify-between.items-center.mt-2
+            .actions
+              = f.button "Add description", \
+                type: :submit, \
+                class: "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+              = f.button "Cancel", \
+                type: :button, \
+                class: "ml-2 text-gray-600 px-3 py-1 rounded text-sm hover:text-gray-800"
+            .tools.flex.items-center
+              button.emoji-button.p-1.rounded.hover:bg-gray-100 type="button"
+                = inline_svg_tag 'icons/smile.svg', class: "w-4 h-4 text-gray-500"
+              button.template-button.p-1.rounded.hover:bg-gray-100.ml-1 type="button"
+                = inline_svg_tag 'icons/template.svg', class: "w-4 h-4 text-gray-500"
+
+      section.labels.mb-6
+        h4.text-sm.font-medium.text-gray-700.mb-2 Labels
+        .labels-input.flex.items-center
+          input.w-full.px-3.py-1.text-sm.border.border-gray-300.rounded-md type="text" placeholder="Add a label"
+          button.add-label-button.p-1.rounded.hover:bg-gray-100.ml-2 type="button"
+            = inline_svg_tag 'icons/plus.svg', class: "w-4 h-4 text-gray-500"
+
+      section.tasks.mb-6
+        h4.text-sm.font-medium.text-gray-700.mb-2 Tasks (0/0)
+        .add-task.flex.items-center.text-sm.text-gray-500.hover:text-gray-700.cursor-pointer
+          = inline_svg_tag 'icons/plus.svg', class: "w-4 h-4 mr-1"
+          span Add a task
+
+      section.activity
+        h4.text-sm.font-medium.text-gray-700.mb-2 Activity
+        .comment-editor.border.border-gray-200.rounded-md.p-3
+          .tabs.flex.border-b.border-gray-200.mb-3.pb-2
+            button.tab.active.px-3.py-1.text-sm.font-medium.text-blue-600 Write
+            button.tab.px-3.py-1.text-sm.font-medium.text-gray-500.disabled Preview
+          textarea.w-full.px-2.py-1.text-sm.border.border-gray-300.rounded.mb-2 placeholder="Add a comment or paste an image" rows="2"
+          .comment-footer.flex.justify-between.items-center
+            .tools.flex.items-center
+              button.mention-button.p-1.rounded.hover:bg-gray-100 type="button"
+                = inline_svg_tag 'icons/mention.svg', class: "w-4 h-4 text-gray-500"
+              button.attachment-button.p-1.rounded.hover:bg-gray-100.ml-1 type="button"
+                = inline_svg_tag 'icons/paperclip.svg', class: "w-4 h-4 text-gray-500"
+              button.emoji-button.p-1.rounded.hover:bg-gray-100.ml-1 type="button"
+                = inline_svg_tag 'icons/smile.svg', class: "w-4 h-4 text-gray-500"
+            button.post-button.bg-blue-500.text-white.px-3.py-1.rounded.text-sm.hover:bg-blue-600.disabled.opacity-50 type="button" disabled Post comment

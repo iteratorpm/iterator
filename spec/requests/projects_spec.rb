@@ -37,7 +37,7 @@ RSpec.describe "Projects", type: :request do
         iteration_start_day: "monday",
         time_zone: "Eastern Time (US & Canada)",
         point_scale: "linear_0123",
-        velocity_scheme: "past_iters_1",
+        velocity_strategy: "past_iters_1",
         initial_velocity: 10,
         iteration_length: 1,
         done_iterations_to_show: 4
@@ -66,7 +66,7 @@ RSpec.describe "Projects", type: :request do
           iteration_length: 2,
           point_scale: "fibonacci",
           initial_velocity: 8,
-          velocity_scheme: "past_iters_2"
+          velocity_strategy: "past_iters_2"
         }
       }
     end

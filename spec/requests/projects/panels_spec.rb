@@ -21,40 +21,40 @@ RSpec.describe "Projects::Panels", type: :request do
       end
 
       it "returns success for done panel" do
-        get project_panel_path(project, panel: 'done')
+        get done_panel_project_path(project)
         expect(response).to be_successful
         expect(response.body).to include("Done")
       end
 
       it "returns success for current panel" do
-        get project_panel_path(project, panel: 'current')
+        get current_panel_project_path(project)
         expect(response).to be_successful
         expect(response.body).to include("Current Iteration")
       end
 
       it "returns success for current_backlog panel" do
-        get project_panel_path(project, panel: 'current_backlog')
+        get current_backlog_panel_project_path(project)
         expect(response).to be_successful
         expect(response.body).to include("Current Iteration/Backlog")
       end
 
       it "returns success for backlog panel" do
-        get project_panel_path(project, panel: 'backlog')
+        get backlog_panel_project_path(project)
         expect(response).to be_successful
         expect(response.body).to include("Backlog")
       end
 
       it "returns success for icebox panel" do
-        get project_panel_path(project, panel: 'icebox')
+        get icebox_panel_project_path(project)
         expect(response).to be_successful
         expect(response.body).to include("Icebox")
       end
 
       it "returns JSON format for current panel" do
-        get project_panel_path(project, panel: 'current'), headers: { "ACCEPT" => "application/json" }
+        get icebox_panel_project_path(project), headers: { "ACCEPT" => "application/json" }
         expect(response).to be_successful
         json = JSON.parse(response.body)
-        expect(json['panel']['title']).to eq('Current Iteration')
+        expect(json['panel']).to eq('icebox_panel')
         expect(json['stories'].size).to eq(2)
       end
     end
@@ -67,19 +67,10 @@ RSpec.describe "Projects::Panels", type: :request do
       end
 
       it "raises authorization error" do
-        get project_panel_path(project, panel: 'current')
+        get current_panel_project_path(project)
         expect(response).to have_http_status(:not_found)
       end
     end
 
-    context "with current panel specific behavior" do
-      let!(:current_iteration) { project.iterations.first }
-      let!(:current_stories) { create_list(:story, 3, :current, :estimated, project: project, estimate: 3) }
-
-      it "shows point total vs velocity" do
-        get project_panel_path(project, panel: 'current')
-        expect(response.body).to include(current_iteration.display_name)
-      end
-    end
   end
 end

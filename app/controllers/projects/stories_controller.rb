@@ -2,9 +2,13 @@ class Projects::StoriesController < ApplicationController
   load_and_authorize_resource
   before_action :set_project
 
+  def new
+    @story = @project.stories.new
+  end
+
   def create
     @story = @project.stories.build(story_params)
-    @story.position = params[:ticket][:position] if params[:ticket][:position].present?
+    @story.position = params[:story][:position] if params[:story][:position].present?
 
     if @story.save
       handle_successful_save
@@ -14,7 +18,11 @@ class Projects::StoriesController < ApplicationController
   end
 
   def show
-    @story.project = @project
+    @story = @project.stories.find(params[:id])
+  end
+
+  def edit
+    @story = @project.stories.find(params[:id])
   end
 
   def update
@@ -25,6 +33,12 @@ class Projects::StoriesController < ApplicationController
     end
   end
 
+  def destroy
+    @story = @project.stories.find(params[:id])
+
+    @story.destroy
+  end
+
   private
 
   def set_project
@@ -32,13 +46,12 @@ class Projects::StoriesController < ApplicationController
   end
 
   def story_params
-    params.require(:ticket).permit(
+    params.require(:story).permit(
       :title,
-      :ticket_type,
+      :story_type,
       :release_date,
       :estimate,
       :requester_id,
-      :state,
       :blocked_by,
       :blocking,
       :description,
@@ -63,8 +76,8 @@ class Projects::StoriesController < ApplicationController
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.append(
-          "stories_#{params[:column]}",
-          partial: "stories/story",
+          "stories_#{params[:panel]}",
+          partial: "projects/stories/story",
           locals: { story: @story }
         )
       end
@@ -76,7 +89,7 @@ class Projects::StoriesController < ApplicationController
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(
-          "new_story_form_#{params[:column]}",
+          "new_story_form_#{params[:panel]}",
           partial: "stories/form",
           locals: { story: @story, column: params[:column] }
         ), status: :unprocessable_entity

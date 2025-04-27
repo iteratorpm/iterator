@@ -15,6 +15,14 @@ module StoriesHelper
     classes.join(" ")
   end
 
+  def story_estimate_icon story
+    if story.estimate >= 8
+      "icons/estimate-huge.svg"
+    else
+      "icons/estimate-#{story.estimate}.svg"
+    end
+  end
+
   # Determine border color class based on story type
   def border_color_class(story)
     case story.story_type

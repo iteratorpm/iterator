@@ -50,7 +50,8 @@ class Ability
 
     # Stories
     can [:create, :update, :move, :destroy], Story, project: { memberships: { user_id: user.id, role: [:owner, :member] } }
-    can :read, Story, project: { memberships: { user_id: user.id } }
+    can :read, Story, project: { memberships: { user_id: user.id, role: :viewer } }
+    can :manage, Story, project: { memberships: { user_id: user.id, role: [:owner, :member] } }
 
     # Comments
     can [:create], Comment, project: { memberships: { user_id: user.id, role: [:owner, :member] } }

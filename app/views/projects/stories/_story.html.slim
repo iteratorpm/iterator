@@ -1,4 +1,4 @@
-.border-b.border-gray-200 data-controller="story" data-selected="false" data-id="#{story.id}" aria-describedby="reorder-help" aria-label=story.name
+.border-b.border-gray-200 data-controller="story" data-selected="false" aria-describedby="reorder-help" aria-label=story.name id=dom_id(story)
   header.flex.items-center.px-2.py-2.border-l-4 data-action="click->story#open" data-story-target="header" class="#{story_classes(story)}" draggable="false"
     .meta.flex.items-center.mr-2
       .meta-top.flex.flex-col.mr-2
@@ -8,7 +8,7 @@
 
         - if story.estimate.present? && story.estimate > 0
           .estimate-icon.mb-1
-            = image_tag("icons/estimate-#{story.estimate}.svg", class: "h-4 w-4", title: "Estimate: #{story.estimate}")
+            = image_tag(story_estimate_icon(story), class: "h-4 w-4", title: "Estimate: #{story.estimate}")
 
       - if story.has_blockers?
         .blocker-icon aria-label="Story has blockers"
@@ -46,4 +46,4 @@
     = image_tag "icons/checkbox-empty.svg", class: "selector undraggable ml-2 text-gray-500 cursor-pointer", title: "Select this story for bulk actions"
 
   .hidden data-story-target="form"
-    = turbo_frame_tag "story_#{story.id}", src: project_story_path(story), refresh: :morph, target: :current, loading: (story.current? ? nil : :lazy)
+    = turbo_frame_tag dom_id(story, :edit), src: edit_project_story_path(story), refresh: :morph, target: :current, loading: (story.current? ? nil : :lazy)

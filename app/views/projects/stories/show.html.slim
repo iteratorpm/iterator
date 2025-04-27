@@ -1,2 +1,2 @@
-= turbo_frame_tag "story_#{@story.id}" do
+= turbo_frame_tag dom_id(@story) do
   = render "form", story: @story
