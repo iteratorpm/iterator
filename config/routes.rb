@@ -46,7 +46,7 @@ Rails.application.routes.draw do
       get 'panels/epics', to: 'projects/panels#epics', as: :epics_panel
     end
 
-    resources :stories, only: [:index]
+    resources :stories, module: "projects", only: [:update, :show, :create]
 
     resources :csv_exports, path: "export", module: "projects", only: [:index, :create] do
       member do

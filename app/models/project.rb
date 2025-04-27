@@ -42,6 +42,20 @@ class Project < ApplicationRecord
 
   before_validation :set_velocity, if: -> { velocity.nil? || velocity.zero? }
 
+  def plan_current_iteration
+    Time.use_zone(time_zone) do
+      # Complete past iterations
+      iterations.where("end_date <= ?", Time.zone.today).each(&:complete!)
+
+      # Find or create current iteration
+      current_iteration = find_or_create_current_iteration
+
+      recalculate_iterations
+
+      current_iteration
+    end
+  end
+
   def releases
     stories.releases
   end

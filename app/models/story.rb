@@ -80,6 +80,22 @@ class Story < ApplicationRecord
   after_update :notify_if_delivered, if: :saved_change_to_state?
   before_create :set_project_story_id
 
+  def done?
+    accepted?
+  end
+
+  def backlog?
+    unstarted?
+  end
+
+  def icebox?
+    unscheduled?
+  end
+
+  def current?
+    started? || finished? || delivered? || rejected?
+  end
+
   def estimated?
     estimate.present?
   end

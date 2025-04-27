@@ -8,13 +8,11 @@
     = render "panel_header", close: true, actions: true, title: "Done"
 
     / Panel content area
-    section.flex-1.overflow-y-auto.space-y-2
+    section.flex-1.overflow-y-auto
 
       / Iteration headers for done panel
       - @iterations.each do |iteration|
         = render "iteration", iteration: iteration
 
-        - iteration_stories = @stories.select { |s| s.iteration_id == iteration['id'] }
-
-        - if iteration_stories.any?
-          = render partial: 'story_preview', collection: iteration_stories, as: :story
+        - if iteration.stories.any?
+          = render partial: 'story_preview', collection: iteration.stories, as: :story

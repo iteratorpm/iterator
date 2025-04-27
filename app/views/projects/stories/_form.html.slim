@@ -1,22 +1,22 @@
-.hidden.bg-white.rounded-lg.border.border-gray-200.overflow-hidden.mb-4 data-panel-target="addStoryForm" data-controller="story-form"
-  .edit-details.p-4
+.hidden.bg-white.rounded-lg.border.border-gray-200.overflow-hidden.mb-4 data-panel-target="addStoryForm" data-controller="story-form autofocus_first_element"
+  .edit-details.px-3.py-2
     section.edit
       section.model-details
-        = form_with model: [@project, Story.new], class: "story-form" do |f|
+        = form_with model: [story.project, story] do |f|
           section.story-header.flex.items-start.mb-4
-            button.collapse-button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action="click->story-form#collapse"
-              = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500"
+            button.collapse-button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action="click->story#close"
+              = inline_svg_tag 'icons/arrow-up.svg', class: "w-4 h-4 text-gray-500"
 
             fieldset.name.flex-1.ml-1
-              .autosize-textarea.relative
+              .autosize-textarea
                 = f.text_area :name, \
-                  class: "w-full px-2 py-1 text-sm border border-gray-300 rounded resize-none overflow-hidden", \
+                  class: "w-full px-2 py-1 text-base border border-gray-300 rounded resize-none overflow-hidden", \
                   placeholder: "Story title", \
-                  "data-story-form-target": "titleInput", \
-                  "data-action": "input->story-form#resizeTextarea"
-                .autosize-textarea-shadow.absolute.top-0.left-0.px-2.py-1.text-sm.invisible.whitespace-pre-wrap.h-0.overflow-hidden
-                  span
-                  span w
+                  data: { \
+                    controller: "autofocus-first-element autoresize", \
+                    autofocus_first_element_target: "element", \
+                    action: "input->autoresize#resize" \
+                  }
 
             button.maximize-button.p-1.rounded.hover:bg-gray-100.ml-2 type="button"
               = inline_svg_tag 'icons/full-screen.svg', class: "w-4 h-4 text-gray-500"
@@ -29,9 +29,9 @@
                   .actions.flex.items-center.border.border-gray-200.rounded-md.overflow-hidden
                     button.link-button.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="Copy story link"
                       = inline_svg_tag 'icons/link.svg', class: "w-4 h-4 text-gray-500"
-                    button.id-button.flex.items-center.px-2.py-2.border-r.border-gray-200.hover:bg-gray-100 type="button" disabled=true
-                      span.text-xs.text-gray-400.mr-1 #
-                      span.text-xs.text-gray-600 New
+                    button.id.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="Copy story link"
+                      = inline_svg_tag 'icons/hashtag.svg', class: "w-4 h-4 text-gray-500"
+                    input readonly="" class="h-5.5 w-[69px] px-0.5 rounded-r-sm text-xms font-normal text-gray-600 bg-white" value=(story.id? ? story.project_story_id : nil)
                     button.clone-button.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="Clone story" disabled=true
                       = inline_svg_tag 'icons/clone.svg', class: "w-4 h-4 text-gray-500"
                     button.history-button.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="View history" disabled=true
@@ -39,13 +39,20 @@
                     button.delete-button.p-2.hover:bg-gray-100 type="button" title="Delete story" disabled=true
                       = inline_svg_tag 'icons/trash.svg', class: "w-4 h-4 text-gray-500"
 
-                  .persistence.flex
-                    = f.button "Cancel", \
-                      type: :button, \
-                      class: "text-sm text-gray-600 hover:text-gray-800 mr-2", \
-                      data: { action: "click->story-form#cancel" }
-                    = f.submit "Save", \
-                      class: "text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  .flex
+                    - if story.id?
+                      = f.button "Collapse", \
+                        type: :button, \
+                        class: "text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600",
+                        data: { action: "click->story-form#close" }
+                    - else
+                      = f.button "Cancel", \
+                        type: :button, \
+                        class: "text-sm text-gray-600 hover:text-gray-800 mr-2", \
+                        data: { action: "click->story-form#close" }
+                      = f.submit "Save", \
+                        class: "text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600",
+                        data: { action: "click->story-form#save" }
 
               .info-box.bg-gray-50.p-4.rounded-lg
                 .story-state.mb-4

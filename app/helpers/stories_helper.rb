@@ -1,55 +1,16 @@
 module StoriesHelper
-  def story_type_class(type)
-    case type.downcase
-    when 'feature' then 'bg-blue-100 text-blue-800'
-    when 'bug' then 'bg-red-100 text-red-800'
-    when 'chore' then 'bg-yellow-100 text-yellow-800'
-    else 'bg-gray-100 text-gray-800'
-    end
-  end
-
-  def story_state_class(state)
-    case state.downcase
-    when 'unstarted' then 'bg-gray-200 text-gray-800'
-    when 'started' then 'bg-yellow-200 text-yellow-800'
-    when 'finished' then 'bg-blue-200 text-blue-800'
-    when 'delivered' then 'bg-purple-200 text-purple-800'
-    when 'accepted' then 'bg-green-200 text-green-800'
-    when 'rejected' then 'bg-red-200 text-red-800'
-    else 'bg-gray-200 text-gray-800'
-    end
-  end
 
   # Generate appropriate classes based on story attributes
   def story_classes(story)
-    classes = ["story-preview-item", "draggable"]
+    classes = ["story-preview-item", "cursor-move"]
 
-    # Add story type class
-    classes << story.story_type if story.story_type.present?
+    classes << "bg-blue-100" if story.icebox?
 
-    # Add priority class
-    classes << "p#{story.priority}" if story.priority.present?
+    classes << "bg-yellow-100" if story.current?
 
-    # Add state class
-    # classes << story.current_state if story.current_state.present?
+    classes << "bg-green-100" if story.done?
 
-    # Add estimate classes
-    if story.estimate.present?
-      classes << "estimate_#{story.estimate}"
-    else
-      classes << "estimate_-1"
-    end
-
-    classes << "is_estimatable" if story.estimatable?
-
-    # Add task and comment related classes
-    classes << "has_tasks" if story.tasks.any?
-    classes << "comments" if story.comments.any?
-
-    # Add blocker classes
-    if story.has_blockers? || story.blocking_stories.any?
-      classes << "has_blockers_or_blocking"
-    end
+    classes << border_color_class(story)
 
     classes.join(" ")
   end

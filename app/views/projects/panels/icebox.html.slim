@@ -7,8 +7,9 @@
 
     = render "panel_header", add_story: true, close: true, actions: true, title: "Icebox"
 
-    section.flex-1.overflow-y-auto.space-y-2
-      = render "story_form"
+    section.flex-1.overflow-y-auto
+
+      = render "projects/stories/form", story: @project.stories.new
 
       - if @stories&.any?
         = render partial: 'story_preview', collection: @stories, as: :story
