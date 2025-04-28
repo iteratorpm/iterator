@@ -2,6 +2,14 @@ class Attachment < ApplicationRecord
   belongs_to :attachable, polymorphic: true
   belongs_to :uploader, class_name: 'User'
 
+  def self.ransackable_attributes(auth_object = nil)
+    %w[filename description created_at updated_at]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[attachable]
+  end
+
   validates :filename, presence: true
   validates :file_path, presence: true
   validates :uploader, presence: true

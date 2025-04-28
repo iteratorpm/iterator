@@ -2,7 +2,7 @@
   section.model-details
     = form_with model: [story.project, story] do |f|
       section.story-header.flex.items-start.mb-4
-        button.collapse-button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action="click->story#close"
+        button.collapse-button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action="click->story#close click->story-form#close"
           = inline_svg_tag 'icons/arrow-up.svg', class: "w-4 h-4 text-gray-500"
 
         fieldset.name.flex-1.ml-1
@@ -47,11 +47,12 @@
                   = f.button "Cancel", \
                     type: :button, \
                     class: "text-sm text-gray-600 hover:text-gray-800 mr-2", \
-                    data: { action: "click->story#close" }
+                    data: { action: "click->story-form#close" }
                   = f.submit "Save", \
                     class: "text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
 
           .info-box.bg-gray-50.p-4.rounded-lg
+
             - if story.id?
               .story-state.mb-4
                 .state-row.flex.items-center.mb-2
@@ -90,28 +91,16 @@
 
               .estimate-row.flex.items-center.mb-3
                 span.text-xs.text-gray-500.mr-2.w-20 Points
-                .dropdown.relative
-                  = f.hidden_field :estimate, value: "-1"
-                  button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
-                    span.unestimated-label unestimated
-                    = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
-                  .dropdown-menu.absolute.z-10.hidden.bg-white.shadow-lg.rounded-md.mt-1.w-full
-                    ul
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer.selected data-value="-1"
-                        span unestimated
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="0"
-                        span 0 points
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="1"
-                        span 1 point
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="2"
-                        span 2 points
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="3"
-                        span 3 points
+                = render partial: "projects/stories/estimate_dropdown", \
+                         locals: { \
+                           options: [[-1, "Unestimated"], [0, "0 points"], [1, "1 Point"], [2, "2 Points"], [3, "3 Points"]],\
+                           searchable: true, story: story \
+                         }
 
               .requester-row.flex.items-center.mb-3
                 span.text-xs.text-gray-500.mr-2.w-20 Requester
                 .dropdown.relative
-                  = f.hidden_field :requested_by_id, value: current_user.id
+                  = f.hidden_field :requester_id, value: current_user.id
                   button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
                     .flex.items-center
                       span.mr-2 = current_user.initials

@@ -1,10 +1,10 @@
 li.flex.items-center.justify-end
   .relative.group
-    form.search-bar.flex.items-center.relative[action="#" data-controller="search" data-action="submit->search#preventDefault"]
+    form.search-bar.flex.items-center.relative[action=project_search_path(@project) data-controller="search" data-action="submit->search#preventDefault"]
       a.absolute.left-3.text-gray-400[href="#"]
         svg.w-4.h-4[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
           path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"]
-      input.w-full.pl-10.pr-8.py-2.rounded.border.border-gray-300.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-transparent[name="search" type="text" aria-label="Search project" placeholder="Search project" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value=""]
+      input.w-full.pl-10.pr-8.py-2.rounded.border.border-gray-300.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-transparent[name="q" type="text" aria-label="Search project" placeholder="Search project" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value=""]
       button.absolute.right-3.text-gray-400.hover:text-gray-600[type="button" aria-label="search help"] ?
 
     .absolute.right-0.hidden.group-focus-within:block.w-xl.bg-white.rounded-md.shadow-lg.border.border-gray-200.z-50.mt-1

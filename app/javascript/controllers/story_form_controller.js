@@ -6,7 +6,7 @@ export default class extends Controller {
   connect() {
   }
 
-  collapse() {
+  close() {
     this.element.classList.add('hidden')
   }
 }

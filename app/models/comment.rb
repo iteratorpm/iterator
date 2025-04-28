@@ -2,6 +2,14 @@ class Comment < ApplicationRecord
   belongs_to :commentable, polymorphic: true
   belongs_to :author, class_name: 'User'
 
+  def self.ransackable_attributes(auth_object = nil)
+    %w[content created_at updated_at]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[commentable author]
+  end
+
   has_many :attachments, as: :attachable, dependent: :destroy
 
   validates :content, presence: true

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_25_062752) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_28_150813) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -316,7 +316,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_25_062752) do
     t.integer "story_type", default: 0
     t.integer "state", default: 0
     t.integer "priority", default: 0
-    t.integer "estimate"
+    t.integer "estimate", default: -1, null: false
     t.integer "project_id", null: false
     t.integer "requester_id"
     t.integer "epic_id"

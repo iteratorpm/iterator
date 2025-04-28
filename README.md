@@ -1,51 +1,90 @@
-# 🛠️ Iterator – Open Source Agile Project Management Tool
+# 🚀 Iterator – Open-Source Agile Tracker for Developers
 
-**Iterator** is an open-source, self-hostable project management tool inspired by [Pivotal Tracker](https://www.pivotaltracker.com). Built with Ruby on Rails, it brings agile software planning back to developers — free, fast, and fully transparent.
+**Iterator** is a self-hosted alternative to Pivotal Tracker built by developers, for developers. Get **lightweight agile planning** without SaaS lock-in or enterprise bloat.
 
 ![screenshot](docs/screenshot.png)
 
 ---
 
-## 🚀 Why Iterator?
+## 🔥 Why Developers Choose Iterator
 
-Pivotal Tracker is a great tool, but it's closed-source and limited in customization. Iterator is:
+### ⚡ **Git-Native Workflow**
+- Auto-sync stories with **GitHub/GitLab issues/PRs**
+- CLI tools for terminal lovers
+- REST API for custom integrations
 
-- 🔓 **100% open source**
-- 🏡 **Self-hostable**
-- 💡 **Developer-first**
-- 🔁 **Iteration-focused**
+### 🧠 **Smart Agile Features**
+- AI-assisted backlog grooming *(beta)*
+- Velocity tracking with burn-down charts
+- Keyboard-first navigation (Vim-style shortcuts)
 
----
-
-## ✨ Features
-
-- 📁 Projects & teams
-- 🧩 Stories (planned, started, finished, delivered, accepted, rejected)
-- 🎯 Estimation (points-based)
-- 🔄 Iteration scheduling (weekly/biweekly)
-- 🧪 REST API (inspired by Tracker v5)
-- 🔒 User authentication (Devise)
-- ⚙️ Kamal-based deployment
-- 🧪 Tests (RSpec) and seeds for local dev
+### 🛠️ **Painless Self-Hosting**
+- Deploy in 5 mins with Docker/Kamal
+- Sqlite support (no PostgreSQL required for small teams)
+- Minimal infrastructure footprint
 
 ---
 
-## 📦 Tech Stack
+## ✨ Core Features
 
-- Ruby on Rails 8
-- Hotwire (Turbo + Stimulus)
-- Sqlite
-- Kamal (for deployment)
-- RSpec / FactoryBot
+| Developer Essentials | Agile Power-Ups |
+|----------------------|-----------------|
+| ✅ GitHub/GitLab sync | ✅ Auto-sprint planning |
+| ✅ CLI + REST API | ✅ Velocity tracking |
+| ✅ Kamal deployment | ✅ Icebox prioritization |
+| ✅ Keyboard shortcuts | ✅ Iteration reports |
 
 ---
 
-## 🚀 Deployment (via [Kamal](https://kamal-deploy.org))
+## 🛠️ Tech Stack
 
-You can deploy this app easily using [Kamal](https://kamal-deploy.org):
+- **Ruby on Rails 8** (Hotwire Turbo + Stimulus)
+- **Sqlite/Postgres/MySql** (your choice)
+- **Kamal** (zero-downtime deploys)
+- **RSpec** (100% test coverage goal)
 
-1. Configure your `.env` and `kamal.yml` (see `deploy/` folder)
-2. Push with:
-   ```bash
-   kamal deploy
-   ```
+---
+
+## 🚀 Self-Hosting Guide
+
+### 1. Docker Quickstart
+```bash
+git clone https://github.com/your-repo/iterator
+cd iterator
+cp .env.example .env  # Configure your secrets
+docker compose up -d  # That's it!
+```
+
+### 2. Kamal for Production
+```bash
+# Set up Kamal (1-time)
+kamal env push
+kamal accessory boot
+
+# Deploy!
+kamal deploy
+```
+
+📘 Full docs: [SELF_HOSTING.md](docs/SELF_HOSTING.md)
+
+---
+
+## 💡 Why We Built This
+
+After struggling with:
+- Jira's complexity
+- Pivotal Tracker's shutdown
+- GitHub Projects' lack of agile features
+
+...we made **Iterator** to give teams:
+- **Control** (self-host anywhere)
+- **Transparency** (100% open-source)
+- **Developer joy** (no more PM tool frustration)
+
+---
+
+## 👥 Join the Community
+[![Discord](https://img.shields.io/badge/chat-Discord-7289DA)](your-invite-link)
+[![GitHub Issues](https://img.shields.io/github/issues/your-repo/iterator)](https://github.com/bendangelo/iterator/issues)
+
+**Contribute:** We welcome PRs! See [CONTRIBUTING.md](CONTRIBUTING.md)

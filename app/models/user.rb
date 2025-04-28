@@ -1,12 +1,20 @@
 class User < ApplicationRecord
 
   def self.ransackable_attributes(auth_object = nil)
-    %w[name email username]
+    %w[
+      name
+      email
+      username
+      created_at
+      updated_at
+    ]
   end
 
-  # Optionally limit associations that can be searched
   def self.ransackable_associations(auth_object = nil)
-    []
+    %w[
+      requested_stories
+      owned_stories
+    ]
   end
 
   has_many :authored_comments, class_name: 'Comment', foreign_key: 'author_id', dependent: :nullify
@@ -15,6 +23,8 @@ class User < ApplicationRecord
   has_many :projects, through: :project_memberships
   has_many :memberships, dependent: :destroy
   has_many :organizations, through: :memberships
+  has_many :requested_stories, class_name: 'Story', foreign_key: 'requester_id'
+  has_and_belongs_to_many :owned_stories, class_name: 'Story'
   has_one_attached :avatar
 
   belongs_to :current_organization, class_name: 'Organization', optional: true

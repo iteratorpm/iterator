@@ -22,10 +22,12 @@ module StoriesHelper
   end
 
   def story_estimate_icon story
-    if story.estimate >= 8
-      "icons/estimate-huge.svg"
+    estimate = (story.respond_to? :estimate) ? story.estimate : story
+
+    if estimate >= 8
+      image_tag "icons/estimate-huge.svg", class: "h-4 w-4", title: "Estimate #{estimate}"
     else
-      "icons/estimate-#{story.estimate}.svg"
+      image_tag "icons/estimate-#{estimate}.svg", class: "h-4 w-4", title: "Estimate #{estimate}"
     end
   end
 

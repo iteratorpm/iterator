@@ -2,6 +2,34 @@ class Story < ApplicationRecord
   include Discard::Model
   has_paper_trail
 
+  def self.ransackable_attributes(auth_object = nil)
+    # Whitelist only the attributes you want searchable
+    %w[
+      title
+      description
+      story_type
+      state
+      estimate
+      created_at
+      updated_at
+      accepted_at
+    ]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    # Whitelist associations that can be searched
+    %w[
+      owners
+      requester
+      labels
+      epic
+      comments
+      tasks
+      attachments
+      blockers
+    ]
+  end
+
   # Enums
   enum :story_type, { feature: 0, bug: 1, chore: 2, release: 3 }
   enum :state, {
@@ -44,6 +72,8 @@ class Story < ApplicationRecord
   validates :priority, presence: true
   validates :project, presence: true
   validates :requester, presence: true
+
+  validates :estimate, numericality: { greater_than_or_equal_to: -1 }, allow_nil: false
 
   validates :project_story_id, uniqueness: { scope: :project_id }
 
