@@ -70,9 +70,9 @@
                 - else
                   | No projects
               td.px-6.py-4.whitespace-nowrap.text-sm.font-medium
-                .relative data-controller="dropdown"
-                  = button_tag "Actions", data: { action: "click->dropdown#toggle" }, class: "text-blue-600 hover:text-blue-900"
-                  .hidden.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg.bg-white.ring-1.ring-black.ring-opacity-5.z-50 data-dropdown-target="menu"
+                .relative data-controller="dropmenu"
+                  = button_tag "Actions", data: { action: "click->dropmenu#toggle" }, class: "text-blue-600 hover:text-blue-900"
+                  .hidden.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg.bg-white.ring-1.ring-black.ring-opacity-5.z-50 data-dropmenu-target="menu"
                     .py-1 role="menu"
                       = link_to "Change Roles", memberships_path(@organization, membership), class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem"
                       = link_to "Add to Projects", "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem"

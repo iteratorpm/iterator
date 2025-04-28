@@ -1,0 +1,27 @@
+= content_tag :div, data: { controller: "dropdown" }, class: "relative flex-grow" do
+  = hidden_field_tag "story[story_type]", story.story_type || "feature", data: { dropdown_target: "input" }
+
+  / Button - Closed State Display
+  = button_tag type: "button",
+              data: { action: "click->dropdown#toggle", dropdown_target: "button" },
+              id: "story_type_dropdown_button",
+              class: "select-story-points flex items-center justify-between gap-2 bg-transparent h-7 p-0 border-none cursor-pointer w-full" do
+    .flex.items-center.gap-2 data-dropdown-target="selected"
+      = render "projects/stories/dropdown_item", icon: story_type_icon(story.story_type.presence || "feature"), label: story.story_type.present? ? story.story_type.humanize : "Feature"
+    = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
+
+  / Dropdown Menu
+  .hidden.absolute.z-10.mt-1.w-full.rounded-md.bg-white.shadow-lg.ring-1.ring-black.ring-opacity-5.max-h-60.overflow-auto data-dropdown-target="menu"
+    - if searchable
+      .p-2.border-b
+        = text_field_tag :search, nil,
+                        placeholder: "Search...",
+                        class: "w-full px-2 py-1 text-sm border rounded",
+                        data: { dropdown_target: "search", action: "input->dropdown#filter" }
+
+    ul.py-1.text-sm.text-gray-700 role="menu" data-dropdown-target="items"
+      - options.each do |value, label|
+        li.relative data-value=value data-action="click->dropdown#select" data-dropdown-target="item" role="menuitem"
+          = link_to "#", class: "flex items-center w-full pl-3 py-0.5 h-8 leading-6 hover:bg-gray-100 cursor-pointer" do
+            .dropdown_content
+              = render "projects/stories/dropdown_item", icon: story_type_icon(value), label: label

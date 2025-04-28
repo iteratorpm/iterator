@@ -15,6 +15,12 @@ module StoriesHelper
     classes.join(" ")
   end
 
+  def story_type_icon story
+    type = (story.respond_to? :story_type) ? story.story_type : story.downcase
+
+    inline_svg_tag("icons/#{type}.svg", class: "h-4 w-4 #{story_color_class(type)}", title: type.capitalize)
+  end
+
   def story_estimate_icon story
     if story.estimate >= 8
       "icons/estimate-huge.svg"
@@ -39,8 +45,8 @@ module StoriesHelper
     end
   end
 
-  def story_color_class(story)
-    case story.story_type
+  def story_color_class(story_type)
+    case story_type
     when "feature"
       "text-yellow-500"
     when "bug"

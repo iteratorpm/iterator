@@ -55,52 +55,41 @@
             - if story.id?
               .story-state.mb-4
                 .state-row.flex.items-center.mb-2
-                  em.text-xs.text-gray-500.mr-2 Status
+                  span.text-xs.text-gray-500.mr-2 Status
                   span.text-xs.font-medium.bg-gray-100.px-2.py-0.5.rounded Unstarted
 
             .story-info
               .type-row.flex.items-center.mb-3
-                em.text-xs.text-gray-500.mr-2.w-20 Story Type
-                .dropdown.relative
-                  = f.hidden_field :story_type, value: "feature"
-                  button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
-                    span.feature-label.text-blue-600 feature
-                    = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
-                  .dropdown-menu.absolute.z-10.hidden.bg-white.shadow-lg.rounded-md.mt-1.w-full
-                    .search-item.p-2.border-b
-                      input.search-input.w-full.px-2.py-1.text-sm.border.border-gray-300.rounded type="text" placeholder="Search"
-                    ul
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="feature"
-                        span.text-blue-600 feature
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="bug"
-                        span.text-red-600 bug
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="chore"
-                        span.text-gray-600 chore
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="release"
-                        span.text-purple-600 release
+                span.text-xs.text-gray-500.mr-2.w-20 Story Type
+                = render partial: "projects/stories/story_type_dropdown", \
+                         locals: { \
+                           options: [["feature", "Feature"], ["bug", "Bug"], ["chore", "Chore"], ["release", "Release"]],\
+                           searchable: true, story: story \
+                         }
 
-              .priority-row.flex.items-center.mb-3
-                em.text-xs.text-gray-500.mr-2.w-20 Priority
-                .dropdown.relative
-                  = f.hidden_field :priority, value: "p3"
-                  button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
-                    span.p3-label P3 - Low
-                    = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
-                  .dropdown-menu.absolute.z-10.hidden.bg-white.shadow-lg.rounded-md.mt-1.w-full
-                    ul
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p0"
-                        span P0 - Critical
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p1"
-                        span P1 - High
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p2"
-                        span P2 - Medium
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer.selected data-value="p3"
-                        span P3 - Low
-                      li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="none"
-                        span None
+              - if story.project.priority_field_enabled?
+                .priority-row.flex.items-center.mb-3
+                  span.text-xs.text-gray-500.mr-2.w-20 Priority
+                  .dropdown.relative
+                    = f.hidden_field :priority, value: "p3"
+                    button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
+                      span.p3-label P3 - Low
+                      = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
+                    .dropdown-menu.absolute.z-10.hidden.bg-white.shadow-lg.rounded-md.mt-1.w-full
+                      ul
+                        li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p0"
+                          span P0 - Critical
+                        li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p1"
+                          span P1 - High
+                        li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p2"
+                          span P2 - Medium
+                        li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer.selected data-value="p3"
+                          span P3 - Low
+                        li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="none"
+                          span None
 
               .estimate-row.flex.items-center.mb-3
-                em.text-xs.text-gray-500.mr-2.w-20 Points
+                span.text-xs.text-gray-500.mr-2.w-20 Points
                 .dropdown.relative
                   = f.hidden_field :estimate, value: "-1"
                   button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
@@ -120,7 +109,7 @@
                         span 3 points
 
               .requester-row.flex.items-center.mb-3
-                em.text-xs.text-gray-500.mr-2.w-20 Requester
+                span.text-xs.text-gray-500.mr-2.w-20 Requester
                 .dropdown.relative
                   = f.hidden_field :requested_by_id, value: current_user.id
                   button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
@@ -130,12 +119,12 @@
                     = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
 
               .owner-row.flex.items-center.mb-3
-                em.text-xs.text-gray-500.mr-2.w-20 Owners
+                span.text-xs.text-gray-500.mr-2.w-20 Owners
                 .flex.items-center
                   button.add-owner.text-xs.text-blue-500.hover:text-blue-700 type="button" + Add owner
 
               .followers-row.flex.items-center
-                em.text-xs.text-gray-500.mr-2.w-20 Follow
+                span.text-xs.text-gray-500.mr-2.w-20 Follow
                 .flex.items-center
                   = f.check_box :following, checked: true, class: "mr-2"
                   span.text-xs.text-gray-600 1 follower

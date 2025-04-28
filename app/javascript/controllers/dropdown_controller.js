@@ -1,15 +1,91 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["menu"]
+  static targets = ["input", "button", "menu", "search", "selected", "items", "item"]
+  static values = { selected: String }
 
-  toggle() {
-    this.menuTarget.classList.toggle("hidden")
+  connect() {
+    this.setupAriaAttributes()
+    this.initializeSelectedItem()
+    document.addEventListener("click", this.closeOnClickOutside.bind(this))
   }
 
-  hide(event) {
-    if (!this.element.contains(event.target)) {
-      this.menuTarget.classList.add("hidden")
+  disconnect() {
+    document.removeEventListener("click", this.closeOnClickOutside.bind(this))
+  }
+
+  toggle(e) {
+    e.preventDefault()
+    this.menuTarget.classList.toggle("hidden")
+    const isExpanded = !this.menuTarget.classList.contains("hidden")
+    this.buttonTarget.setAttribute("aria-expanded", isExpanded)
+    
+    if (isExpanded) {
+      this.searchTarget?.focus()
+      this.highlightSelectedItem()
     }
+  }
+
+  select(e) {
+    e.preventDefault()
+    const item = e.currentTarget.closest("[data-value]")
+    if (!item) return
+
+    this.selectedValue = item.dataset.value
+    this.updateDisplay(item)
+    this.menuTarget.classList.add("hidden")
+    this.buttonTarget.setAttribute("aria-expanded", "false")
+  }
+
+  filter() {
+    const term = this.searchTarget.value.toLowerCase()
+    this.itemsTargets.forEach(item => {
+      const matches = item.textContent.toLowerCase().includes(term)
+      item.classList.toggle("hidden", !matches)
+    })
+  }
+
+  initializeSelectedItem() {
+    const initialValue = this.inputTarget.value
+    const initialItem = this.itemTargets.find(item => 
+      item.dataset.value === initialValue
+    )
+    if (initialItem) this.updateDisplay(initialItem)
+  }
+
+  updateDisplay(selectedItem) {
+    // Clone the selected item's content for display
+    const displayContent = selectedItem.querySelector(".dropdown_content").cloneNode(true)
+    this.selectedTarget.innerHTML = ''
+    this.selectedTarget.appendChild(displayContent)
+    
+    // Update hidden input value
+    this.inputTarget.value = this.selectedValue = selectedItem.dataset.value
+    
+    // Update active states
+    this.itemTargets.forEach(item => {
+      item.classList.toggle("bg-gray-100", item.dataset.value === this.selectedValue)
+    })
+  }
+
+  highlightSelectedItem() {
+    this.itemsTargets.forEach(item => {
+      if (item.dataset.value === this.selectedValue) {
+        item.scrollIntoView({ block: "nearest" })
+      }
+    })
+  }
+
+  closeOnClickOutside(e) {
+    if (!this.element.contains(e.target)) {
+      this.menuTarget.classList.add("hidden")
+      this.buttonTarget.setAttribute("aria-expanded", "false")
+    }
+  }
+
+  setupAriaAttributes() {
+    this.buttonTarget.setAttribute("aria-haspopup", "true")
+    this.buttonTarget.setAttribute("aria-expanded", "false")
+    this.menuTarget.setAttribute("aria-labelledby", this.buttonTarget.id)
   }
 }

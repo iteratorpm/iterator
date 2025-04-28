@@ -4,7 +4,7 @@
       .meta-top.flex.flex-col.mr-2
         - if story.story_type.present?
           .story-type.mb-1
-            = inline_svg_tag("icons/#{story.story_type}.svg", class: "h-4 w-4 #{story_color_class(story)}", title: story.story_type.capitalize)
+            = story_type_icon story
 
         - if story.estimate.present? && story.estimate > 0
           .estimate-icon.mb-1
