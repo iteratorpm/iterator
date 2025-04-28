@@ -62,39 +62,36 @@
             .story-info
               .type-row.flex.items-center.mb-3
                 span.text-xs.text-gray-500.mr-2.w-20 Story Type
-                = render partial: "projects/stories/story_type_dropdown", \
+                = render partial: "shared/dropdown", \
                          locals: { \
+                           record: story, \
+                           column: :story_type, \
+                           form: f, \
+                           icon_method: :story_type_icon, \
                            options: [["feature", "Feature"], ["bug", "Bug"], ["chore", "Chore"], ["release", "Release"]],\
-                           searchable: true, story: story \
+                           searchable: true \
                          }
 
               - if story.project.priority_field_enabled?
                 .priority-row.flex.items-center.mb-3
                   span.text-xs.text-gray-500.mr-2.w-20 Priority
-                  .dropdown.relative
-                    = f.hidden_field :priority, value: "p3"
-                    button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
-                      span.p3-label P3 - Low
-                      = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
-                    .dropdown-menu.absolute.z-10.hidden.bg-white.shadow-lg.rounded-md.mt-1.w-full
-                      ul
-                        li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p0"
-                          span P0 - Critical
-                        li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p1"
-                          span P1 - High
-                        li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="p2"
-                          span P2 - Medium
-                        li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer.selected data-value="p3"
-                          span P3 - Low
-                        li.dropdown-item.px-3.py-2.hover:bg-gray-100.cursor-pointer data-value="none"
-                          span None
+                  = render partial: "shared/dropdown", locals: {\
+                    record: story,\
+                    selected: story.estimate, \
+                    column: :priority,\
+                    options: [["low", "Low"], ["medium", "Medium"], ["high", "High"]]\
+                  }
 
               .estimate-row.flex.items-center.mb-3
                 span.text-xs.text-gray-500.mr-2.w-20 Points
-                = render partial: "projects/stories/estimate_dropdown", \
+                = render partial: "shared/dropdown", \
                          locals: { \
+                           record: story, \
+                           form: f, \
+                           column: :estimate, \
+                           icon_method: :story_estimate_icon, \
                            options: [[-1, "Unestimated"], [0, "0 points"], [1, "1 Point"], [2, "2 Points"], [3, "3 Points"]],\
-                           searchable: true, story: story \
+                           searchable: true \
                          }
 
               .requester-row.flex.items-center.mb-3
