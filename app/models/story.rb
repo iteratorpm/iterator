@@ -25,7 +25,6 @@ class Story < ApplicationRecord
   has_many :owners, through: :story_owners, source: :user
 
   has_many :tasks, dependent: :destroy
-  has_many :comments, as: :commentable, dependent: :destroy
   has_many :story_labels, dependent: :destroy
   has_many :labels, through: :story_labels
   has_many :blockers, dependent: :destroy

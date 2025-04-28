@@ -1,42 +1,78 @@
 class Projects::StoriesController < ApplicationController
-  load_and_authorize_resource
   before_action :set_project
+  before_action :set_story, only: [:edit, :show, :update, :destroy]
+  authorize_resource only: [:edit, :show, :update, :destroy]
 
   def new
     @story = @project.stories.new
+
+    authorize! :new, @story
   end
 
   def create
     @story = @project.stories.build(story_params)
+
+    authorize! :create, @story
+
     @story.position = params[:story][:position] if params[:story][:position].present?
 
     if @story.save
       handle_successful_save
     else
-      handle_failed_save
+      respond_to do |format|
+        format.turbo_stream { render_turbo_validation_errors(@story) }
+        format.html { render :new }
+      end
     end
+
   end
 
   def show
-    @story = @project.stories.find(params[:id])
   end
 
   def edit
-    @story = @project.stories.find(params[:id])
   end
 
   def update
     if @story.update(story_params)
       handle_successful_update
     else
-      handle_failed_update
+      respond_to do |format|
+        format.turbo_stream { render_turbo_validation_errors(@story) }
+        format.html { render :edit }
+      end
     end
   end
 
   def destroy
-    @story = @project.stories.find(params[:id])
 
-    @story.destroy
+    if @story.destroy
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.remove(@story)
+        end
+        format.html do
+          redirect_to project_path(@project),
+            notice: 'Story was successfully deleted.'
+        end
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            dom_id(@story),
+            partial: "stories/story",
+            locals: { story: @story }
+          ), status: :unprocessable_entity
+        end
+        format.html do
+          redirect_to project_path(@project),
+            alert: 'Failed to delete story.'
+        end
+        format.json { render json: { error: 'Failed to delete story' }, status: :unprocessable_entity }
+      end
+    end
   end
 
   private
@@ -45,9 +81,13 @@ class Projects::StoriesController < ApplicationController
     @project = Project.find(params[:project_id])
   end
 
+  def set_story
+    @story = @project.stories.find(params[:id])
+  end
+
   def story_params
     params.require(:story).permit(
-      :title,
+      :name,
       :story_type,
       :release_date,
       :estimate,
@@ -85,19 +125,6 @@ class Projects::StoriesController < ApplicationController
     end
   end
 
-  def handle_failed_save
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "new_story_form_#{params[:panel]}",
-          partial: "stories/form",
-          locals: { story: @story, column: params[:column] }
-        ), status: :unprocessable_entity
-      end
-      format.html { render :new }
-    end
-  end
-
   def handle_successful_update
     @story.project.recalculate_iterations if story_params.key?(:estimate)
 
@@ -113,16 +140,4 @@ class Projects::StoriesController < ApplicationController
     end
   end
 
-  def handle_failed_update
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          dom_id(@story),
-          partial: "stories/form",
-          locals: { story: @story }
-        ), status: :unprocessable_entity
-      end
-      format.html { render :edit }
-    end
-  end
 end

@@ -11,6 +11,6 @@
   .main.flex-1.overflow-hidden
     section.panels.overflow-x-auto.h-full.w-full.gap-1.flex data-controller="project" data-project-panels-resizable-value="true"
       = turbo_frame_tag "done_panel", src: done_panel_project_path(@project), loading: :lazy, class: "panel-wrapper", refresh: :morph
-      = turbo_frame_tag "current_panel", src: current_panel_project_path(@project), loading: :lazy, class: "panel-wrapper", refresh: :morph
+      / = turbo_frame_tag "current_panel", src: current_panel_project_path(@project), loading: :lazy, class: "panel-wrapper", refresh: :morph
       = turbo_frame_tag "current_backlog_panel", src: current_backlog_panel_project_path(@project), loading: :lazy, class: "panel-wrapper", refresh: :morph
       = turbo_frame_tag "icebox_panel", src: icebox_panel_project_path(@project), loading: :lazy, class: "panel-wrapper", refresh: :morph
