@@ -5,9 +5,9 @@ aside.sidebar.w-64.bg-gray-100.border-r.border-gray-200.flex.flex-col.h-full[ari
     section
       ul.space-y-1
         li
-          = link_to project_analytics_overview_index_path, class: "flex items-center px-4 py-2 rounded hover:bg-gray-200 #{current_page?(project_analytics_overview_index_path) ? 'bg-gray-300' : ''}" do
+          = link_to project_analytics_overview_path, class: "flex items-center px-4 py-2 rounded hover:bg-gray-200 #{current_page?(project_analytics_overview_path) ? 'bg-gray-300' : ''}" do
             span.mr-3
-              = inline_svg_tag('icons/star.svg', class: "w-5 h-5 #{current_page?(project_analytics_overview_index_path) ? 'text-blue-500' : 'text-gray-500'}")
+              = inline_svg_tag('icons/star.svg', class: "w-5 h-5 #{current_page?(project_analytics_overview_path) ? 'text-blue-500' : 'text-gray-500'}")
             span.text-gray-800.text-sm Project Overview
 
         li

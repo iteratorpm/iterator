@@ -9,9 +9,9 @@
       .border.border-gray-200.rounded
         / Tabs
         .flex.border-b.border-gray-200
-          = link_to "Project Trends", project_analytics_overview_index_path(@project, tab: "trends"), class: "flex-1 text-center py-3 px-4 font-medium #{params[:tab] != 'burnup' && params[:tab] != 'flow' ? 'text-blue-600 border-b-2 border-blue-500' : 'text-gray-600 hover:text-gray-800'}"
-          = link_to "Burnup", project_analytics_overview_index_path(@project, tab: "burnup"), class: "flex-1 text-center py-3 px-4 font-medium #{params[:tab] == 'burnup' ? 'text-blue-600 border-b-2 border-blue-500' : 'text-gray-600 hover:text-gray-800'}"
-          = link_to "Cumulative Flow", project_analytics_overview_index_path(@project, tab: "flow"), class: "flex-1 text-center py-3 px-4 font-medium #{params[:tab] == 'flow' ? 'text-blue-600 border-b-2 border-blue-500' : 'text-gray-600 hover:text-gray-800'}"
+          = link_to "Project Trends", project_analytics_overview_path(@project, tab: "trends"), class: "flex-1 text-center py-3 px-4 font-medium #{params[:tab] != 'burnup' && params[:tab] != 'flow' ? 'text-blue-600 border-b-2 border-blue-500' : 'text-gray-600 hover:text-gray-800'}"
+          = link_to "Burnup", project_analytics_overview_path(@project, tab: "burnup"), class: "flex-1 text-center py-3 px-4 font-medium #{params[:tab] == 'burnup' ? 'text-blue-600 border-b-2 border-blue-500' : 'text-gray-600 hover:text-gray-800'}"
+          = link_to "Cumulative Flow", project_analytics_overview_path(@project, tab: "flow"), class: "flex-1 text-center py-3 px-4 font-medium #{params[:tab] == 'flow' ? 'text-blue-600 border-b-2 border-blue-500' : 'text-gray-600 hover:text-gray-800'}"
 
         / Dynamic tab content
         .p-4

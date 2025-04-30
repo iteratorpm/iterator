@@ -1,0 +1,18 @@
+.section.bg-gray-50.min-h-screen
+  .container.mx-auto.flex.py-10
+
+    / Sidebar
+    .w-1/4.pr-6
+      aside.bg-white.shadow-md.p-4.rounded
+        h2.font-bold.text-lg.mb-4 Docs
+        - @sidebar.each do |group, pages|
+          .mb-4
+            h3.text-sm.text-gray-600.font-semibold.mb-2 = group
+            ul.space-y-1
+              - pages.each do |page|
+                li
+                  = link_to page[:title], docs_path(page: page[:slug]), class: (@slug == page[:slug] ? "text-blue-600 font-bold" : "text-gray-800 hover:underline")
+
+    / Content
+    .w-3/4.bg-white.shadow-md.p-8.rounded.prose
+      == raw @content

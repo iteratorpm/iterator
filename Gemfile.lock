@@ -626,6 +626,7 @@ DEPENDENCIES
   rails-controller-testing
   ransack
   redcarpet
+  rouge
   rspec-rails (~> 7.0.0)
   rubocop-rails-omakase
   ruby-lsp-rails

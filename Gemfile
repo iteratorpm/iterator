@@ -52,6 +52,7 @@ gem "chartkick"
 gem "chart-js-rails"
 gem 'ransack'
 gem 'redcarpet'
+gem 'rouge'
 gem 'validate_url'
 gem 'discard', '~> 1.4'
 gem 'groupdate'

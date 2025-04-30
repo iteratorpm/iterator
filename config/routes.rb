@@ -26,6 +26,9 @@ Rails.application.routes.draw do
 
   resources :favorites, only: [:create, :destroy]
 
+  get "/api/whats-new/highlights", to: "docs#highlights"
+  get '/docs(/:page)', to: 'docs#show', as: :docs
+
   resources :projects do
     resources :webhooks, only: [:index, :create, :destroy], module: 'projects' do
       patch :toggle, on: :member
