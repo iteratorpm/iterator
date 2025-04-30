@@ -24,6 +24,8 @@ Rails.application.routes.draw do
   resources :security_settings
   resources :memberships
 
+  resources :favorites, only: [:create, :destroy]
+
   resources :projects do
     resources :webhooks, only: [:index, :create, :destroy], module: 'projects' do
       patch :toggle, on: :member
@@ -65,7 +67,7 @@ Rails.application.routes.draw do
     resources :recover_stories, only: [:index, :create], module: 'projects'
 
     namespace :analytics do
-      resources :overview, only: [:index]
+      get 'overview', to: 'overview#index', as: :overview
       resources :epics, only: [:index, :show] do
         get :csv, on: :collection
       end

@@ -6,14 +6,14 @@
       / Project Name Field
       .mb-6
         = f.label :name, "Project Name", class: "block mb-2 text-sm font-medium text-gray-700"
-        = f.text_field :name, class: "w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500", placeholder: "Enter a name for your project", required: true
+        = f.text_field :name, class: "bg-white w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500", placeholder: "Enter a name for your project", required: true
 
       / Organization Selector
       .mb-6 data-organizations-target="organizationSection"
         = f.label :organization_id, "Organization", class: "block mb-2 text-sm font-medium text-gray-700"
 
         - if @organizations.any?
-          = f.select :organization_id, options_for_select(@organizations.map { |org| [org.name, org.id] }, f.object.organization_id), { prompt: "Select an organization" }, class: "w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500", required: true, data: { action: "change->organizations#checkSelection" }
+          = f.select :organization_id, options_for_select(@organizations.map { |org| [org.name, org.id] }, f.object.organization_id), { prompt: "Select an organization" }, class: "bg-white w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500", required: true, data: { action: "change->organizations#checkSelection" }
           .mt-2.text-sm.text-gray-500
             | Don't see your organization?
             = link_to "Create new organization", "#", class: "text-blue-600 hover:text-blue-800", data: { action: "click->organizations#showNewOrganizationForm" }
@@ -42,7 +42,7 @@
             = f.radio_button :public, false, class: "mt-1 form-radio text-blue-600 border-gray-300", checked: true
             .ml-3
               .flex.items-center
-                span.inline-block.w-5.h-5.mr-2.bg-gray-400.rounded-full
+                = image_tag "icons/private.svg", class: "w-4 h-4 mr-2"
                 = f.label :public_false, "Private", class: "text-sm font-medium text-gray-700 cursor-pointer"
               p.text-xs.text-gray-500.mt-1 Only people invited to the project can access it.
 
@@ -50,7 +50,7 @@
             = f.radio_button :public, true, class: "mt-1 form-radio text-blue-600 border-gray-300"
             .ml-3
               .flex.items-center
-                span.inline-block.w-5.h-5.mr-2.bg-blue-400.rounded-full
+                = image_tag "icons/public.svg", class: "w-4 h-4 mr-2"
                 = f.label :public_true, "Public", class: "text-sm font-medium text-gray-700 cursor-pointer"
               p.text-xs.text-gray-500.mt-1
                 | The project is visible to anyone with the link. Only project owners and members can edit it.

@@ -23,6 +23,7 @@ class Iteration < ApplicationRecord
   validate :end_date_after_start_date
 
   before_validation :set_dates, if: -> { start_date.blank? && project.present? }
+  before_save :set_points_completed, if: :done?
 
   def self.find_or_create_current_iteration(project)
     Time.use_zone(project.time_zone) do
@@ -40,10 +41,6 @@ class Iteration < ApplicationRecord
 
       iteration
     end
-  end
-
-  def points_accepted
-    stories.where(state: 'accepted').sum(:estimate)
   end
 
   def length_in_weeks
@@ -122,6 +119,10 @@ class Iteration < ApplicationRecord
   end
 
   private
+
+  def set_points_completed
+    points_completd = points_accepted
+  end
 
   def end_date_after_start_date
     return if start_date.blank? || end_date.blank?

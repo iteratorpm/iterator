@@ -1,8 +1,11 @@
 class ProjectsController < ApplicationController
-  load_and_authorize_resource except: [:new, :create]
+  load_and_authorize_resource except: [:new, :create, :index]
   before_action :authenticate_user!, only: [:index]
 
   def index
+    @active_projects = current_user.projects.active
+    @archived_projects = current_user.projects.archived
+    @favorite_projects = current_user.favorite_projects
   end
 
   def new

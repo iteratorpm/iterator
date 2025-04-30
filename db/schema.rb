@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_28_150813) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_30_164301) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -110,6 +110,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_150813) do
     t.index ["project_id"], name: "index_epics_on_project_id"
   end
 
+  create_table "favorites", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_favorites_on_project_id"
+    t.index ["user_id"], name: "index_favorites_on_user_id"
+  end
+
   create_table "github_integrations", force: :cascade do |t|
     t.string "api_url"
     t.string "webhook_secret"
@@ -158,6 +167,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_150813) do
     t.integer "velocity"
     t.integer "team_strength", default: 100, null: false
     t.integer "state", default: 0, null: false
+    t.integer "points_completed", default: 0, null: false
     t.index ["number"], name: "index_iterations_on_number"
     t.index ["project_id"], name: "index_iterations_on_project_id"
     t.index ["state"], name: "index_iterations_on_state"
@@ -453,6 +463,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_150813) do
   add_foreign_key "description_templates", "projects"
   add_foreign_key "epics", "labels"
   add_foreign_key "epics", "projects"
+  add_foreign_key "favorites", "projects"
+  add_foreign_key "favorites", "users"
   add_foreign_key "github_repositories", "github_integrations"
   add_foreign_key "integrations", "users", column: "creator_id"
   add_foreign_key "iterations", "projects"

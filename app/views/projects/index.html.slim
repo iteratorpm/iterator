@@ -1,143 +1,86 @@
-div data-aid="dashboard" class="min-h-screen bg-gray-50"
+div class="min-h-screen bg-gray-50"
   / Tabs Section
   div class="bg-white border-b border-gray-200"
-    div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-      div class="flex justify-between items-center py-4"
-        div class="flex space-x-8"
-          span class="border-b-2 border-blue-500 px-1 py-2 text-sm font-medium text-blue-600" Projects
-          span class="border-b-2 border-transparent px-1 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300" Workspaces
+    div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
+      div class="flex justify-between items-center"
+        div class="flex gap-4"
+          span class="hover:text-blue-800 hover:underline border-b-2 border-blue-500 px-1 py-2 text-blue-800 font-medium" Projects
+          span class="border-b-2 border-transparent px-1 py-2 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300" Workspaces
 
-        = link_to "Create project", new_project_path, class:"inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500", data: { turbo_frame: "modal" }
+        div class="self-center"
+          a class="text-white text-sm font-semibold mx-1 py-2 px-2.5 bg-blue-600 border border-transparent rounded-sm hover:bg-blue-700" href="/import/new" Import Projects
+          = link_to "Create project", new_project_path, class: "text-white text-sm mx-1 py-2 px-2.5 bg-green-600 border border-transparent rounded-sm hover:bg-green-700", data: { turbo_frame: "modal" }
 
   / Projects Pane
-  div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
+  div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
     / Top Menu
-    div class="flex justify-between items-center mb-6"
-      div class="SearchBar relative flex-grow max-w-md"
-        input placeholder="Search Active Projects" id="projects-search-bar" data-aid="search-input" autofocus="" autocomplete="off" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm pl-4 pr-10 py-2 border"
+    .flex.justify-between.items-center.mb-6
+      .relative.flex-grow
+        .absolute.inset-y-0.left-0.pl-3.flex.items-center.pointer-events-none
+          = image_tag "icons/search.svg", class: "h-4 w-4 text-gray-500", alt:"Search"
 
-      div class="ml-4"
-        button class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" Active Projects
+        input#projects-search-bar.bg-white.rounded-sm.border.border-gray-300.text-gray-700.text-sm.w-full.h-9.py-2.pl-10.pr-4.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500 type="text" placeholder="Search Active Projects" autocomplete="off"
+
+      .relative.ml-4.group.list-none[data-controller="dropmenu"]
+        input#projects-filter.peer.hidden[type="checkbox" data-dropmenu="toggle"]
+
+        label.flex.items-center.cursor-pointer.h-9.pl-3.pr-8.rounded-sm.border.border-gray-300.hover:bg-gray-100.text-sm.text-gray-700 for="projects-filter"
+          = image_tag('icons/chevron-down.svg', class: 'w-4 h-4 mr-2 text-gray-500')
+          | Active Projects
+
+        .hidden.absolute.right-0.mt-1.bg-white.rounded-md.shadow-lg.ring-1.ring-black.ring-opacity-5.peer-checked:block.z-50
+          ul.py-1
+            li.px-4.py-2.text-sm.text-gray-700.hover:bg-gray-100
+              input#active_projects.hidden.peer[type="radio" name="project_filter" checked=""]
+              label.flex.items-center.w-full for="active_projects"
+                span.mr-2.text-green-600.hidden.peer-checked\:inline ✓
+                span Active Projects (#{@active_projects.count})
+
+            li.px-4.py-2.text-sm.text-gray-700.hover:bg-gray-100
+              input#archived_projects.hidden.peer[type="radio" name="project_filter"]
+              label.flex.items-center.w-full for="archived_projects"
+                span.mr-2.text-green-600.hidden.peer-checked\:inline ✓
+                span Archived Projects (#{@archived_projects.count})
 
     / Favorite Projects Section
-    div class="mb-8" data-aid="favorite-projects"
-      header class="mb-4"
-        div class="flex items-center text-gray-500 text-sm font-medium"
-          span class="text-gray-900" Favorite Projects
-          span class="mx-2" |
-          span data-aid="favorite-projects-count" 1
+    - if @favorite_projects.any?
+      div class="mb-8"
+        header class="mb-4"
+          div class="flex items-center text-sm font-medium text-gray-700"
+            = image_tag "icons/heart.svg", class: "mr-2"
+            span Favorite Projects | #{@favorite_projects.count}
 
-      section
-        ol class="space-y-4"
-          li class="bg-white rounded-lg shadow overflow-hidden" data-aid="project-tile"
-            header class="border-b border-gray-200 p-4"
-              div class=""
-                div class="flex items-center justify-between"
-                  div class="flex-shrink-0"
-                    span data-balloon="Private" data-balloon-pos="down"
-                      span class="w-4 h-4 bg-gray-400 rounded-full" aria-label="private"
-
-                  div class="mx-4 flex-grow"
-                    span data-balloon="English Fox" data-balloon-pos="down"
-                      a class="text-blue-600 hover:text-blue-800 font-medium" data-aid="pr" href="/projects/2712725" English Fox
-
-                  div class="flex space-x-3"
-                    span data-balloon="Remove from Favorites" data-balloon-pos="down"
-                      button class="w-5 h-5 text-red-500 hover:text-red-700" data-aid="unfavorite-project-link" ♥
-                    span data-balloon="Manage project members" data-balloon-pos="down"
-                      a class="w-5 h-5 text-gray-500 hover:text-gray-700" href="/projects/2712725/memberships" aria-label="Manage project members" 👥
-                    span data-balloon="Project settings" data-balloon-pos="down"
-                      a class="w-5 h-5 text-gray-500 hover:text-gray-700" aria-label="settings" href="/projects/2712725/settings" ⚙
-
-            section class="p-4"
-              div class="flex justify-between items-center mb-4"
-                div class="flex space-x-6"
-                  span class="text-sm"
-                    | Velocity
-                    span class="font-medium" 1
-                  span class="text-sm"
-                    | Volatility
-                    span class="font-medium" 0%
-
-                div class=""
-                  a href="/reports/v2/projects/2712725/overview" class="text-sm text-blue-600 hover:text-blue-800" View Project Analytics
-
-              div class="flex space-x-1 h-8"
-                a href="/reports/v2/projects/2712725/overview" class="bg-green-500 hover:bg-green-600 rounded-t-sm w-full" data-aid="points-bar" style="height: 100%"
-                  div class="hidden absolute bg-white p-2 rounded shadow-lg text-xs"
-                    div class="font-medium mb-1" Apr 7 - Apr 14 2025
-                    div class="space-y-1"
-                      div
-                        span class="text-gray-500" Points accepted
-                        span class="font-medium ml-2" 1 pt
-                      div
-                        span class="text-gray-500" Team strength
-                        span class="font-medium ml-2" 100%
-
-                a href="/reports/v2/projects/2712725/overview" class="bg-green-300 hover:bg-green-400 rounded-t-sm w-full" data-aid="points-bar" style="height: 5%"
-                  div class="hidden absolute bg-white p-2 rounded shadow-lg text-xs"
-                    div class="font-medium mb-1" Apr 14 - Apr 21 2025
-                    div class="space-y-1"
-                      div
-                        span class="text-gray-500" Points accepted
-                        span class="font-medium ml-2" 0 pts
-                      div
-                        span class="text-gray-500" Team strength
-                        span class="font-medium ml-2" 100%
+        ol class="grid grid-cols-1 gap-4 sm:grid-cols-2"
+          - @favorite_projects.each do |project|
+            = render 'project_card', project: project, favorite: true
 
     / My Projects Section
-    div class="" data-aid="my-projects"
+    div class="mb-8"
       header class="mb-4"
-        div class="flex items-center text-gray-500 text-sm font-medium"
-          span class="text-gray-900" My Projects
-          span class="mx-2" |
-          span class="" data-aid="my-projects-count" 1
+        div class="flex items-center text-sm font-medium text-gray-700"
+          = image_tag "icons/project.svg", class: "mr-2"
+          span My Projects | #{@active_projects.count}
 
-      section class=""
-        ol class="space-y-4"
-          li class="bg-white rounded-lg shadow overflow-hidden" data-aid="project-tile"
-            header class="border-b border-gray-200 p-4"
-              div class=""
-                div class="flex items-center justify-between"
-                  div class="flex-shrink-0"
-                    span data-balloon="Private" data-balloon-pos="down"
-                      span class="w-4 h-4 bg-gray-400 rounded-full" aria-label="private"
+      - if @active_projects.any?
+        ol class="grid grid-cols-1 gap-4 sm:grid-cols-2"
+          - @active_projects.each do |project|
+            = render 'project_card', project: project, favorite: current_user.favorites.exists?(project_id: project.id)
+      - else
+        div class="text-center py-8 text-gray-500"
+          p You don't have any active projects yet.
+          = link_to "Create your first project", new_project_path, class: "text-blue-600 hover:text-blue-700"
 
-                  div class="mx-4 flex-grow"
-                    span data-balloon="Ben D'Angelo" data-balloon-pos="down"
-                      a class="text-blue-600 hover:text-blue-800 font-medium" data-aid="pr" href="/projects/2395498" Ben D'Angelo
+    / Archived Projects Section (hidden by default)
+    div class="hidden" data-project-filter-target="archived"
+      header class="mb-4"
+        div class="flex items-center text-sm font-medium text-gray-700"
+          = image_tag "icons/archive.svg", class: "mr-2"
+          span Archived Projects | #{@archived_projects.count}
 
-                  div class="flex space-x-3"
-                    span data-balloon="Add to Favorites" data-balloon-pos="down"
-                      button class="w-5 h-5 text-gray-400 hover:text-red-500" data-aid="favorite-project-link" ♡
-                    span data-balloon="Manage project members" data-balloon-pos="down"
-                      a class="w-5 h-5 text-gray-500 hover:text-gray-700" href="/projects/2395498/memberships" aria-label="Manage project members" 👥
-                    span data-balloon="Project settings" data-balloon-pos="down"
-                      a class="w-5 h-5 text-gray-500 hover:text-gray-700" aria-label="settings" href="/projects/2395498/settings" ⚙
-
-            section class="p-4"
-              div class="flex justify-between items-center mb-4"
-                div class="flex space-x-6"
-                  span class="text-sm"
-                    | Velocity
-                    span class="font-medium" 10
-                  span class="text-sm"
-                    | Volatility
-                    span class="font-medium" 0%
-
-                div
-                  a href="/reports/v2/projects/2395498/overview" class="text-sm text-blue-600 hover:text-blue-800" View Project Analytics
-
-              div class="flex space-x-1 h-8"
-                a href="/reports/v2/projects/2395498/overview" class="bg-green-300 hover:bg-green-400 rounded-t-sm w-full" data-aid="points-bar" style="height: 5%"
-                  div class="hidden absolute bg-white p-2 rounded shadow-lg text-xs"
-                    div class="font-medium mb-1" Apr 14 - Apr 21 2025
-                    div class="space-y-1"
-                      div
-                        span class="text-gray-500" Points accepted
-                        span class="font-medium ml-2" 0 pts
-                      div
-                        span class="text-gray-500" Team strength
-                        span class="font-medium ml-2" 100%
-
-= render "layouts/footer"
+      - if @archived_projects.any?
+        ol class="grid grid-cols-1 gap-4 sm:grid-cols-2"
+          - @archived_projects.each do |project|
+            = render 'project_card', project: project, favorite: current_user.favorites.exists?(project_id: project.id)
+      - else
+        div class="text-center py-8 text-gray-500"
+          p No projects have been archived yet.

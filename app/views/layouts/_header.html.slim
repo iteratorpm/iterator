@@ -32,7 +32,7 @@ header.bg-white.shadow-sm
 
           / Navigation Items
           ul.flex.items-center.space-x-6
-            - if @project.present?
+            - if @project&.id?
               = render "layouts/search_bar"
 
             = render "layouts/whats_new"

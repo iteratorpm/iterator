@@ -17,6 +17,8 @@ class User < ApplicationRecord
     ]
   end
 
+  has_many :favorites
+  has_many :favorite_projects, through: :favorites, source: :project
   has_many :authored_comments, class_name: 'Comment', foreign_key: 'author_id', dependent: :nullify
   has_many :uploaded_attachments, class_name: 'Attachment', foreign_key: 'uploader_id', dependent: :nullify
   has_many :project_memberships, dependent: :destroy
@@ -24,6 +26,7 @@ class User < ApplicationRecord
   has_many :memberships, dependent: :destroy
   has_many :organizations, through: :memberships
   has_many :requested_stories, class_name: 'Story', foreign_key: 'requester_id'
+
   has_and_belongs_to_many :owned_stories, class_name: 'Story'
   has_one_attached :avatar
 

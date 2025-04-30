@@ -34,6 +34,9 @@ class Project < ApplicationRecord
   has_many :review_types, dependent: :destroy
   has_many :csv_exports, dependent: :destroy
 
+  has_many :favorites
+  has_many :favorited_by, through: :favorites, source: :user
+
   validates :organization, presence: true
   validates :name, length: { minimum: 1, maximum: 50 }
   validates :time_zone, presence: true, inclusion: { in: ActiveSupport::TimeZone.all.map(&:name) }
@@ -120,7 +123,7 @@ class Project < ApplicationRecord
     return initial_velocity if completed_iterations.empty?
 
     total_normalized_points = completed_iterations.sum do |i|
-      i.points_accepted / (i.team_strength / 100.0)
+      i.points_completed / (i.team_strength / 100.0)
     end
 
     total_weeks = completed_iterations.sum(&:length_in_weeks)
@@ -141,11 +144,6 @@ class Project < ApplicationRecord
 
   def current_iteration_points
     find_or_create_current_iteration&.points_accepted || 0
-  end
-
-  def average_velocity(iteration_count)
-    0
-    # iterations.completed.order(start_date: :desc).limit(iteration_count).average(:velocity) || 0
   end
 
   def last_5_iterations
@@ -183,7 +181,7 @@ class Project < ApplicationRecord
       iterations: iterations.map do |iter|
         {
           date: iter.start_date.strftime("%b %d"),
-          points: iter.points_accepted,
+          points: iter.points_completed,
           velocity: iter.velocity
         }
       end
@@ -221,6 +219,21 @@ class Project < ApplicationRecord
       # Subtract to get to the most recent preferred weekday
       now - days_since_start_day
     end
+  end
+
+  def average_velocity
+    iterations.done.average(:points_completed)&.round(1) || 0
+  end
+
+  def volatility
+    return "0%" if iterations.done.count < 2
+
+    velocities = iterations.done.order(:start_date).pluck(:points_completed)
+    average = velocities.sum.to_f / velocities.size
+    deviations = velocities.map { |v| (v - average).abs }
+    mean_deviation = deviations.sum.to_f / deviations.size
+
+    "#{((mean_deviation / average) * 100).round}%"
   end
 
   private
