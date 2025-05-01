@@ -8,22 +8,63 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
-.panel {
-  transition: width 0.2s ease;
-}
-
-.panel-resize-handle {
-  width: 4px;
-  cursor: col-resize;
-  transition: background-color 0.2s ease;
-}
-
-.panel-resize-handle:hover {
-  background-color: #3182ce;
-}
 
 /* Sortable.js styles */
 .sortable-ghost {
   opacity: 0.5;
   background: #c8ebfb;
+}
+
+.sidebar {
+  transition: width 0.2s ease;
+  width: 16rem; /* w-64 */
+}
+
+.sidebar.collapsed {
+  width: 4rem; /* Just wide enough for icons */
+}
+
+.sidebar.collapsed .sidebar-item-label {
+  display: none;
+}
+
+/* Sidebar Items */
+.sidebar-item {
+  @apply flex items-center p-2 text-gray-600 hover:bg-gray-100;
+  
+  &.active {
+    @apply bg-blue-50 text-blue-600;
+  }
+}
+
+/* Panels */
+
+.panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  overflow-y: auto;
+  z-index: 1;
+}
+
+.panel.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(10px);
+  z-index: 0;
+}
+
+.panel:not(.hidden) {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.panel-toggle {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
 }

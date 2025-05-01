@@ -24,9 +24,9 @@ div class="min-h-screen bg-gray-50"
       .relative.ml-4.group.list-none[data-controller="dropmenu"]
         input#projects-filter.peer.hidden[type="checkbox" data-dropmenu="toggle"]
 
-        label.flex.items-center.cursor-pointer.h-9.pl-3.pr-8.rounded-sm.border.border-gray-300.hover:bg-gray-100.text-sm.text-gray-700 for="projects-filter"
-          = image_tag('icons/chevron-down.svg', class: 'w-4 h-4 mr-2 text-gray-500')
+        label.flex.items-center.cursor-pointer.h-9.px-4.rounded-sm.hover:bg-gray-100.text-sm.text-gray-700 for="projects-filter"
           | Active Projects
+          = image_tag('icons/arrow-down.svg', class: 'w-4 h-4 ml-2 text-gray-500')
 
         .hidden.absolute.right-0.mt-1.bg-white.rounded-md.shadow-lg.ring-1.ring-black.ring-opacity-5.peer-checked:block.z-50
           ul.py-1

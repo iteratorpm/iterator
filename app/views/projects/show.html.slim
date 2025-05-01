@@ -1,16 +1,119 @@
 - content_for :page_title, "Stories"
 
-- content_for :sidebar do
-  = render 'projects/sidebar', project: @project
-
 = turbo_stream_from [@project, "stories"]
 
 .main.flex.h-screen
-  = yield :sidebar
+  = render 'projects/sidebar', project: @project
 
   .main.flex-1.overflow-hidden
-    section.panels.overflow-x-auto.h-full.w-full.gap-1.flex data-controller="project" data-project-panels-resizable-value="true"
-      = turbo_frame_tag "done_panel", src: done_panel_project_path(@project), loading: :lazy, class: "panel-wrapper", refresh: :morph
-      / = turbo_frame_tag "current_panel", src: current_panel_project_path(@project), loading: :lazy, class: "panel-wrapper", refresh: :morph
-      = turbo_frame_tag "current_backlog_panel", src: current_backlog_panel_project_path(@project), loading: :lazy, class: "panel-wrapper", refresh: :morph
-      = turbo_frame_tag "icebox_panel", src: icebox_panel_project_path(@project), loading: :lazy, class: "panel-wrapper", refresh: :morph
+    / Hidden toggle inputs for all panels
+    - %w[current backlog icebox done blocked epics labels history my_work].each do |panel|
+      = check_box_tag "toggle-#{panel}", "1", cookies["toggle-#{panel}"].present?,
+        class: "hidden panel-toggle",
+        data: {\
+          controller: "panel-toggle",
+          action: "change->panel-toggle#persist",
+          panel_name: panel,
+          panel_target: "checkbox"\
+        }
+
+    / Panels container
+    .panels.relative.h-full.w-full.overflow-hidden data-controller="panels"
+      / Current Panel (default visible)
+      = turbo_frame_tag "current_panel",
+        src: current_panel_project_path(@project),
+        loading: :lazy,
+        class: "panel h-full #{'hidden' unless cookies['toggle-current'].present?}",
+        data: {\
+          panel: "current",
+          panels_target: "panel",
+          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
+        }
+
+      / Backlog Panel
+      = turbo_frame_tag "backlog_panel",
+        src: backlog_panel_project_path(@project),
+        loading: :lazy,
+        class: "panel h-full #{'hidden' unless cookies['toggle-backlog'].present?}",
+        data: {\
+          panel: "backlog",
+          panels_target: "panel",
+          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
+        }
+
+      / Icebox Panel
+      = turbo_frame_tag "icebox_panel",
+        src: icebox_panel_project_path(@project),
+        loading: :lazy,
+        class: "panel h-full #{'hidden' unless cookies['toggle-icebox'].present?}",
+        data: {\
+          panel: "icebox",
+          panels_target: "panel",
+          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
+        }
+
+      / Done Panel
+      = turbo_frame_tag "done_panel",
+        src: done_panel_project_path(@project),
+        loading: :lazy,
+        class: "panel h-full #{'hidden' unless cookies['toggle-done'].present?}",
+        data: {\
+          panel: "done",
+          panels_target: "panel",
+          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
+        }
+
+      / Blocked Panel
+      = turbo_frame_tag "blocked_panel",
+        src: blocked_panel_project_path(@project),
+        loading: :lazy,
+        class: "panel h-full #{'hidden' unless cookies['toggle-blocked'].present?}",
+        data: {\
+          panel: "blocked",
+          panels_target: "panel",
+          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
+        }
+
+      / Epics Panel
+      = turbo_frame_tag "epics_panel",
+        src: epics_panel_project_path(@project),
+        loading: :lazy,
+        class: "panel h-full #{'hidden' unless cookies['toggle-epics'].present?}",
+        data: {\
+          panel: "epics",
+          panels_target: "panel",
+          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
+        }
+
+      / Labels Panel
+      = turbo_frame_tag "labels_panel",
+        src: labels_panel_project_path(@project),
+        loading: :lazy,
+        class: "panel h-full #{'hidden' unless cookies['toggle-labels'].present?}",
+        data: {\
+          panel: "labels",
+          panels_target: "panel",
+          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
+        }
+
+      / History Panel
+      = turbo_frame_tag "history_panel",
+        src: history_panel_project_path(@project),
+        loading: :lazy,
+        class: "panel h-full #{'hidden' unless cookies['toggle-history'].present?}",
+        data: {\
+          panel: "history",
+          panels_target: "panel",
+          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
+        }
+
+      / My Work Panel
+      = turbo_frame_tag "my_work_panel",
+        src: my_work_panel_project_path(@project),
+        loading: :lazy,
+        class: "panel h-full #{'hidden' unless cookies['toggle-my_work'].present?}",
+        data: {\
+          panel: "my_work",
+          panels_target: "panel",
+          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
+        }

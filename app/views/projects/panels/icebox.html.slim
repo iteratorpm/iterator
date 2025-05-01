@@ -1,20 +1,10 @@
-= turbo_frame_tag @panel_id do
-  .flex-grow.border-r.border-gray-200.flex-col.h-full.bg-gray-50.min-w-xs[
-    data-panel-id=@panel_id
-    data-controller="panel resizable"
-    data-action="mousedown->resizable#startResize"
-  ]
+= panel @panel_id, title: "Icebox", add_story: true, close: true, actions: true do
+  = render "projects/stories/form", story: @project.stories.new
 
-    = render "panel_header", add_story: true, close: true, actions: true, title: "Icebox"
-
-    section.flex-1.overflow-y-auto
-
-      = render "projects/stories/form", story: @project.stories.new
-
-      #stories-icebox
-        - if @stories&.any?
-          = render partial: 'projects/stories/story', collection: @stories
-        - else
-          .empty-state.text-center.text-gray-400.py-8.text-sm
-            .mb-1 No stories in icebox
-            button.text-blue-500.text-xs data-action="click->panel#addStory" + Add story
+  #stories-icebox
+    - if @stories&.any?
+      = render partial: 'projects/stories/story', collection: @stories
+    - else
+      .empty-state.text-center.text-gray-400.py-8.text-sm
+        .mb-1 No stories in icebox
+        button.text-blue-500.text-xs data-action="click->panel#addStory" + Add story

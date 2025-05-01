@@ -45,6 +45,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    @active_panel = cookies[:active_panel] || "current_#{@project.id}"
   end
 
   def edit

@@ -60,6 +60,6 @@ class Projects::PanelsController < ApplicationController
   end
 
   def set_panel_id
-    @panel_id = "#{action_name}_panel"
+    @panel_id = "#{action_name}-panel"
   end
 end

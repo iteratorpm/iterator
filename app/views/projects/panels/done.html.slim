@@ -1,18 +1,7 @@
-= turbo_frame_tag @panel_id do
-  .flex-grow.border-r.border-gray-200.flex-col.h-full.bg-gray-50.min-w-xs[
-    data-panel-id=@panel_id
-    data-controller="panel resizable"
-    data-action="mousedown->resizable#startResize"
-  ]
+= panel @panel_id, title: "Done", close: true, actions: true do
+  / Iteration headers for done panel
+  - @iterations.each do |iteration|
+    = render "iteration", iteration: iteration
 
-    = render "panel_header", close: true, actions: true, title: "Done"
-
-    / Panel content area
-    section.flex-1.overflow-y-auto
-
-      / Iteration headers for done panel
-      - @iterations.each do |iteration|
-        = render "iteration", iteration: iteration
-
-        - if iteration.stories.any?
-          = render partial: 'projects/stories/story', collection: iteration.stories, as: :story
+    - if iteration.stories.any?
+      = render partial: 'projects/stories/story', collection: iteration.stories, as: :story

@@ -1,22 +1,101 @@
-aside.sidebar.w-64.bg-gray-100.border-r.border-gray-200.flex.flex-col.h-full[aria-label="sidebar"]
+- %w[current backlog icebox done blocked epics labels history my_work].each do |panel|
+  = check_box_tag "toggle-#{panel}", "1", cookies["toggle-#{panel}"].present?,
+    class: "hidden panel-toggle",
+    data: { controller: "panel-toggle", action: "change->panel-toggle#persist", panel_name: panel }
+
+aside.sidebar.bg-gray-100.border-r.border-gray-200.flex.flex-col.h-full[
+  aria-label="sidebar"
+  data-controller="sidebar"
+  data-sidebar-collapsed-value="false"
+  data-sidebar-project-id-value="#{@project.id}"
+]
+  / Collapse toggle
   .p-2.border-b.border-gray-200
-    button.p-2.rounded.hover:bg-gray-200[title="Toggle Sidebar"]
+    button.p-2.rounded.hover:bg-gray-200[
+      title="Toggle Sidebar"
+      data-action="click->sidebar#toggleCollapse"
+      data-sidebar-target="toggle"
+    ]
       svg.w-5.h-5[xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"]
         path[d="M3 18h13v-2H3v2zm0-5h10v-2H3v2zm0-7v2h13V6H3zm18 9.59L17.42 12 21 8.41 19.59 7l-5 5 5 5L21 15.59z"]
 
+  / Navigation items
   .flex-1.overflow-y-auto
     section
       ul.space-y-1
-        = render 'projects/sidebar_item', icon: 'my_work', title: 'My Work', count: 0, active: false, project: project
-        = render 'projects/sidebar_item', icon: 'current', title: 'Current Iteration', count: nil, active: true, project: project
-        = render 'projects/sidebar_item', icon: 'backlog', title: 'Backlog', count: nil, active: false, project: project
-        = render 'projects/sidebar_item', icon: 'icebox', title: 'Icebox', count: nil, active: true, project: project
-        = render 'projects/sidebar_item', icon: 'done', title: 'Done', count: nil, active: false, project: project
-        = render 'projects/sidebar_item', icon: 'blocked', title: 'Blocked', count: 0, active: false, project: project
-        = render 'projects/sidebar_item', icon: 'epics', title: 'Epics', count: nil, active: false, project: project
-        = render 'projects/sidebar_item', icon: 'labels', title: 'Labels', count: nil, active: false, project: project
-        = render 'projects/sidebar_item', icon: 'history', title: 'Project History', count: nil, active: false, project: project
+        = render 'projects/sidebar_item',
+          icon: 'my_work',
+          title: 'My Work',
+          count: 0,
+          panel_name: 'my_work',
+          active: cookies["toggle-my_work"].present?,
+          project: @project
 
+        = render 'projects/sidebar_item',
+          icon: 'current',
+          title: 'Current Iteration',
+          count: nil,
+          panel_name: 'current',
+          active: cookies["toggle-current"].present?,
+          project: @project
+
+        = render 'projects/sidebar_item',
+          icon: 'backlog',
+          title: 'Backlog',
+          count: nil,
+          panel_name: 'backlog',
+          active: cookies["toggle-backlog"].present?,
+          project: @project
+
+        = render 'projects/sidebar_item',
+          icon: 'icebox',
+          title: 'Icebox',
+          count: nil,
+          panel_name: 'icebox',
+          active: cookies["toggle-icebox"].present?,
+          project: @project
+
+        = render 'projects/sidebar_item',
+          icon: 'done',
+          title: 'Done',
+          count: nil,
+          panel_name: 'done',
+          active: cookies["toggle-done"].present?,
+          project: @project
+
+        = render 'projects/sidebar_item',
+          icon: 'blocked',
+          title: 'Blocked',
+          count: 0,
+          panel_name: 'blocked',
+          active: cookies["toggle-blocked"].present?,
+          project: @project
+
+        = render 'projects/sidebar_item',
+          icon: 'epics',
+          title: 'Epics',
+          count: nil,
+          panel_name: 'epics',
+          active: cookies["toggle-epics"].present?,
+          project: @project
+
+        = render 'projects/sidebar_item',
+          icon: 'labels',
+          title: 'Labels',
+          count: nil,
+          panel_name: 'labels',
+          active: cookies["toggle-labels"].present?,
+          project: @project
+
+        = render 'projects/sidebar_item',
+          icon: 'history',
+          title: 'Project History',
+          count: nil,
+          panel_name: 'history',
+          active: cookies["toggle-history"].present?,
+          project: @project
+
+  / Display settings
   .flex-grow
     .p-4.border-t.border-gray-200
       .flex.items-center.justify-between.mb-2

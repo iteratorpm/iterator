@@ -1,17 +1,8 @@
-= turbo_frame_tag @panel_id do
-  .flex-grow.border-r.border-gray-200.flex-col.h-full.bg-gray-50.min-w-xs[
-    data-panel-id=@panel_id
-    data-controller="panel resizable"
-    data-action="mousedown->resizable#startResize"
-  ]
+= panel @panel_id, title: "Current Iteration", velocity: true, add_story: true, close: true, actions: true do
 
-    = render "panel_header", velocity: true, close: true, actions: true, add_story: true, title: "Current Iteration"
+  = render "iteration", iteration: @current_iteration
 
-    section.flex-1.overflow-y-auto
+  - @current_iteration.stories do |i|
+    = render partial: 'projects/stories/story', collection: i.stories, as: :story
 
-      = render "iteration", iteration: @current_iteration
-
-      - @current_iteration.stories do |i|
-        = render partial: 'projects/stories/story', collection: i.stories, as: :story
-
-      = render "projects/stories/form", story: @project.stories.new
+  = render "projects/stories/form", story: @project.stories.new
