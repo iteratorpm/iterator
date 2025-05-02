@@ -1,6 +1,6 @@
-li.group
-  button.w-full.text-left.flex.items-center.p-2.rounded.hover:bg-gray-200[
-    class="#{'bg-gray-300' if active}"
+li
+  button.w-full.text-left.flex.items-center.p-2.cursor-pointer.hover:bg-gray-200.border-l-4.border-transparent[
+    class="#{'text-blue-500 border-blue-500' if active}"
     data-action="click->sidebar#togglePanel"
     data-panel-name="#{panel_name}"
     data-sidebar-target="item"

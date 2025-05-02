@@ -42,17 +42,28 @@ Rails.application.routes.draw do
       post :archive
     end
 
-    member do
-      get 'panels/done', to: 'projects/panels#done', as: :done_panel
-      get 'panels/current', to: 'projects/panels#current', as: :current_panel
-      get 'panels/current_backlog', to: 'projects/panels#current_backlog', as: :current_backlog_panel
-      get 'panels/backlog', to: 'projects/panels#backlog', as: :backlog_panel
-      get 'panels/icebox', to: 'projects/panels#icebox', as: :icebox_panel
-      get 'panels/epics', to: 'projects/panels#epics', as: :epics_panel
+    resources :iterations, module: "projects", only: [:update] do
+      collection do
+        get :done
+        get :current
+        get :current_backlog
+        get :backlog
+      end
     end
 
+    resources :stories, except: [:index] do
+      collection do
+        get :icebox
+        get :my_work
+        get :blocked
+      end
+    end
+
+    resources :epics, only: [:new, :create, :index]
+    resources :labels, only: [:new, :create, :index]
+    resources :histories, only: [:index]
+
     get 'search', to: 'projects/search#index', as: :search
-    resources :stories, module: "projects", only: [:update, :show, :create, :edit, :destroy, :new]
 
     resources :csv_exports, path: "export", module: "projects", only: [:index, :create] do
       member do

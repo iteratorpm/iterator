@@ -38,30 +38,14 @@
 }
 
 /* Panels */
-
 .panel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  overflow-y: auto;
-  z-index: 1;
+  transition: opacity 0.2s ease;
+  
+  &.hidden {
+    @apply opacity-0 pointer-events-none;
+    display: none !important;
+  }
 }
-
-.panel.hidden {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(10px);
-  z-index: 0;
-}
-
-.panel:not(.hidden) {
-  opacity: 1;
-  transform: translateX(0);
-}
-
 .panel-toggle {
   position: absolute;
   opacity: 0;

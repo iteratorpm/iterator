@@ -1,7 +1,18 @@
-class Projects::StoriesController < ApplicationController
-  before_action :set_project
+class Projects::StoriesController < Projects::BaseController
   before_action :set_story, only: [:edit, :show, :update, :destroy]
   authorize_resource only: [:edit, :show, :update, :destroy]
+
+  def my_work
+    @stories = @project.stories.where(story_owners: {user_id: current_user.id}).ranked
+  end
+
+  def icebox
+    @stories = @project.stories.icebox.ranked
+  end
+
+  def blocked
+    @stories = @project.stories.blocking_stories
+  end
 
   def new
     @story = @project.stories.new

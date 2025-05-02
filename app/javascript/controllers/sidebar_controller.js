@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import Cookies from "js-cookie"
 
 export default class extends Controller {
-  static targets = ["item", "label", "toggle"]
+  static targets = ["item", "label", "toggle", "collapsible"]
   static values = {
     collapsed: Boolean,
     projectId: Number
@@ -35,7 +35,8 @@ export default class extends Controller {
     this.itemTargets.forEach(item => {
       const panelName = item.dataset.panelName
       const isActive = document.querySelector(`input[name="toggle-${panelName}"]`).checked
-      item.classList.toggle('bg-gray-300', isActive)
+      item.classList.toggle('border-blue-500', isActive)
+      item.classList.toggle('text-blue-500', isActive)
     })
   }
 
@@ -43,9 +44,11 @@ export default class extends Controller {
     if (this.collapsedValue) {
       this.element.classList.add('collapsed')
       this.labelTargets.forEach(label => label.classList.add('hidden'))
+      this.collapsibleTargets.forEach(el => el.classList.add('hidden'))
     } else {
       this.element.classList.remove('collapsed')
       this.labelTargets.forEach(label => label.classList.remove('hidden'))
+      this.collapsibleTargets.forEach(el => el.classList.remove('hidden'))
     }
   }
 

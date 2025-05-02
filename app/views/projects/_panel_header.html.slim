@@ -11,10 +11,10 @@ header.flex.items-center.justify-between.p-3.text-white.select-none.cursor-move.
         span = @project.current_iteration.velocity
 
   - if local_assigns[:add_story]
-    = render "add_story_btn"
+    = render "projects/add_story_btn"
 
   - if local_assigns[:actions]
-    = render "actions_dropdown_btn"
+    = render "projects/actions_dropdown_btn"
 
   - if local_assigns[:close]
-    = render "close_btn"
+    = render "projects/close_btn"
