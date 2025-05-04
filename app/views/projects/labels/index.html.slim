@@ -1,0 +1,6 @@
+= panel @panel_id, title: "Labels", add_label: true, close: true, actions: true do
+  - @labels.each do |iteration|
+    / = render "projects/iteration", iteration: iteration
+
+    / - if iteration.stories.any?
+    /   = render partial: 'projects/stories/story', collection: iteration.stories, as: :story

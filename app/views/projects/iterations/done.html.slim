@@ -1,7 +1,7 @@
 = panel @panel_id, title: "Done", close: true, actions: true do
   / Iteration headers for done panel
   - @iterations.each do |iteration|
-    = render "iteration", iteration: iteration
+    = render "projects/iteration", iteration: iteration
 
     - if iteration.stories.any?
       = render partial: 'projects/stories/story', collection: iteration.stories, as: :story

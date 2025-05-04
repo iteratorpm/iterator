@@ -2,10 +2,10 @@
 
 = turbo_stream_from [@project, "stories"]
 
-.main.flex.h-full
+.flex.h-full
   = render 'projects/sidebar', project: @project
 
-  .main.flex-1.overflow-hidden
+  .main.flex-1.overflow-hidden data-controller="panels"
     / Hidden toggle inputs for all panels
     - %w[current backlog icebox done blocked epics labels history my_work].each do |panel|
       = check_box_tag "toggle-#{panel}", "1", cookies["toggle-#{panel}"].present?,
@@ -18,7 +18,7 @@
         }
 
     / Panels container
-    .flex.space-x-2.relative.h-full.w-full.overflow-hidden data-controller="panels"
+    .flex.space-x-2.relative.h-full.w-full.overflow-hidden
       / Current Panel (default visible)
       = turbo_frame_tag "current_panel",
         src: current_project_iterations_path(@project),
@@ -44,12 +44,11 @@
       / Icebox Panel
       = turbo_frame_tag "icebox_panel",
         src: icebox_project_stories_path(@project),
-        loading: :lazy,
         class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-icebox'].present?}",
         data: {\
           panel: "icebox",
           panels_target: "panel",
-          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
+          action: "turbo:frame-load->panels#resizePanels panel-toggle:change@window->panels#toggleVisibility"\
         }
 
       / Done Panel

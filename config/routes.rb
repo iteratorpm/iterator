@@ -51,7 +51,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :stories, except: [:index] do
+    resources :stories, module: "projects", except: [:index] do
       collection do
         get :icebox
         get :my_work
@@ -59,9 +59,9 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :epics, only: [:new, :create, :index]
-    resources :labels, only: [:new, :create, :index]
-    resources :histories, only: [:index]
+    resources :epics, module: "projects", only: [:new, :create, :index]
+    resources :labels, module: "projects", only: [:new, :create, :index]
+    resources :histories, module: "projects", only: [:index]
 
     get 'search', to: 'projects/search#index', as: :search
 

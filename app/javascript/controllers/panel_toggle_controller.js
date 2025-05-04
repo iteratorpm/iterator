@@ -8,7 +8,7 @@ export default class extends Controller {
     Cookies.set(key, value, { expires: 365 })
     
     // Dispatch event to update panels
-    this.dispatch("change", { 
+    this.dispatch("change", {
       detail: { 
         panel: this.element.dataset.panelName,
         visible: this.element.checked 

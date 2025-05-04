@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["addStoryForm"]
+  static targets = ["addStoryForm", "addLabelForm"]
   
   addStory() {
     this.addStoryFormTarget.classList.remove("hidden")

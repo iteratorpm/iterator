@@ -1,9 +1,9 @@
-= panel @panel_id, title: "Backlog", velocity: true, add_story: true, close: true, actions: true do
+= panel @panel_id, title: "Backlog", add_story: true, close: true, actions: true do
 
   = render "projects/stories/form", story: @project.stories.new
 
   - @iterations.each do |i|
-    = render "iteration", iteration: i
+    = render "projects/iteration", iteration: i
 
     - if i.stories.any?
       = render partial: 'projects/stories/story', collection: i.stories, as: :story
