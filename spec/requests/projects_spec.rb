@@ -130,7 +130,7 @@ RSpec.describe "Projects", type: :request do
         post projects_path, params: {
           project: valid_attributes[:project].merge(organization_id: other_org.id)
         }
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_http_status(:redirect)
       end
     end
   end
@@ -169,7 +169,7 @@ RSpec.describe "Projects", type: :request do
         other_project = create(:project)
         get project_path(other_project)
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_http_status(:redirect)
       end
     end
   end
@@ -193,7 +193,7 @@ RSpec.describe "Projects", type: :request do
         sign_in member
         get edit_project_path(project)
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_http_status(:redirect)
       end
     end
   end
@@ -242,7 +242,7 @@ RSpec.describe "Projects", type: :request do
         project.memberships.create(user: member, role: :viewer)
         sign_in member
         patch project_path(project), params: { project: new_attributes }
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_http_status(:redirect)
       end
     end
   end
@@ -266,7 +266,7 @@ RSpec.describe "Projects", type: :request do
         project.memberships.create(user: member, role: :member)
         sign_in member
         delete project_path(project)
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_http_status(:redirect)
       end
     end
   end

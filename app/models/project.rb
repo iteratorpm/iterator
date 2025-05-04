@@ -134,11 +134,11 @@ class Project < ApplicationRecord
   def recalculate_iterations
     available_stories = stories.current
 
-    available_stories.update_all iteration: find_or_create_current_iteration
+    available_stories.update_all iteration_id: find_or_create_current_iteration.id
 
     # Re-plan all future iterations based on current backlog priority
     transaction do
-      iterations.backlog.destroy_alk
+      iterations.backlog.destroy_all
       plan_future_iterations
     end
   end

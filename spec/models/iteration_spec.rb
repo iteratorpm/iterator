@@ -24,9 +24,9 @@ RSpec.describe Iteration, type: :model do
   end
 
   describe 'scopes' do
-    let!(:past_iteration) { create(:iteration, :past, project: project) }
+    let!(:past_iteration) { create(:iteration, :done, project: project) }
     let!(:current_iteration) { create(:iteration, :current, project: project) }
-    let!(:future_iteration) { create(:iteration, :future, project: project) }
+    let!(:future_iteration) { create(:iteration, :backlog, project: project) }
 
     describe '.current' do
       it 'returns iterations marked as current' do
@@ -228,8 +228,8 @@ RSpec.describe Iteration, type: :model do
         expect(iteration.completion_percentage).to eq(50) # 3/6 * 100
       end
 
-      it 'returns 0 when no points' do
-        iteration.stories.update_all(estimate: nil)
+      it 'returns -1 when no points' do
+        iteration.stories.update_all(estimate: -1)
         expect(iteration.completion_percentage).to eq(0)
       end
     end

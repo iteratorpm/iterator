@@ -9,6 +9,89 @@ RSpec.describe "Projects::Stories", type: :request do
     sign_in user
   end
 
+  describe "GET /blocked" do
+    context "when accessing blocked" do
+      before do
+        story = create(:story, :icebox, project: project)
+        create(:story_owner, story: story, user: user)
+      end
+
+      it "returns success for blocked" do
+        get blocked_project_stories_path(project)
+        expect(response).to be_successful
+        expect(response.body).to include("Blocked")
+      end
+    end
+
+    context "when user is not authorized" do
+      let(:non_member) { create(:user) }
+
+      before do
+        sign_in non_member
+      end
+
+      it "raises authorization error" do
+        get blocked_project_stories_path(project)
+        expect(response).to have_http_status(:redirect)
+      end
+    end
+  end
+
+  describe "GET /my_work" do
+    context "when accessing my_work" do
+      before do
+        story = create(:story, :icebox, project: project)
+        create(:story_owner, story: story, user: user)
+      end
+
+      it "returns success for my_work" do
+        get my_work_project_stories_path(project)
+        expect(response).to be_successful
+        expect(response.body).to include("My Work")
+      end
+    end
+
+    context "when user is not authorized" do
+      let(:non_member) { create(:user) }
+
+      before do
+        sign_in non_member
+      end
+
+      it "raises authorization error" do
+        get my_work_project_stories_path(project)
+        expect(response).to have_http_status(:redirect)
+      end
+    end
+  end
+
+  describe "GET /icebox" do
+    context "when accessing icebox" do
+      before do
+        create_list(:story, 2, :icebox, project: project)
+      end
+
+      it "returns success for icebox" do
+        get icebox_project_stories_path(project)
+        expect(response).to be_successful
+        expect(response.body).to include("Icebox")
+      end
+    end
+
+    context "when user is not authorized" do
+      let(:non_member) { create(:user) }
+
+      before do
+        sign_in non_member
+      end
+
+      it "raises authorization error" do
+        get icebox_project_stories_path(project)
+        expect(response).to have_http_status(:redirect)
+      end
+    end
+  end
+
   describe "DELETE /destroy" do
     context "with valid parameters" do
       it "destroys the requested story" do

@@ -62,7 +62,7 @@ class Iteration < ApplicationRecord
 
   # Calculate the total points of all stories in this iteration
   def total_points
-    stories.sum(:estimate)
+    stories.estimated.sum(:estimate)
   end
 
   # Check if the iteration is full based on project velocity
@@ -77,7 +77,7 @@ class Iteration < ApplicationRecord
   end
 
   def points_accepted
-    stories.accepted.sum(:estimate)
+    stories.estimated.accepted.sum(:estimate)
   end
 
   def rejection_rate

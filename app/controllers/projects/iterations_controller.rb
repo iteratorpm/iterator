@@ -1,4 +1,5 @@
 class Projects::IterationsController < Projects::BaseController
+  before_action :set_iteration, only: [:update]
 
   def done
     @iterations = @project.iterations.done.includes(:stories).order(start_date: :asc)
@@ -19,7 +20,13 @@ class Projects::IterationsController < Projects::BaseController
 
   def update
     @iteration.update!(team_strength: params[:team_strength])
-    @iteration.project.recalculate_velocity
+    @iteration.project.recalculate_iterations
+  end
+
+  private
+
+  def set_iteration
+    @iteration = @project.iterations.find(params[:id])
   end
 
 end

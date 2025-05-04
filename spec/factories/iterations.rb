@@ -12,22 +12,22 @@ FactoryBot.define do
       number { nil }
     end
 
+    trait :done do
+      state { 'done' }
+      start_date { Date.current - 2.weeks }
+      end_date { Date.current - 1.week }
+    end
+
     trait :current do
+      state { 'current' }
       start_date { Date.current.beginning_of_week }
-      end_date { start_date + 6.days }
-      state { :current }
+      end_date { Date.current.end_of_week }
     end
 
-    trait :past do
-      state { :done }
-      start_date { Date.current.beginning_of_week - 2.weeks }
-      end_date { start_date + 6.days }
-    end
-
-    trait :future do
-      state { :backlog }
-      start_date { Date.current.beginning_of_week + 1.week }
-      end_date { start_date + 6.days }
+    trait :backlog do
+      state { 'backlog' }
+      start_date { Date.current + 1.week }
+      end_date { Date.current + 2.weeks }
     end
   end
 end

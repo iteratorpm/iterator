@@ -3,7 +3,10 @@ class Projects::StoriesController < Projects::BaseController
   authorize_resource only: [:edit, :show, :update, :destroy]
 
   def my_work
-    @stories = @project.stories.where(story_owners: {user_id: current_user.id}).ranked
+    @stories = @project.stories
+      .joins(:story_owners)
+      .where(story_owners: { user_id: current_user.id })
+      .ranked
   end
 
   def icebox
@@ -11,7 +14,7 @@ class Projects::StoriesController < Projects::BaseController
   end
 
   def blocked
-    @stories = @project.stories.blocking_stories
+    @stories = @project.stories.joins(:blockers).distinct
   end
 
   def new
@@ -87,10 +90,6 @@ class Projects::StoriesController < Projects::BaseController
   end
 
   private
-
-  def set_project
-    @project = Project.find(params[:project_id])
-  end
 
   def set_story
     @story = @project.stories.find(params[:id])

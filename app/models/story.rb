@@ -102,8 +102,8 @@ class Story < ApplicationRecord
   scope :started, -> { where(state: :started) }
   scope :rejected, -> { where(state: :rejected) }
   scope :accepted, -> { where(state: :accepted) }
-  scope :estimated, -> { where.not(estimate: nil) }
-  scope :unestimated, -> { where(estimate: nil) }
+  scope :estimated, -> { where.not(estimate: -1) }
+  scope :unestimated, -> { where(estimate: -1) }
   scope :ranked, -> { order(position: :asc) }
 
   after_update :notify_if_delivered, if: :saved_change_to_state?
