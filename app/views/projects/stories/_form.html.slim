@@ -1,8 +1,11 @@
-.bg-white.rounded-lg.border.border-gray-200.overflow-hidden.mb-4.px-3.py-2 data-panel-target="addStoryForm" data-controller="story-form autofocus_first_element" class=(story.id? ? nil : "hidden")
+.bg-white.rounded-lg.border.border-gray-200.overflow-hidden.mb-4.px-3.py-2 data-panel-target="addStoryForm" data-controller="story-form" class=(story.id? ? nil : "hidden")
   section.model-details
     = form_with model: [story.project, story] do |f|
+      - if not story.id?
+        = f.hidden_field :position, value: :first
+
       section.story-header.flex.items-start.mb-4
-        button.collapse-button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action="click->story#close click->story-form#close"
+        button.collapse-button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action=( story.id? ? "click->story#close" : "click->story-form#close")
           = inline_svg_tag 'icons/arrow-up.svg', class: "w-4 h-4 text-gray-500"
 
         fieldset.name.flex-1.ml-1
@@ -10,6 +13,8 @@
             = f.text_area :name, \
               class: "w-full px-2 py-1 text-base border border-gray-300 rounded resize-none overflow-hidden", \
               placeholder: "Story title", \
+              required: "true",\
+              autocomplete: "off",\
               data: { \
                 controller: "autofocus-first-element autoresize", \
                 autofocus_first_element_target: "element", \

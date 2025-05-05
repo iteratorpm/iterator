@@ -125,8 +125,8 @@ class Projects::StoriesController < Projects::BaseController
   def handle_successful_save
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.append(
-          "stories_#{params[:panel]}",
+        render turbo_stream: turbo_stream.prepend(
+          "stories-icebox",
           partial: "projects/stories/story",
           locals: { story: @story }
         )
