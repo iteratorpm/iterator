@@ -5,7 +5,7 @@ li
     data-panel-name="#{panel_name}"
     data-sidebar-target="item"
   ]
-    = render "projects/icons/#{icon}"
+    = inline_svg_tag "icons/#{icon}.svg", class: "w-5 h-5 transition-colors fill-current duration-150"
     span.ml-3.sidebar-label data-sidebar-target="label" = title
     - if count
       span.ml-auto.bg-gray-200.text-xs.px-2.py-1.rounded = count
