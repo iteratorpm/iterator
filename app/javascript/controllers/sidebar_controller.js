@@ -36,6 +36,7 @@ export default class extends Controller {
       const panelName = item.dataset.panelName
       const isActive = document.querySelector(`input[name="toggle-${panelName}"]`).checked
       item.classList.toggle('border-blue-500', isActive)
+      item.classList.toggle('border-transparent', !isActive)
       item.classList.toggle('text-blue-500', isActive)
     })
   }

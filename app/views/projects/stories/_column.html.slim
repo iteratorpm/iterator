@@ -1,0 +1,4 @@
+- if local_assigns[:stories]
+  = render partial: 'projects/stories/story', collection: local_assigns[:stories]
+- else
+  = render partial: 'projects/stories/story', collection: Project.find(project_id).stories.where(state: local_assigns[:state])

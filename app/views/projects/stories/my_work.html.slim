@@ -1,4 +1,4 @@
 = panel @panel_id, title: "My Work", close: true, actions: true do
 
-  - if @stories&.any?
-    = render partial: 'projects/stories/story', collection: @stories
+  #stories-my_work
+    = render partial: 'projects/stories/column', stories: @stories

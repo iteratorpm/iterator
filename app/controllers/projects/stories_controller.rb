@@ -74,11 +74,11 @@ class Projects::StoriesController < Projects::BaseController
     else
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            dom_id(@story),
-            partial: "stories/story",
-            locals: { story: @story }
-          ), status: :unprocessable_entity
+          # render turbo_stream: turbo_stream.replace(
+          #   dom_id(@story),
+          #   partial: "projects/stories/story",
+          #   locals: { story: @story }
+          # ), status: :unprocessable_entity
         end
         format.html do
           redirect_to project_path(@project),
@@ -136,16 +136,10 @@ class Projects::StoriesController < Projects::BaseController
   end
 
   def handle_successful_update
-    @story.project.recalculate_iterations if story_params.key?(:estimate)
+    # @story.project.recalculate_iterations if story_params.key?(:estimate)
 
     respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          dom_id(@story),
-          partial: "stories/story",
-          locals: { story: @story }
-        )
-      end
+      format.turbo_stream
       format.html { redirect_to project_path(@project), notice: 'Story was successfully updated.' }
     end
   end

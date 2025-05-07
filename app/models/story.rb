@@ -1,5 +1,6 @@
 class Story < ApplicationRecord
   include Discard::Model
+  include AASM
   has_paper_trail
 
   def self.ransackable_attributes(auth_object = nil)
@@ -74,6 +75,7 @@ class Story < ApplicationRecord
   validates :requester, presence: true
 
   validates :estimate, numericality: { greater_than_or_equal_to: -1 }, allow_nil: false
+  validates :position, numericality: { greater_than_or_equal_to: 1 }, allow_nil: false
 
   validates :project_story_id, uniqueness: { scope: :project_id }
 
@@ -108,6 +110,41 @@ class Story < ApplicationRecord
 
   after_update :notify_if_delivered, if: :saved_change_to_state?
   before_create :set_project_story_id
+  after_commit :broadcast_story_update
+
+  aasm column: :state, enum: true do
+    state :unscheduled, initial: true
+    state :unstarted
+    state :started
+    state :finished
+    state :delivered
+    state :accepted
+    state :rejected
+
+    event :prioritize do
+      transitions from: :unscheduled, to: :unstarted
+    end
+
+    event :start do
+      transitions from: [:unstarted, :rejected], to: :started
+    end
+
+    event :finish do
+      transitions from: :started, to: :finished
+    end
+
+    event :deliver do
+      transitions from: :finished, to: :delivered
+    end
+
+    event :accept do
+      transitions from: :delivered, to: :accepted
+    end
+
+    event :reject do
+      transitions from: :delivered, to: :rejected
+    end
+  end
 
   def done?
     accepted?
@@ -188,9 +225,16 @@ class Story < ApplicationRecord
     # Calculate time spent in a particular state
   end
 
+  def current_panel
+    return :icebox if unscheduled?
+    return :backlog if unstarted?
+    return :current if started? || finished? || delivered? || rejected?
+    return :done if accepted?
+  end
+
   private
   def notify_if_delivered
-    if delivered? && state_before_last_save != 'delivered'
+    if delivered? && state_before_last_save != 'accepted'
       # Notify requester
       if requester && requester != user
         NotificationService.notify(requester, :story_delivered, self)
@@ -206,5 +250,14 @@ class Story < ApplicationRecord
   def set_project_story_id
     max_id = project.stories_count
     self.project_story_id = max_id + 1
+  end
+
+  def broadcast_story_update
+    broadcast_replace_later_to(
+      [project, "stories"],
+      target: "stories-#{current_panel}",
+      partial: "projects/stories/column",
+      locals: { project_id: project.id, state: state }
+    )
   end
 end

@@ -3,7 +3,7 @@
 
   #stories-icebox
     - if @stories&.any?
-      = render partial: 'projects/stories/story', collection: @stories
+      = render 'projects/stories/column', stories: @stories
     - else
       .empty-state.text-center.text-gray-400.py-8.text-sm
         .mb-1 No stories in icebox
