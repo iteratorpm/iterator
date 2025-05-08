@@ -35,7 +35,7 @@ class Story < ApplicationRecord
   enum :story_type, { feature: 0, bug: 1, chore: 2, release: 3 }
   enum :state, {
     unscheduled: 0,  # Icebox
-    unstarted: 1,    # Backlog
+    unstarted: 1,    # Backlog / Current
     started: 2,      # Current
     finished: 3,     # Current
     delivered: 4,    # Current
@@ -99,6 +99,7 @@ class Story < ApplicationRecord
   scope :backlog, -> { where(state: :unstarted) }
   scope :icebox, -> { where(state: :unscheduled) }
   scope :current, -> { where(state: [:started, :finished, :delivered, :rejected]) }
+  scope :no_iteration, -> { where(iteration_id: nil) }
 
   scope :unstarted, -> { where(state: :unstarted) }
   scope :started, -> { where(state: :started) }
@@ -111,6 +112,9 @@ class Story < ApplicationRecord
   after_update :notify_if_delivered, if: :saved_change_to_state?
   before_create :set_project_story_id
   after_commit :broadcast_story_update
+  after_update :trigger_iteration_recalculation, if: :iteration_recalculation_needed?
+  after_create :trigger_iteration_recalculation, if: -> { backlog? }
+  after_discard :trigger_iteration_recalculation
 
   aasm column: :state, enum: true do
     state :unscheduled, initial: true
@@ -259,5 +263,14 @@ class Story < ApplicationRecord
       partial: "projects/stories/column",
       locals: { project_id: project.id, state: state }
     )
+  end
+
+  def iteration_recalculation_needed?
+    saved_change_to_estimate? ||
+      saved_change_to_state? && (backlog? || current?)
+  end
+
+  def trigger_iteration_recalculation
+    project.recalculate_iterations
   end
 end

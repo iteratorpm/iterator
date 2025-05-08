@@ -11,7 +11,7 @@ RSpec.describe "Projects", type: :request do
     current_user.update(current_organization_id: organization.id)
   end
 
-  describe "GET /projects", focus: true do
+  describe "GET /projects" do
     it "requires authentication" do
       sign_out current_user
       get projects_path

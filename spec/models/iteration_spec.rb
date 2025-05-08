@@ -240,4 +240,17 @@ RSpec.describe Iteration, type: :model do
       end
     end
   end
+
+  describe 'callbacks' do
+    let(:project) { create(:project) }
+    let(:iteration) { create(:iteration, project: project) }
+
+    it 'triggers recalculation when team strength changes' do
+      # Mocked expectation
+      expect(project).to receive(:recalculate_iterations)
+
+      # Change team strength
+      iteration.update(team_strength: 80)
+    end
+  end
 end

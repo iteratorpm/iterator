@@ -7,8 +7,8 @@ class Iteration < ApplicationRecord
   }
 
   scope :current, -> { where(state: :current) }
-  scope :backlog, -> { where(state: :backlog).order(number: :asc) }
-  scope :done, -> { where(state: :done).order(number: :asc) }
+  scope :backlog, -> { where(state: :backlog) }
+  scope :done, -> { where(state: :done) }
   scope :for_date, ->(date) { where("start_date <= ? AND end_date >= ?", date, date) }
 
   belongs_to :project
@@ -24,23 +24,10 @@ class Iteration < ApplicationRecord
 
   before_validation :set_dates, if: -> { start_date.blank? && project.present? }
   before_save :set_points_completed, if: :done?
+  after_update :trigger_recalculation, if: :saved_change_to_team_strength?
 
   def self.find_or_create_current_iteration(project)
-    Time.use_zone(project.time_zone) do
-      iteration = project.iterations.current.first
-
-      unless iteration
-        # Find the most recent iteration that hasn't ended yet
-        iteration = project.iterations.for_date(Time.zone.today).first
-
-        unless iteration
-          # Create a new current iteration if none exists
-          iteration = project.create_current_iteration
-        end
-      end
-
-      iteration
-    end
+    IterationPlanner.find_or_create_current_iteration(project)
   end
 
   def length_in_weeks
@@ -121,7 +108,9 @@ class Iteration < ApplicationRecord
   private
 
   def set_points_completed
-    points_completd = points_accepted
+    if points_completed.zero?
+      points_completd = points_accepted
+    end
   end
 
   def end_date_after_start_date
@@ -151,5 +140,9 @@ class Iteration < ApplicationRecord
     if end_date < start_date
       errors.add(:end_date, "must be after start date")
     end
+  end
+
+  def trigger_recalculation
+    project.recalculate_iterations
   end
 end

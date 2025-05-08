@@ -5,6 +5,7 @@ FactoryBot.define do
     start_date { Date.current.beginning_of_week }
     end_date { start_date + 6.days }
     velocity { 10 }
+    team_strength { 100 }
 
     trait :blank do
       start_date { nil }

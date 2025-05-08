@@ -45,6 +45,7 @@ class Project < ApplicationRecord
   validates :velocity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
 
   before_validation :set_velocity, if: -> { velocity.nil? || velocity.zero? }
+  after_update :recalculate_if_velocity_settings_changed
 
   def plan_current_iteration
     Time.use_zone(time_zone) do
@@ -53,6 +54,7 @@ class Project < ApplicationRecord
 
       # Find or create current iteration
       current_iteration = find_or_create_current_iteration
+      binding.pry
 
       recalculate_iterations
 
@@ -91,31 +93,7 @@ class Project < ApplicationRecord
   end
 
   def find_or_create_current_iteration
-    Iteration.find_or_create_current_iteration(self)
-  end
-
-  def create_current_iteration
-    Time.use_zone(time_zone) do
-      # Determine the correct start date based on project settings
-      start_date = calculate_iteration_start_date
-      end_date = start_date + (iteration_length || 1).weeks - 1.day
-
-      # Get the next iteration number
-      last_number = iterations.maximum(:number) || 0
-      new_number = last_number + 1
-
-      # Create and return the new iteration
-      iterations.create!(
-        start_date: start_date,
-        end_date: end_date,
-        number: new_number,
-        state: :current,
-        velocity: velocity || initial_velocity
-      ).tap do |iteration|
-        # Ensure only one current iteration exists
-        iterations.where.not(id: iteration.id).where(state: :current).update_all(state: :done)
-      end
-    end
+    IterationPlanner.find_or_create_current_iteration(self)
   end
 
   def calculated_velocity
@@ -132,15 +110,7 @@ class Project < ApplicationRecord
   end
 
   def recalculate_iterations
-    available_stories = stories.current
-
-    available_stories.update_all iteration_id: find_or_create_current_iteration.id
-
-    # Re-plan all future iterations based on current backlog priority
-    transaction do
-      iterations.backlog.destroy_all
-      plan_future_iterations
-    end
+    IterationPlanner.recalculate_all_iterations(self)
   end
 
   def current_iteration_points
@@ -209,19 +179,6 @@ class Project < ApplicationRecord
     }
   end
 
-  def calculate_iteration_start_date
-    Time.use_zone(time_zone) do
-      now = Time.zone.today
-      preferred_wday = iteration_start_day_before_type_cast.to_i
-
-      # Calculate days since last preferred weekday (including today if it matches)
-      days_since_start_day = (now.wday - preferred_wday) % 7
-
-      # Subtract to get to the most recent preferred weekday
-      now - days_since_start_day
-    end
-  end
-
   def average_velocity
     iterations.done.average(:points_completed)&.round(1) || 0
   end
@@ -242,42 +199,11 @@ class Project < ApplicationRecord
     self.velocity = initial_velocity || 10
   end
 
-  def plan_future_iterations
-    Time.use_zone(time_zone) do
-      velocity = calculated_velocity
-      remaining_stories = stories.backlog.ranked
-
-      current_date = Time.zone.today
-      iteration_number = iterations.maximum(:number).to_i + 1
-
-      while remaining_stories.any?
-        # Create new iteration
-        iteration = iterations.create!(
-          start_date: current_date,
-          end_date: current_date + (iteration_length.weeks - 1.day),
-          number: iteration_number,
-          velocity: velocity
-        )
-
-        # Fill iteration with stories up to velocity
-        points_remaining = velocity
-        remaining_stories.each do |story|
-          break if points_remaining <= 0
-          if story.estimated?
-            if story.estimate <= points_remaining
-              story.update!(iteration: iteration)
-              points_remaining -= story.estimate
-            end
-          else
-            story.update!(iteration: iteration)
-          end
-        end
-
-        current_date += iteration_length.weeks
-        iteration_number += 1
-        remaining_stories = stories.backlog.ranked
-      end
+  def recalculate_if_velocity_settings_changed
+    if saved_change_to_velocity_strategy? ||
+        saved_change_to_iteration_length? ||
+        saved_change_to_iteration_start_day?
+      recalculate_iterations
     end
   end
-
 end
