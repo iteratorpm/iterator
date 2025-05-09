@@ -35,7 +35,7 @@ class Project < ApplicationRecord
   has_many :review_types, dependent: :destroy
   has_many :csv_exports, dependent: :destroy
 
-  has_many :favorites
+  has_many :favorites, dependent: :destroy
   has_many :favorited_by, through: :favorites, source: :user
 
   validates :organization, presence: true
@@ -44,7 +44,6 @@ class Project < ApplicationRecord
 
   validates :velocity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
 
-  before_validation :set_velocity, if: -> { velocity.nil? || velocity.zero? }
   after_update :recalculate_if_velocity_settings_changed
 
   def plan_current_iteration
@@ -54,7 +53,6 @@ class Project < ApplicationRecord
 
       # Find or create current iteration
       current_iteration = find_or_create_current_iteration
-      binding.pry
 
       recalculate_iterations
 
@@ -97,16 +95,7 @@ class Project < ApplicationRecord
   end
 
   def calculated_velocity
-    # Calculate based on last N completed iterations (velocity_strategy)
-    completed_iterations = iterations.done.limit(velocity_strategy)
-    return initial_velocity if completed_iterations.empty?
-
-    total_normalized_points = completed_iterations.sum do |i|
-      i.points_completed / (i.team_strength / 100.0)
-    end
-
-    total_weeks = completed_iterations.sum(&:length_in_weeks)
-    (total_normalized_points / total_weeks * iteration_length).floor
+    IterationPlanner.calculate_project_velocity(self)
   end
 
   def recalculate_iterations
@@ -118,7 +107,7 @@ class Project < ApplicationRecord
   end
 
   def last_5_iterations
-    iterations.completed.order(start_date: :desc).limit(5)
+    iterations.done.order(start_date: :desc).limit(5)
   end
 
   def current_scope
@@ -179,8 +168,8 @@ class Project < ApplicationRecord
     }
   end
 
-  def average_velocity
-    iterations.done.average(:points_completed)&.round(1) || 0
+  def average_velocity limit=5
+    iterations.done.order(state_date: :desc).limit(limit).average(:points_completed)&.round(1) || 0
   end
 
   def volatility
@@ -191,13 +180,12 @@ class Project < ApplicationRecord
     deviations = velocities.map { |v| (v - average).abs }
     mean_deviation = deviations.sum.to_f / deviations.size
 
+    return "0%" if average.zero?
+
     "#{((mean_deviation / average) * 100).round}%"
   end
 
   private
-  def set_velocity
-    self.velocity = initial_velocity || 10
-  end
 
   def recalculate_if_velocity_settings_changed
     if saved_change_to_velocity_strategy? ||

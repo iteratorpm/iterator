@@ -4,10 +4,14 @@ FactoryBot.define do
     organization
     description { "Project description" }
     iteration_start_day { 0 }
-    time_zone { "Eastern Time (US & Canada)" }
+    time_zone { "UTC" }
     automatic_planning { true }
     velocity { 10 }
     initial_velocity { 10 }
+
+    trait :archived do
+      archived { true }
+    end
 
     trait :current_iteration do
       after(:create) do |project|

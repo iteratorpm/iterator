@@ -106,45 +106,6 @@ RSpec.describe Iteration, type: :model do
     end
   end
 
-  describe '#set_dates' do
-    context 'for first iteration' do
-      it 'uses project start date' do
-        project.update(
-          start_date: now.to_date - 1.week,
-          iteration_start_day: 'wednesday'
-        )
-        iteration = build(:iteration, :blank, project: project)
-        iteration.save
-
-        expect(iteration.start_date).to eq(project.start_date)
-        expect(iteration.end_date).to eq(project.start_date + (project.iteration_length || 1).weeks - 1.day)
-        expect(iteration.number).to eq(1)
-      end
-
-      it 'uses current date when no project start date' do
-        project.update(start_date: nil, iteration_start_day: 'monday')
-        iteration = build(:iteration, :blank, project: project)
-        iteration.save
-
-        expect(iteration.start_date).to eq(Time.zone.today.beginning_of_week)
-        expect(iteration.end_date).to eq(Time.zone.today.beginning_of_week + (project.iteration_length || 1).weeks - 1.day)
-        expect(iteration.number).to eq(1)
-      end
-    end
-
-    context 'for subsequent iterations' do
-      let!(:first_iteration) { create(:iteration, project: project, start_date: now.to_date - 1.week, end_date: now.to_date - 1.day) }
-
-      it 'sets dates based on last iteration' do
-        iteration = build(:iteration, :blank, project: project)
-        iteration.save
-        expect(iteration.start_date).to eq(now.to_date)
-        expect(iteration.end_date).to eq(now.to_date + 6.days)
-        expect(iteration.number).to eq(project.iterations.first.number + 1)
-      end
-    end
-  end
-
   describe '#full?' do
     let(:iteration) { create(:iteration, project: project, velocity: 10) }
 
@@ -169,10 +130,12 @@ RSpec.describe Iteration, type: :model do
     let!(:accepted_story) { create(:story, :accepted, iteration: iteration) }
     let!(:started_story) { create(:story, :started, iteration: iteration) }
 
-    it 'does not affect started stories' do
+    it 'nils iteration for unaccepted stories' do
       iteration.complete!
       expect(started_story.reload.state).to eq('started')
-      expect(started_story.iteration).to eq(iteration)
+      expect(started_story.iteration).to be_nil
+
+      expect(accepted_story.iteration.id).to eq iteration.id
     end
 
     it 'marks iteration as not current' do

@@ -22,7 +22,6 @@ class Iteration < ApplicationRecord
 
   validate :end_date_after_start_date
 
-  before_validation :set_dates, if: -> { start_date.blank? && project.present? }
   before_save :set_points_completed, if: :done?
   after_update :trigger_recalculation, if: :saved_change_to_team_strength?
 
@@ -60,6 +59,8 @@ class Iteration < ApplicationRecord
   end
 
   def complete!
+    stories.where.not(state: :accepted).update_all iteration_id: nil
+
     update!(state: :done)
   end
 
@@ -119,19 +120,6 @@ class Iteration < ApplicationRecord
     if end_date < start_date
       errors.add(:end_date, "must be after start date")
     end
-  end
-
-  def set_dates
-    last_iteration = project.iterations.order(start_date: :desc).first
-
-    if last_iteration
-      self.start_date = last_iteration.end_date + 1.day
-    else
-      self.start_date = (project.start_date || project.calculate_iteration_start_date)
-    end
-
-    self.end_date = start_date + (project.iteration_length || 1).weeks - 1.day
-    self.number = last_iteration ? last_iteration.number + 1 : 1
   end
 
   def end_date_after_start_date

@@ -4,7 +4,7 @@ RSpec.describe Story, type: :model do
   # Add to existing Story spec file
   describe 'callbacks' do
     let(:project) { create(:project) }
-    let(:story) { create(:story, project: project, state: :unstarted, estimate: 3) }
+    let!(:story) { create(:story, project: project, state: :unstarted, estimate: 3) }
 
     it 'triggers iteration recalculation when estimate changes' do
       # Mocked expectation

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_30_164301) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_09_144504) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -295,7 +295,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_164301) do
     t.integer "stories_count", default: 0
     t.boolean "archived", default: false
     t.text "profile_content"
-    t.integer "velocity", null: false
+    t.integer "velocity", default: 0, null: false
     t.boolean "automatic_planning", default: true
     t.index ["organization_id"], name: "index_projects_on_organization_id"
   end

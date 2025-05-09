@@ -103,6 +103,12 @@ RSpec.describe IterationPlanner do
                   estimate: 5,
                   iteration: nil)
 
+      create_list(:story, 1,
+                  project: project,
+                  state: :unstarted,
+                  estimate: 5,
+                  iteration: current_iteration)
+
       # Recalculate
       IterationPlanner.recalculate_all_iterations(project)
 
@@ -111,7 +117,7 @@ RSpec.describe IterationPlanner do
       # After recalculation
       expect(project.iterations.backlog.count).to eq(1) # Only need 1 iteration for 9 points
       expect(project.iterations.backlog.first.number).to eq(2)
-      expect(project.iterations.backlog.first.stories.count).to eq(1)
+      expect(project.iterations.backlog.first.stories.count).to eq(2)
     end
   end
 

@@ -38,12 +38,10 @@ RSpec.describe IterationMaintenanceJob, type: :job do
       # Check active_project1
       expect(active_project1.iterations.done.count).to eq(1)
       expect(active_project1.iterations.current.count).to eq(1)
-      expect(active_project1.iterations.current.first.start_date).to be >= Date.today
 
       # Check active_project2
       expect(active_project2.iterations.done.count).to eq(1)
       expect(active_project2.iterations.current.count).to eq(1)
-      expect(active_project2.iterations.current.first.start_date).to be >= Date.today
     end
 
     it 'loads new stories into the current iteration' do

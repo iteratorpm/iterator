@@ -101,8 +101,14 @@ module IterationPlanner
       current_stories = project.stories.current
       current_stories.update_all(iteration_id: iteration.id)
 
+      # Reset all unstarted stories assigned to this
+      project.stories.unstarted.where(iteration_id: iteration.id).update_all iteration_id: nil
+
       # Get unstarted stories (backlog)
-      backlog_stories = project.stories.unstarted.no_iteration.ranked
+      backlog_stories = project.stories
+        .unstarted
+        .no_iteration
+        .ranked
 
       # Fill iteration up to velocity
       points_remaining = iteration.velocity
@@ -134,7 +140,10 @@ module IterationPlanner
         return unless current_iteration
 
         # Get remaining backlog stories that aren't assigned to an iteration
-        remaining_stories = project.stories.no_iteration.unstarted.ranked
+        remaining_stories = project.stories
+          .unstarted
+          .no_iteration
+          .ranked
         return if remaining_stories.empty?
 
         # Start planning from the end of the current iteration
