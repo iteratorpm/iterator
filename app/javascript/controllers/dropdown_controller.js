@@ -21,7 +21,9 @@ export default class extends Controller {
     this.buttonTarget.setAttribute("aria-expanded", isExpanded)
     
     if (isExpanded) {
-      this.searchTarget?.focus()
+      if (this.hasSearchTarget) {
+        this.searchTarget.focus()
+      }
       this.highlightSelectedItem()
     }
   }

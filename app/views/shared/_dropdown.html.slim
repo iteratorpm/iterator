@@ -24,7 +24,7 @@
     .flex.items-center.gap-2 data-dropdown-target="selected"
       - if selected_value.present?
         = render "shared/dropdown_item",
-                icon: icon_method ? send(icon_method, selected_value) : nil,
+                icon: local_assigns[:icon_method] ? send(icon_method, selected_value) : nil,
                 label: options.find { |v, l| v.to_s == selected_value.to_s }&.last || selected_value.to_s
       - else
         span.text-gray-400 Select option
@@ -32,7 +32,7 @@
 
   / Dropdown Menu
   .hidden.absolute.z-10.top-full.left-0.w-full.rounded-md.bg-white.shadow-lg.ring-1.ring-black.ring-opacity-5.max-h-60.overflow-auto.mt-1 data-dropdown-target="menu"
-    - if searchable
+    - if local_assigns[:searchable] == true
       .p-2.border-b
         = text_field_tag :search, nil,
                         placeholder: "Search...",
@@ -45,5 +45,5 @@
           = link_to "#", class: "flex items-center w-full pl-3 py-0.5 h-8 leading-6 hover:bg-gray-50 cursor-pointer" do
             .dropdown_content
               = render "shared/dropdown_item",
-                      icon: icon_method ? send(icon_method, value) : nil,
+                      icon: local_assigns[:icon_method] ? send(icon_method, value) : nil,
                       label: label

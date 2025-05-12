@@ -136,8 +136,6 @@ class Projects::StoriesController < Projects::BaseController
   end
 
   def handle_successful_update
-    # @story.project.recalculate_iterations if story_params.key?(:estimate)
-
     respond_to do |format|
       format.turbo_stream
       format.html { redirect_to project_path(@project), notice: 'Story was successfully updated.' }

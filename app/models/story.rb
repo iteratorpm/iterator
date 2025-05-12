@@ -167,12 +167,11 @@ class Story < ApplicationRecord
   end
 
   def estimated?
-    estimate.present?
+    estimate != -1
   end
 
   def estimatable?
-    # Features are typically estimatable, bugs might be, chores usually aren't
-    feature? || bug?
+    feature?
   end
 
   def unestimated?

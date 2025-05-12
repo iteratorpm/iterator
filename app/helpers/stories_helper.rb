@@ -4,11 +4,11 @@ module StoriesHelper
   def story_classes(story)
     classes = ["story-preview-item", "cursor-move"]
 
-    classes << "bg-blue-100" if story.icebox?
+    classes << "bg-blue-100 hover:bg-blue-200" if story.icebox?
 
-    classes << "bg-yellow-100" if story.current?
+    classes << "bg-yellow-100 hover:bg-yellow-200" if story.current?
 
-    classes << "bg-green-100" if story.done?
+    classes << "bg-green-100 hover:bg-green-200" if story.done?
 
     classes << border_color_class(story)
 

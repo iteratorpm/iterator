@@ -1,8 +1,6 @@
-.bg-white.rounded-lg.border.border-gray-200.overflow-hidden.mb-4.px-3.py-2 data-panel-target="addStoryForm" data-controller="story-form" class=(story.id? ? nil : "hidden")
+.bg-white.rounded-lg.border.border-gray-200.overflow-hidden.mb-4.px-3.py-2
   section.model-details
-    = form_with model: [story.project, story], data: { action: "turbo:submit-end->story-form#resetAndClose", story_form_target: "form" } do |f|
-      - if not story.id?
-        = f.hidden_field :position, value: :first
+    = form_with model: [story.project, story], data: { action: "turbo:submit-end->story#close" } do |f|
 
       section.flex.items-start.mb-4
         button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action=( story.id? ? "click->story#close" : "click->story-form#close")
@@ -50,20 +48,25 @@
                     = inline_svg_tag 'icons/trash.svg', class: "w-4 h-4 text-gray-500"
 
               .flex
-                - if story.id?
-                  = f.submit "Collapse", \
-                    type: :button, \
-                    class: "text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600",
-                    data: { action: "click->story#close" }
-                - else
-                  = f.button "Cancel", \
-                    type: :button, \
-                    class: "px-3 py-1 text-sm text-gray-600 hover:bg-gray-200 mr-2", \
-                    data: { action: "click->story-form#close" }
-                  = f.submit "Save", \
-                    class: "text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                = f.submit "Collapse", \
+                  class: "text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
 
           .info-box.bg-gray-50.p-4.rounded-lg
+
+            .story-state.mb-4
+              .state-row.flex.items-center.mb-2
+                span.text-xs.text-gray-500.mr-2 State
+                - if story.unscheduled?
+                  = render "shared/dropdown_item", label: "Unscheduled"
+                - else
+                  = render partial: "shared/dropdown", \
+                           locals: { \
+                             record: story, \
+                             column: :state, \
+                             form: f, \
+                             options: [["unstarted", "Unstarted"], ["started", "Started"], ["finished", "Finished"], ["delivered", "Delivered"], ["accepted", "Accepted"], ["rejected", "Rejected"]],\
+                             searchable: false \
+                           }
 
             .story-info
               .type-row.flex.items-center.mb-3
@@ -90,15 +93,18 @@
 
               .estimate-row.flex.items-center.mb-3
                 span.text-xs.text-gray-500.mr-2.w-20 Points
-                = render partial: "shared/dropdown", \
-                         locals: { \
-                           record: story, \
-                           form: f, \
-                           column: :estimate, \
-                           icon_method: :story_estimate_icon, \
-                           options: [[-1, "Unestimated"], [0, "0 points"], [1, "1 Point"], [2, "2 Points"], [3, "3 Points"]],\
-                           searchable: true \
-                         }
+                - if not story.estimatable?
+                  = render "shared/dropdown_item", label: "Unestimated", icon: story_estimate_icon(-1)
+                - else
+                  = render partial: "shared/dropdown", \
+                           locals: { \
+                             record: story, \
+                             form: f, \
+                             column: :estimate, \
+                             icon_method: :story_estimate_icon, \
+                             options: [[-1, "Unestimated"], [0, "0 points"], [1, "1 Point"], [2, "2 Points"], [3, "3 Points"]],\
+                             searchable: true \
+                           }
 
               .requester-row.flex.items-center.mb-3
                 span.text-xs.text-gray-500.mr-2.w-20 Requester
