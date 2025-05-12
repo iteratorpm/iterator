@@ -126,7 +126,7 @@ RSpec.describe Iteration, type: :model do
   end
 
   describe '#complete!' do
-    let(:iteration) { create(:iteration, project: project, end_date: now.to_date - 1.day) }
+    let(:iteration) { create(:iteration, project: project, start_date: now.to_date - 1.week, end_date: now.to_date - 1.day) }
     let!(:accepted_story) { create(:story, :accepted, iteration: iteration) }
     let!(:started_story) { create(:story, :started, iteration: iteration) }
 

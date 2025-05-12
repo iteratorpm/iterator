@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { patch } from '@rails/request.js'
 
 export default class extends Controller {
   static targets = ["form", "header"]
@@ -8,14 +9,12 @@ export default class extends Controller {
     event.stopPropagation()
 
     const pointValue = event.currentTarget.dataset.storyPointValue
-    const storyId = this.element.id.replace("story_", "") // Adjust if `dom_id` format differs
+    const storyId = this.element.dataset.id
 
-    fetch(`${location.href}/stories/${storyId}`, {
-      method: "PATCH",
+    patch(`${location.href}/stories/${storyId}`, {
       headers: {
         "Accept": "text/vnd.turbo-stream.html",
-        "Content-Type": "application/json",
-        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ story: {estimate: pointValue} })
     })

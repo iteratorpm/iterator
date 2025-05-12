@@ -1,6 +1,10 @@
 FactoryBot.define do
   factory :label do
     name { "MyString" }
-    project { nil }
+    project
+
+    trait :epic do
+      epic
+    end
   end
 end

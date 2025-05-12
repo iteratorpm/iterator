@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_09_144504) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_12_095958) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -102,7 +102,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_09_144504) do
     t.string "name"
     t.text "description"
     t.integer "project_id", null: false
-    t.integer "label_id", null: false
+    t.integer "label_id"
     t.string "external_link"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -179,6 +179,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_09_144504) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "color"
+    t.integer "epic_id"
+    t.index ["epic_id"], name: "index_labels_on_epic_id"
     t.index ["project_id", "name"], name: "index_labels_on_project_id_and_name", unique: true
     t.index ["project_id"], name: "index_labels_on_project_id"
   end
@@ -329,7 +331,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_09_144504) do
     t.integer "estimate", default: -1, null: false
     t.integer "project_id", null: false
     t.integer "requester_id"
-    t.integer "epic_id"
     t.integer "iteration_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -342,7 +343,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_09_144504) do
     t.integer "position", null: false
     t.integer "project_story_id", null: false
     t.index ["discarded_at"], name: "index_stories_on_discarded_at"
-    t.index ["epic_id"], name: "index_stories_on_epic_id"
     t.index ["iteration_id"], name: "index_stories_on_iteration_id"
     t.index ["priority"], name: "index_stories_on_priority"
     t.index ["project_id", "position"], name: "index_stories_on_project_id_and_position", unique: true
@@ -468,6 +468,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_09_144504) do
   add_foreign_key "github_repositories", "github_integrations"
   add_foreign_key "integrations", "users", column: "creator_id"
   add_foreign_key "iterations", "projects"
+  add_foreign_key "labels", "epics"
   add_foreign_key "labels", "projects"
   add_foreign_key "memberships", "organizations"
   add_foreign_key "memberships", "users"
@@ -483,7 +484,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_09_144504) do
   add_foreign_key "review_types", "projects"
   add_foreign_key "reviews", "stories"
   add_foreign_key "reviews", "users", column: "reviewer_id"
-  add_foreign_key "stories", "epics"
   add_foreign_key "stories", "iterations"
   add_foreign_key "stories", "projects"
   add_foreign_key "stories", "users", column: "requester_id"

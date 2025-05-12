@@ -1,7 +1,7 @@
 = panel @panel_id, title: "Icebox", add_story: true, close: true, actions: true do
   = render "projects/stories/form", story: @project.stories.new
 
-  #stories-icebox
+  #column-icebox data-controller="sortable" data-sortable-column-value="icebox"
     - if @stories&.any?
       = render 'projects/stories/column', stories: @stories
     - else

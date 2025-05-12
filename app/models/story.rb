@@ -23,7 +23,6 @@ class Story < ApplicationRecord
       owners
       requester
       labels
-      epic
       comments
       tasks
       attachments
@@ -47,7 +46,6 @@ class Story < ApplicationRecord
   # Associations
   belongs_to :project, counter_cache: true
   belongs_to :requester, class_name: 'User'
-  belongs_to :epic, optional: true
   belongs_to :iteration, optional: true
 
   has_many :story_owners, dependent: :destroy
@@ -75,7 +73,6 @@ class Story < ApplicationRecord
   validates :requester, presence: true
 
   validates :estimate, numericality: { greater_than_or_equal_to: -1 }, allow_nil: false
-  validates :position, numericality: { greater_than_or_equal_to: 1 }, allow_nil: false
 
   validates :project_story_id, uniqueness: { scope: :project_id }
 
@@ -258,7 +255,7 @@ class Story < ApplicationRecord
   def broadcast_story_update
     broadcast_replace_later_to(
       [project, "stories"],
-      target: "stories-#{current_panel}",
+      target: "column-#{current_panel}",
       partial: "projects/stories/column",
       locals: { project_id: project.id, state: state }
     )

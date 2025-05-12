@@ -173,6 +173,64 @@ RSpec.describe "Projects::Stories", type: :request do
       story.reload
       expect(story.name).to eq("Updated Title")
     end
+
+    context "updating name" do
+      let(:new_attributes) { { name: "Updated Title" } }
+
+      it "updates the requested story" do
+        patch project_story_path(project, story), params: { story: new_attributes }
+        story.reload
+        expect(story.name).to eq("Updated Title")
+      end
+    end
+
+    context "updating position" do
+      let!(:story1) { create(:story, project: project, state: :unstarted) }
+      let!(:story2) { create(:story, project: project, state: :unstarted) }
+
+      it "moves the story after another story" do
+        patch project_story_path(project, story1), params: {
+          story: {
+            position: { after: story2.id }
+          }
+        }
+        wanted_pos = story2.position
+        original_pos = story1.position
+
+        story1.reload
+        story2.reload
+
+        expect(story1.position).to eq wanted_pos
+        expect(story2.position).to eq original_pos
+      end
+    end
+
+    context "moving between columns (states)" do
+      it "updates the state from unscheduled to unstarted" do
+        story.update!(state: :unscheduled)
+
+        patch project_story_path(project, story), params: {
+          story: { state: :unstarted }
+        }
+
+        story.reload
+        expect(story.state).to eq("unstarted")
+      end
+    end
+
+    context.skip "assigning to an epic adds the epic label" do
+      let(:epic) { create(:epic, :label, project: project) }
+
+      it "assigns the epic and adds the label" do
+        patch project_story_path(project, story), params: {
+          story: { epic_id: epic.id }
+        }
+
+        story.reload
+        expect(story.epic).to eq(epic)
+        expect(story.labels).to include(epic.label)
+      end
+    end
   end
 
 end

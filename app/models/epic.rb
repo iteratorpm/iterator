@@ -1,6 +1,8 @@
 class Epic < ApplicationRecord
   belongs_to :project
   has_many :stories, dependent: :nullify
+  belongs_to :label, optional: true
+
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :attachments, as: :attachable, dependent: :destroy
 
@@ -28,19 +30,19 @@ class Epic < ApplicationRecord
   end
 
   def accepted_points
-    stories.where(state: 'accepted').sum(:estimate)
+    stories.accepted.sum(:estimate)
   end
 
   def in_progress_points
-    stories.where(state: %w[started finished delivered]).sum(:estimate)
+    stories.current.sum(:estimate)
   end
 
   def unstarted_points
-    stories.where(state: 'unstarted').sum(:estimate)
+    stories.backlog.sum(:estimate)
   end
 
   def iceboxed_points
-    stories.where(state: 'icebox').sum(:estimate)
+    stories.icebox.sum(:estimate)
   end
 
   def completion_percentage

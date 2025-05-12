@@ -28,8 +28,6 @@ class Projects::StoriesController < Projects::BaseController
 
     authorize! :create, @story
 
-    @story.position = params[:story][:position] if params[:story][:position].present?
-
     if @story.save
       handle_successful_save
     else
@@ -52,6 +50,7 @@ class Projects::StoriesController < Projects::BaseController
       handle_successful_update
     else
       respond_to do |format|
+        format.json
         format.turbo_stream { render_turbo_validation_errors(@story) }
         format.html { render :edit }
       end
@@ -98,14 +97,18 @@ class Projects::StoriesController < Projects::BaseController
   def story_params
     params.require(:story).permit(
       :name,
+      :add_label,
+      :column,
       :story_type,
       :release_date,
       :estimate,
       :requester_id,
+      :state,
+      :epic_id,
       :blocked_by,
       :blocking,
       :description,
-      :position,
+      position: [:before, :after],
       owner_ids: [],
       label_list: [],
       reviews_attributes: [
@@ -137,6 +140,7 @@ class Projects::StoriesController < Projects::BaseController
 
   def handle_successful_update
     respond_to do |format|
+      format.json
       format.turbo_stream
       format.html { redirect_to project_path(@project), notice: 'Story was successfully updated.' }
     end
