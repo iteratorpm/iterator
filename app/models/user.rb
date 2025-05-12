@@ -85,6 +85,13 @@ class User < ApplicationRecord
     update(api_token: nil)
   end
 
+  def avatar_url
+    avatar.attached? ? Rails.application.routes.url_helpers.rails_representation_url(
+      avatar.variant(resize_to_fill: [48, 48]).processed,
+      only_path: true
+    ) : nil
+  end
+
   private
 
   def set_initials_if_blank

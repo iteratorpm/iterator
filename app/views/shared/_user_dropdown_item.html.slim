@@ -1,0 +1,10 @@
+- avatar_url = user.avatar_url
+- initials = user.initials
+
+.flex.items-center.gap-2
+  - if avatar_url.present?
+    img.w-6.h-6.rounded-full.flex-shrink-0 object-cover src=avatar_url alt=user.name
+  - else
+    .w-6.h-6.rounded-full.bg-blue-500.flex.items-center.justify-center.text-white.text-xs.font-bold.flex-shrink-0 = initials
+
+  span.truncate.text-sm.text-gray-900 = user.name

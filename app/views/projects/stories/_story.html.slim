@@ -46,5 +46,5 @@
 
     = image_tag "icons/checkbox-empty.svg", class: "selector undraggable ml-2 text-gray-500 cursor-pointer", title: "Select this story for bulk actions"
 
-  .hidden data-story-target="form"
+  .hidden.undraggable data-story-target="form"
     = turbo_frame_tag dom_id(story, :edit), src: edit_project_story_path(story.project, story), refresh: :morph, target: :current, loading: (story.current? ? nil : :lazy)

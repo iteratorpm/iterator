@@ -17,6 +17,8 @@ export default class extends Controller {
         put: true,
       },
       draggable: `.${this.typeValue}`,
+      filter: ".undraggable",
+      preventOnFilter: false,
       dataIdAttr: "data-id",
       scrollSensitivity: 75,
       delay: 200,
@@ -29,6 +31,10 @@ export default class extends Controller {
   }
 
   onMove(event) {
+    if (event.originalEvent.target.closest(".undraggable")) {
+      return false
+    }
+
     const from = event.from.dataset.sortableColumnValue
     const to = event.to.dataset.sortableColumnValue
     const action = [to, from].sort().join()

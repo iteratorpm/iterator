@@ -1,9 +1,9 @@
-.bg-white.rounded-lg.border.border-gray-200.overflow-hidden.mb-4.px-3.py-2
+.bg-white.border.border-gray-200.overflow-hidden.px-3.py-2
   section.model-details
     = form_with model: [story.project, story], data: { action: "turbo:submit-end->story#close" } do |f|
 
       section.flex.items-start.mb-4
-        button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action=( story.id? ? "click->story#close" : "click->story-form#close")
+        button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action="click->story#close"
           = inline_svg_tag 'icons/arrow-up.svg', class: "w-4 h-4 text-gray-500"
 
         fieldset.name.flex-1.ml-1
@@ -31,8 +31,8 @@
                 button.link-button.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="Copy story link"
                   = inline_svg_tag 'icons/link.svg', class: "w-4 h-4 text-gray-500"
                 button.id.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="Copy story link"
-                  = inline_svg_tag 'icons/hashtag.svg', class: "w-4 h-4 text-gray-500"
-                input readonly="" class="h-5.5 w-15 px-0.5 rounded-r-sm text-xms font-normal text-gray-600 bg-white" value=(story.id? ? story.project_story_id : nil)
+                  | ID
+                input readonly="" class="h-5.5 w-15 px-0.5 rounded-r-sm text-xms font-normal text-gray-600 bg-white" value="##{story.project_story_id}"
 
               .flex.items-center.border.border-gray-200.rounded-md.mr-2
                 button.clone-button.p-2.border-r.border-gray-200.hover:bg-gray-100 type="button" title="Clone story" disabled=true
@@ -108,13 +108,13 @@
 
               .requester-row.flex.items-center.mb-3
                 span.text-xs.text-gray-500.mr-2.w-20 Requester
-                .dropdown.relative
-                  = f.hidden_field :requester_id, value: current_user.id
-                  button.dropdown-toggle.flex.items-center.text-sm.bg-white.border.border-gray-300.rounded.px-2.py-1.w-full.justify-between type="button"
-                    .flex.items-center
-                      span.mr-2 = current_user.initials
-                      span = current_user.name
-                    = inline_svg_tag 'icons/chevron-down.svg', class: "w-4 h-4 text-gray-500 ml-2"
+                = render partial: "shared/user_dropdown", locals: {\
+                  record: story,\
+                  selected: story.requester_id, \
+                  column: :requester_id,\
+                  options: story.project.users,\
+                  searchable: true \
+                }
 
               .owner-row.flex.items-center.mb-3
                 span.text-xs.text-gray-500.mr-2.w-20 Owners
@@ -155,7 +155,7 @@
               rows: 4
           .editor-footer.flex.justify-between.items-center.mt-2
             .actions
-              = f.button "Add description", \
+              = f.button "Update", \
                 type: :submit, \
                 class: "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
               = f.button "Cancel", \
