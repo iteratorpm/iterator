@@ -174,6 +174,23 @@ RSpec.describe "Projects::Stories", type: :request do
       expect(story.name).to eq("Updated Title")
     end
 
+    context "when starting the story" do
+      let(:story) { create(:story, project: project, state: :unstarted) }
+
+      before do
+        patch project_story_path(project, story), params: { story: { state: "started" } }
+        story.reload
+      end
+
+      it "adds the current user as an owner" do
+        expect(story.owners).to include(user)
+      end
+
+      it "sets the started_at timestamp" do
+        expect(story.started_at).to be_present
+      end
+    end
+
     context "updating name" do
       let(:new_attributes) { { name: "Updated Title" } }
 

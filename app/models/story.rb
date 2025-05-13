@@ -1,6 +1,5 @@
 class Story < ApplicationRecord
   include Discard::Model
-  include AASM
   has_paper_trail
 
   def self.ransackable_attributes(auth_object = nil)
@@ -107,52 +106,19 @@ class Story < ApplicationRecord
   scope :ranked, -> { order(position: :asc) }
 
   after_update :notify_if_delivered, if: :saved_change_to_state?
+  before_update :track_state_changes
   before_create :set_project_story_id
   after_commit :broadcast_story_update
   after_update :trigger_iteration_recalculation, if: :iteration_recalculation_needed?
   after_create :trigger_iteration_recalculation, if: -> { backlog? }
   after_discard :trigger_iteration_recalculation
 
-  aasm column: :state, enum: true do
-    state :unscheduled, initial: true
-    state :unstarted
-    state :started
-    state :finished
-    state :delivered
-    state :accepted
-    state :rejected
-
-    event :prioritize do
-      transitions from: :unscheduled, to: :unstarted
-    end
-
-    event :start do
-      transitions from: [:unstarted, :rejected], to: :started
-    end
-
-    event :finish do
-      transitions from: :started, to: :finished
-    end
-
-    event :deliver do
-      transitions from: :finished, to: :delivered
-    end
-
-    event :accept do
-      transitions from: :delivered, to: :accepted
-    end
-
-    event :reject do
-      transitions from: :delivered, to: :rejected
-    end
-  end
-
   def done?
     accepted?
   end
 
   def backlog?
-    unstarted?
+    unstarted? || iteration_id.present? && !iteration.current?
   end
 
   def icebox?
@@ -160,7 +126,8 @@ class Story < ApplicationRecord
   end
 
   def current?
-    started? || finished? || delivered? || rejected?
+    (started? || finished? || delivered? || rejected?) ||
+      (iteration_id.present? && iteration.current?)
   end
 
   def estimated?
@@ -192,6 +159,12 @@ class Story < ApplicationRecord
     else
       "Unprioritized"
     end
+  end
+
+  attr_accessor :_user
+  def update_with_user(params, user)
+    self._user = user
+    update(params)
   end
 
   # Methods
@@ -268,5 +241,19 @@ class Story < ApplicationRecord
 
   def trigger_iteration_recalculation
     project.recalculate_iterations
+  end
+
+  def track_state_changes
+    return unless state_changed?
+
+    case state
+    when "started"
+      self.started_at ||= Time.current
+      owners << _user if _user && !owners.include?(_user)
+    when "accepted"
+      self.accepted_at ||= Time.current
+    when "rejected"
+      self.rejected_at ||= Time.current
+    end
   end
 end

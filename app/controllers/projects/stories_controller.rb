@@ -46,7 +46,7 @@ class Projects::StoriesController < Projects::BaseController
   end
 
   def update
-    if @story.update(story_params)
+    if @story.update_with_user(story_params, current_user)
       handle_successful_update
     else
       respond_to do |format|
