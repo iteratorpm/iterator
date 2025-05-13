@@ -1,8 +1,6 @@
 = panel @panel_id, title: "Current Iteration", velocity: true, add_story: true, close: true, actions: true do
 
-  = render "projects/iteration", iteration: @current_iteration
-
-  - @current_iteration.stories do |i|
-    = render partial: 'projects/stories/story', collection: i.stories, as: :story
+  #column-current data-controller="sortable" data-sortable-column-value="current"
+    = render 'projects/iterations/column', iterations: [@current_iteration]
 
   = render "projects/stories/form", story: @project.stories.new

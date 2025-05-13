@@ -25,10 +25,11 @@ class Projects::StoriesController < Projects::BaseController
 
   def create
     @story = @project.stories.build(story_params)
-
     authorize! :create, @story
 
-    if @story.save
+    story, success = StoryService.create(@project, @story)
+
+    if success
       handle_successful_save
     else
       respond_to do |format|
@@ -36,7 +37,6 @@ class Projects::StoriesController < Projects::BaseController
         format.html { render :new }
       end
     end
-
   end
 
   def show
@@ -46,7 +46,10 @@ class Projects::StoriesController < Projects::BaseController
   end
 
   def update
-    if @story.update_with_user(story_params, current_user)
+
+    service = StoryService.new(@story, current_user)
+
+    if service.update(story_params)
       handle_successful_update
     else
       respond_to do |format|
@@ -59,7 +62,8 @@ class Projects::StoriesController < Projects::BaseController
 
   def destroy
 
-    if @story.destroy
+    service = StoryService.new(@story)
+    if service.destroy
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.remove(@story)
@@ -72,19 +76,42 @@ class Projects::StoriesController < Projects::BaseController
       end
     else
       respond_to do |format|
-        format.turbo_stream do
-          # render turbo_stream: turbo_stream.replace(
-          #   dom_id(@story),
-          #   partial: "projects/stories/story",
-          #   locals: { story: @story }
-          # ), status: :unprocessable_entity
-        end
+        format.turbo_stream
         format.html do
           redirect_to project_path(@project),
             alert: 'Failed to delete story.'
         end
         format.json { render json: { error: 'Failed to delete story' }, status: :unprocessable_entity }
       end
+    end
+  end
+
+  def batch_update
+    recalculate_after = false
+
+    ActiveRecord::Base.transaction do
+      story_updates = params[:stories] || []
+
+      story_updates.each do |story_update|
+        story = @project.stories.find(story_update[:id])
+        authorize! :update, story
+
+        service = StoryService.new(story, current_user)
+        success = service.update(story_update.permit(allowed_story_params), recalculate: false)
+
+        # If any update would trigger recalculation, flag for later
+        recalculate_after ||= success && story.iteration_recalculation_needed?
+
+        raise ActiveRecord::Rollback unless success
+      end
+
+      # Perform a single recalculation after all updates if needed
+      @project.recalculate_iterations if recalculate_after
+    end
+
+    respond_to do |format|
+      format.html { redirect_to project_path(@project), notice: 'Stories were successfully updated.' }
+      format.json { head :no_content }
     end
   end
 

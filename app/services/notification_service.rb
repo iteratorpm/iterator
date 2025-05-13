@@ -30,7 +30,7 @@ class NotificationService
     )
 
     # Send email if needed
-    send_notification_email(notification) if actual_delivery == 'email' || actual_delivery == 'both'
+    send_notification_email(notification) if actual_delivery == :email || actual_delivery == :both
 
     notification
   end
@@ -68,34 +68,68 @@ class NotificationService
   end
 
   def self.calculate_delivery_method(setting, requested_method)
-    return nil unless setting.in_app_status_enabled? || setting.email_status_enabled?
+    return nil unless setting.in_app_state_enabled? || setting.email_state_enabled?
 
     if requested_method == :both
-      if setting.in_app_status_enabled? && setting.email_status_enabled?
+      if setting.in_app_state_enabled? && setting.email_state_enabled?
         :both
-      elsif setting.in_app_status_enabled?
+      elsif setting.in_app_state_enabled?
         :in_app
-      elsif setting.email_status_enabled?
+      elsif setting.email_state_enabled?
         :email
       else
         nil
       end
     elsif requested_method == :in_app
-      setting.in_app_status_enabled? ? :in_app : nil
+      setting.in_app_state_enabled? ? :in_app : nil
     else # :email
-      setting.email_status_enabled? ? :email : nil
+      setting.email_state_enabled? ? :email : nil
     end
   end
 
   def self.generate_message(notification_type, notifiable)
-    # Implement message generation based on notification type and notifiable object
-    # Example:
-    case notification_type
+    case notification_type.to_sym
     when :story_created
-      "New story '#{notifiable.title}' was created"
+      "New story '#{notifiable.name}' was created"
+
+    when :story_delivered
+      "Story '#{notifiable.name}' was delivered"
+
+    when :story_accepted
+      "Story '#{notifiable.name}' was accepted"
+
+    when :story_rejected
+      "Story '#{notifiable.name}' was rejected"
+
+    when :story_assigned
+      "You were assigned to story '#{notifiable.name}'"
+
+    when :comment_created
+      "New comment on story '#{notifiable.story.name}'"
+
     when :mention_in_comment
-      "You were mentioned in a comment on '#{notifiable.story.title}'"
-    # ... other cases
+      "You were mentioned in a comment on '#{notifiable.commentable.name}'"
+
+    when :blocker_added
+      "Blocker added to story '#{notifiable.story.name}'"
+
+    when :blocker_resolved
+      "Blocker resolved on story '#{notifiable.story.name}'"
+
+    when :story_blocking
+      "Story '#{notifiable.name}' is blocking another story"
+
+    when :comment_reaction
+      "Someone reacted to your comment on story '#{notifiable.story.name}'"
+
+    when :review_assigned
+      "You were assigned as a reviewer on story '#{notifiable.story.name}'"
+
+    when :review_delivered
+      "Story '#{notifiable.story.name}' you are reviewing has been delivered"
+
+    else
+      "You have a new notification"
     end
   end
 

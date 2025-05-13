@@ -2,9 +2,5 @@
 
   = render "projects/stories/form", story: @project.stories.new
 
-  - @iterations.each do |i|
-    = render "projects/iteration", iteration: i
-
-    - if i.stories.any?
-      = render partial: 'projects/stories/story', collection: i.stories, as: :story
-
+  #column-backlog data-controller="sortable" data-sortable-column-value="backlog"
+    = render 'projects/iterations/column', iterations: @iterations

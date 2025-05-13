@@ -43,8 +43,44 @@
             = image_tag("icons/estimate-#{point_value}.svg",
                         class: "h-4 w-4",
                         title: "Estimate #{point_value}")
+    - else
+      .flex.items-center.gap-x-2
+        - if story.unscheduled? or story.unstarted?
+            = button_tag "Start",
+              data: { action: "click->story#updateState", story_state_value: "started" },
+              title: "Start",
+              class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md bg-gray-100 text-gray-800 text-sm border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
 
-    = image_tag "icons/checkbox-empty.svg", class: "selector undraggable ml-2 text-gray-500 cursor-pointer", title: "Select this story for bulk actions"
+        - elsif story.started?
+            = button_tag "Finish",
+              data: { action: "click->story#updateState", story_state_value: "finished" },
+              title: "Finish",
+              class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md bg-blue-700 text-gray-200 text-sm border border-gray-300 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-gray-400"
+
+        - elsif story.finished?
+            = button_tag "Deliver",
+              data: { action: "click->story#updateState", story_state_value: "delivered" },
+              title: "Finish",
+              class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md bg-amber-600 text-gray-200 text-sm border border-gray-300 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+
+        - elsif story.delivered?
+            = button_tag "Accept",
+              data: { action: "click->story#updateState", story_state_value: "accepted" },
+              title: "Accept",
+              class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md bg-green-600 text-gray-200 text-sm border border-gray-300 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+
+            = button_tag "Reject",
+              data: { action: "click->story#updateState", story_state_value: "rejected" },
+              title: "Reject",
+              class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md bg-red-600 text-gray-200 text-sm border border-gray-300 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+        - elsif story.rejected?
+            = button_tag data: { action: "click->story#updateState", story_state_value: "started" },
+              title: "Restart",
+              class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md bg-gray-100 text-gray-800 text-sm border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400" do
+                span class="block rounded-full h-2 w-2 bg-[#AA1224]" aria-hidden="true"
+                | Restart
+
+    = image_tag "icons/checkbox-empty.svg", class: "selector undraggable ml-3 text-gray-500 cursor-pointer", title: "Select this story for bulk actions"
 
   .hidden.undraggable data-story-target="form"
     = turbo_frame_tag dom_id(story, :edit), src: edit_project_story_path(story.project, story), refresh: :morph, target: :current, loading: (story.current? ? nil : :lazy)

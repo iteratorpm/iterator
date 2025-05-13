@@ -18,6 +18,9 @@ class User < ApplicationRecord
   end
 
   has_many :favorites
+  has_many :muted_projects
+  has_many :notification_settings
+  has_many :notifications
   has_many :favorite_projects, through: :favorites, source: :project
   has_many :authored_comments, class_name: 'Comment', foreign_key: 'author_id', dependent: :nullify
   has_many :uploaded_attachments, class_name: 'Attachment', foreign_key: 'uploader_id', dependent: :nullify

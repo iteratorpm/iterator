@@ -335,7 +335,6 @@ RSpec.describe IterationPlanner do
 
     it 'creates future iterations for unassigned stories respecting position' do
       # Create some unstarted stories with no iteration
-      story0 = create(:story, project: project, state: :unstarted, estimate: 8, position: 1)
       story1 = create(:story, project: project, state: :unstarted, estimate: 5, position: 2)
       story2 = create(:story, project: project, state: :unstarted, estimate: 8, position: 3)
       story3 = create(:story, project: project, state: :unstarted, estimate: 3, position: 4)
@@ -348,7 +347,7 @@ RSpec.describe IterationPlanner do
       # Iteration 2: 5 points (5)
       # Iteration 3: 8 points (8)
       # Iteration 4: 10 points (3+5+2)
-      expect(project.iterations.current.first.stories.count).to eq(1)
+      expect(project.iterations.current.first.stories.count).to eq(0)
 
       expect(project.iterations.backlog.count).to eq(3)
       iterations = project.iterations.backlog.order(:number)
@@ -377,7 +376,6 @@ RSpec.describe IterationPlanner do
 
     it 'properly handles unestimated stories' do
       # Create some stories including unestimated ones
-      story0 = create(:story, project: project, state: :unstarted, estimate: 8, position: 1)
       story1 = create(:story, project: project, state: :unstarted, estimate: 8, position: 2)
       story2 = create(:story, project: project, state: :unstarted, estimate: -1, position: 3) # Unestimated
       story3 = create(:story, project: project, state: :unstarted, estimate: 5, position: 4)
@@ -406,7 +404,6 @@ RSpec.describe IterationPlanner do
 
     it 'creates a new iteration when a story exceeds velocity' do
       # Create a large story that exceeds velocity
-      story0 = create(:story, project: project, state: :unstarted, estimate: 8, position: 1)
       story1 = create(:story, project: project, state: :unstarted, estimate: 5, position: 2)
       story2 = create(:story, project: project, state: :unstarted, estimate: 12, position: 3) # Exceeds velocity
       story3 = create(:story, project: project, state: :unstarted, estimate: 3, position: 4)

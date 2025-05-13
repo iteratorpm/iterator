@@ -13,6 +13,16 @@ class NotificationSetting < ApplicationRecord
   enum :in_app_state, { disabled: 0, enabled: 1 }, prefix: :in_app_state
   enum :email_state, { disabled: 0, enabled: 1 }, prefix: :email_state
 
-  # For muted projects
+  # Muting settings: 0 = not muted, 1 = muted, 2 = muted_except_mentions
   enum :mute_state, { not_muted: 0, muted: 1, muted_except_mentions: 2 }
+
+  # === Convenience Predicate Methods ===
+
+  def muted?
+    mute_state == "muted"
+  end
+
+  def muted_except_mentions?
+    mute_state == "muted_except_mentions"
+  end
 end

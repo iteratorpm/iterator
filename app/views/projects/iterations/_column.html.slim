@@ -1,0 +1,6 @@
+- iterations.each do |i|
+  = render "projects/iteration", iteration: i
+
+  - if i.stories.any?
+    = render partial: 'projects/stories/story', collection: i.stories, as: :story
+

@@ -109,9 +109,6 @@ class Story < ApplicationRecord
   before_update :track_state_changes
   before_create :set_project_story_id
   after_commit :broadcast_story_update
-  after_update :trigger_iteration_recalculation, if: :iteration_recalculation_needed?
-  after_create :trigger_iteration_recalculation, if: -> { backlog? }
-  after_discard :trigger_iteration_recalculation
 
   def done?
     accepted?
@@ -205,16 +202,23 @@ class Story < ApplicationRecord
     return :done if accepted?
   end
 
+  def iteration_recalculation_needed?
+    saved_change_to_estimate? ||
+    saved_change_to_iteration_id? ||
+    saved_change_to_state? ||
+    saved_change_to_story_type?
+  end
+
   private
   def notify_if_delivered
     if delivered? && state_before_last_save != 'accepted'
       # Notify requester
-      if requester && requester != user
+      if requester && !owners.include?(requester)
         NotificationService.notify(requester, :story_delivered, self)
       end
 
       # Notify owner
-      if owner && owner != user
+      owners.each do |owner|
         NotificationService.notify(owner, :story_delivered, self)
       end
     end
@@ -226,17 +230,20 @@ class Story < ApplicationRecord
   end
 
   def broadcast_story_update
+    panel = current_panel
+
+    partial = if panel == :current
+      "projects/iterations/column"
+    else
+      "projects/stories/column"
+    end
+
     broadcast_replace_later_to(
       [project, "stories"],
-      target: "column-#{current_panel}",
-      partial: "projects/stories/column",
+      target: "column-#{panel}",
+      partial: partial,
       locals: { project_id: project.id, state: state }
     )
-  end
-
-  def iteration_recalculation_needed?
-    saved_change_to_estimate? ||
-      saved_change_to_state? && (backlog? || current?)
   end
 
   def trigger_iteration_recalculation
