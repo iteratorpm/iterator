@@ -44,7 +44,7 @@
                         class: "h-4 w-4",
                         title: "Estimate #{point_value}")
     - else
-      .flex.items-center.gap-x-2
+      .flex.items-center.gap-x-1
         - if story.unscheduled? or story.unstarted?
             = button_tag "Start",
               data: { action: "click->story#updateState", story_state_value: "started" },
@@ -67,12 +67,12 @@
             = button_tag "Accept",
               data: { action: "click->story#updateState", story_state_value: "accepted" },
               title: "Accept",
-              class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md bg-green-600 text-gray-200 text-sm border border-gray-300 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md bg-lime-700 text-gray-200 text-sm border border-gray-300 hover:bg-lime-800 focus:outline-none focus:ring-2 focus:ring-gray-400"
 
             = button_tag "Reject",
               data: { action: "click->story#updateState", story_state_value: "rejected" },
               title: "Reject",
-              class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md bg-red-600 text-gray-200 text-sm border border-gray-300 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md bg-red-700 text-gray-200 text-sm border border-gray-300 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-gray-400"
         - elsif story.rejected?
             = button_tag data: { action: "click->story#updateState", story_state_value: "started" },
               title: "Restart",

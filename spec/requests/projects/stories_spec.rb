@@ -250,4 +250,74 @@ RSpec.describe "Projects::Stories", type: :request do
     end
   end
 
+  describe "GET /rejection" do
+    let(:story) { create(:story, project: project) }
+
+    it "renders the rejection form turbo frame" do
+      get rejection_project_story_path(project, story), headers: { "Turbo-Frame" => "modal" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Reason for Rejection")
+    end
+
+    context "when user is not authorized" do
+      let(:non_member) { create(:user) }
+
+      before do
+        sign_in non_member
+      end
+
+      it "returns 302 if unauthorized" do
+        get rejection_project_story_path(project, story)
+
+        expect(response).to have_http_status(:found)
+      end
+    end
+  end
+
+  describe "PATCH /reject" do
+    let(:story) { create(:story, project: project, state: :delivered) }
+
+    context "with a comment" do
+      let(:comment_body) { "This doesn't meet requirements." }
+
+      it "adds a comment and updates the story state to rejected" do
+        expect {
+          patch reject_project_story_path(project, story),
+          params: { story: { comment: comment_body } },
+          headers: { "ACCEPT" => "text/vnd.turbo-stream.html" }
+        }.to change { story.comments.count }.by(1)
+
+        story.reload
+        expect(story.state).to eq("rejected")
+        expect(story.comments.last.content).to eq(comment_body)
+      end
+    end
+
+    context "without a comment" do
+      it "rejects the story without creating a comment" do
+        expect {
+          patch reject_project_story_path(project, story),
+          params: { story: { comment: "" } },
+          headers: { "ACCEPT" => "text/vnd.turbo-stream.html" }
+        }.not_to change { story.comments.count }
+
+        story.reload
+        expect(story.state).to eq("rejected")
+      end
+    end
+
+    context "when rejection fails" do
+      before do
+        allow_any_instance_of(StoryService).to receive(:update).and_return(false)
+      end
+
+      it "redirects with an error alert" do
+        patch reject_project_story_path(project, story),
+          params: { story: { comment: "" } }
+
+        expect(response).to redirect_to(project_path(project))
+      end
+    end
+  end
 end

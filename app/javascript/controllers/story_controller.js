@@ -27,12 +27,25 @@ export default class extends Controller {
     const state = event.currentTarget.dataset.storyStateValue
     const storyId = this.element.dataset.id
 
+    if (state === "rejected") {
+      // Open the rejection modal via Turbo Frame
+      const modalUrl = `${location.href}/stories/${storyId}/rejection`
+
+      // Load rejection form into modal turbo-frame
+      Turbo.visit(modalUrl, {
+        frame: "modal"
+      })
+
+      return
+    }
+
+    // Otherwise, continue with normal state update
     patch(`${location.href}/stories/${storyId}`, {
       headers: {
         "Accept": "text/vnd.turbo-stream.html",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ story: {state: state} })
+      body: JSON.stringify({ story: { state: state } })
     })
   }
 

@@ -52,6 +52,11 @@ Rails.application.routes.draw do
     end
 
     resources :stories, module: "projects", except: [:index] do
+      member do
+        patch :reject
+        get :rejection
+      end
+
       collection do
         get :icebox
         get :my_work

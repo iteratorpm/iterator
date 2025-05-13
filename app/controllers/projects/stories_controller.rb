@@ -1,5 +1,5 @@
 class Projects::StoriesController < Projects::BaseController
-  before_action :set_story, only: [:edit, :show, :update, :destroy]
+  before_action :set_story, only: [:edit, :show, :update, :destroy, :reject, :rejection]
   authorize_resource only: [:edit, :show, :update, :destroy]
 
   def my_work
@@ -84,6 +84,45 @@ class Projects::StoriesController < Projects::BaseController
         format.json { render json: { error: 'Failed to delete story' }, status: :unprocessable_entity }
       end
     end
+  end
+
+  def rejection
+    authorize! :read, @story
+  end
+
+  def reject
+    authorize! :update, @story
+
+    comment_body = params[:story][:comment]
+
+    if comment_body.present?
+      @story.comments.create!(
+        content: comment_body,
+        author: current_user
+      )
+    end
+
+    service = StoryService.new(@story, current_user)
+
+    if service.update({state: :rejected})
+      respond_to do |format|
+        format.turbo_stream
+        format.html do
+          redirect_to project_story_path(@project, @story)
+        end
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream
+        format.html do
+          redirect_to project_path(@project),
+            alert: 'Failed to reject the story.'
+        end
+        format.json { render json: { error: 'Failed to reject the story' }, status: :unprocessable_entity }
+      end
+    end
+
   end
 
   def batch_update
