@@ -1,8 +1,8 @@
 class Projects::CommentsController < Projects::BaseController
-  before_action :set_story
+  before_action :set_commentable
 
   def create
-    @comment = @story.comments.new(comment_params)
+    @comment = @commentable.comments.new(comment_params)
     @comment.author = current_user
 
     if @comment.save
@@ -12,10 +12,9 @@ class Projects::CommentsController < Projects::BaseController
 
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_to project_story_path(@project, @story) }
+        format.html { redirect_to commentable_path }
       end
     else
-      # handle validation error if needed
       render turbo_stream: turbo_stream.replace(
         "new_comment_form",
         partial: "comments/form",
@@ -25,13 +24,13 @@ class Projects::CommentsController < Projects::BaseController
   end
 
   def destroy
-    @comment = @story.comments.find(params[:id])
+    @comment = @commentable.comments.find(params[:id])
     authorize! :destroy, @comment
     @comment.destroy
 
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_to project_story_path(@project, @story) }
+      format.html { redirect_to commentable_path }
     end
   end
 
@@ -47,9 +46,24 @@ class Projects::CommentsController < Projects::BaseController
 
   private
 
-  def set_story
+  def set_commentable
     @project = Project.find(params[:project_id])
-    @story = @project.stories.find(params[:story_id])
+
+    if params[:story_id]
+      @commentable = @project.stories.find(params[:story_id])
+    elsif params[:epic_id]
+      @commentable = @project.epics.find(params[:epic_id])
+    else
+      raise ActiveRecord::RecordNotFound, "No commentable resource found"
+    end
+  end
+
+  def commentable_path
+    if @commentable.is_a?(Story)
+      project_story_path(@project, @commentable)
+    else
+      project_epic_path(@project, @commentable)
+    end
   end
 
   def comment_params

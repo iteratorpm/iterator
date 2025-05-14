@@ -1,0 +1,19 @@
+.content-header.bg-gray-100.hover:bg-gray-200.flex.justify-between.w-full.pl-3.text-sm.border.border-gray-300.rounded-t-md
+  .flex-grow.flex.flex-col.py-3.justify-between.cursor-pointer
+    p.leading-5.mb-2.font-medium.text-gray-800
+      = epic.name
+    .flex.min-w-28.max-w-56.h-2.rounded-full.overflow-hidden
+      - accepted_width = epic.completion_percentage
+      - in_progress_width = epic.total_points.zero? ? 0 : ((epic.in_progress_points.to_f / epic.total_points) * 100).round
+      - unstarted_width = epic.total_points.zero? ? 0 : ((epic.unstarted_points.to_f / epic.total_points) * 100).round
+      - iceboxed_width = 100 - accepted_width - in_progress_width - unstarted_width
+
+      span.h-full.bg-green-600 style="width: #{accepted_width}%"
+      span.h-full.bg-yellow-300 style="width: #{in_progress_width}%"
+      span.h-full.bg-gray-400 style="width: #{unstarted_width}%"
+      span.h-full.bg-gray-500 style="width: #{iceboxed_width}%"
+
+  .flex.items-center.py-2.px-3.bg-gray-200.hover:bg-gray-300.cursor-pointer
+    button.epic-tasks.flex.items-center.h-full
+      svg.h-4.w-4.text-gray-500 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        polyline points="9 18 15 12 9 6"

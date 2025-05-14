@@ -13,7 +13,7 @@ javascript:
 
   .main.flex-1.overflow-hidden data-controller="panels"
     / Hidden toggle inputs for all panels
-    - %w[current backlog icebox done blocked epics labels history my_work].each do |panel|
+    - %w[my_work current backlog icebox done blocked epics labels history].each do |panel|
       = check_box_tag "toggle-#{panel}", "1", cookies["toggle-#{panel}"].present?,
         class: "hidden panel-toggle",
         data: {\
@@ -25,6 +25,17 @@ javascript:
 
     / Panels container
     .flex.space-x-2.relative.h-full.w-full.overflow-hidden data-controller="autocomplete"
+      / My Work Panel
+      = turbo_frame_tag "my_work_panel",
+        src: my_work_project_stories_path(@project),
+        loading: :lazy,
+        class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-my_work'].present?}",
+        data: {\
+          panel: "my_work",
+          panels_target: "panel",
+          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
+        }
+
       / Current Panel (default visible)
       = turbo_frame_tag "current_panel",
         src: current_project_iterations_path(@project),
@@ -108,17 +119,6 @@ javascript:
         class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-history'].present?}",
         data: {\
           panel: "history",
-          panels_target: "panel",
-          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
-        }
-
-      / My Work Panel
-      = turbo_frame_tag "my_work_panel",
-        src: my_work_project_stories_path(@project),
-        loading: :lazy,
-        class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-my_work'].present?}",
-        data: {\
-          panel: "my_work",
           panels_target: "panel",
           action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility"\
         }

@@ -1,9 +1,9 @@
-= form_with model: [@story, Comment.new],
-            url: project_comments_path(@project, @story),\
+= form_with model: [@project, commentable, commentable.comments.new],
+            url: project_comments_path(@project),\
             data: {\
               controller: "drag-upload markdown-tabs form-validator",\
               turbo_stream: true,\
-              markdown_tabs_preview_url_value: preview_project_comments_path(@project, @story),\
+              markdown_tabs_preview_url_value: preview_project_comments_path(@project),\
               drag_upload_target: "form"\
             },\
             html: {\

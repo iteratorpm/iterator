@@ -1,0 +1,8 @@
+- content_for :page_title, "Epics - #{@project.name}"
+
+= panel @panel_id, title: "Epics", add_epic: true, close: true, actions: true do
+  = render "projects/epics/form", epic: @project.epics.new
+
+  #column-epics
+    - @epics.each do |epic|
+      = render partial: 'epic', locals: { epic: epic }

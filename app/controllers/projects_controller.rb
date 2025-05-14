@@ -46,6 +46,9 @@ class ProjectsController < ApplicationController
 
   def show
     @active_panel = cookies[:active_panel] || "current_#{@project.id}"
+
+    @my_work_count = @project.stories.by_owner(current_user.id).count
+    @blocked_count = @project.stories.blocked.count
   end
 
   def edit

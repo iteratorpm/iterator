@@ -1,0 +1,4 @@
+.content-wrapper.text-left.mb-4.rounded-md.overflow-hidden.shadow-sm id=dom_id(epic) data-id=epic.id
+  = render partial: 'epic_header', locals: { epic: epic }
+  .hidden.undraggable data-epic-target="form"
+    = render partial: 'epic_details', locals: { epic: epic }

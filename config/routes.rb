@@ -55,19 +55,18 @@ Rails.application.routes.draw do
       member do
         patch :reject
         get :rejection
-
-        resources :comments, module: "projects", only: [:create, :destroy] do
-          collection do
-            post :preview
-          end
-        end
-
       end
 
       collection do
         get :icebox
         get :my_work
         get :blocked
+      end
+    end
+
+    resources :comments, module: "projects", only: [:create, :destroy] do
+      collection do
+        post :preview
       end
     end
 

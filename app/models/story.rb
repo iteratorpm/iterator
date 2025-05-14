@@ -76,6 +76,7 @@ class Story < ApplicationRecord
   validates :project_story_id, uniqueness: { scope: :project_id }
 
   # Scopes for common queries (performance optimization)
+  scope :blocked, -> { joins(:blockers).distinct }
   scope :by_state, ->(state) { where(state: state) }
   scope :by_story_type, ->(type) { where(story_type: type) }
   scope :by_priority, ->(priority) { where(priority: priority) }

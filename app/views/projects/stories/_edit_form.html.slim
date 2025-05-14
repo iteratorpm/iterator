@@ -185,22 +185,4 @@
         .labels-input.flex.items-center
           input.w-full.px-3.py-1.text-sm.border.border-gray-300.rounded-md type="text" placeholder="Paste link to pull request or branch.."
 
-      section.activity data-controller="comments"
-        .flex.justify-between.items-center.mb-4
-          h4.text-sm.font-medium.text-gray-700 Activity
-          .relative data-controller="dropmenu"
-            button.flex.items-center.space-x-1.text-xs.text-blue-600.hover:text-blue-800.transition-colors data-action="click->dropmenu#toggle"
-              | Sort by:
-              span.font-medium = @sort_order || "Newest to Oldest"
-              = inline_svg_tag "icons/chevron-down.svg", class: "h-4 w-4 ml-1"
-            .absolute.right-0.z-10.mt-2.w-48.bg-white.rounded-md.shadow-lg.border.border-gray-200.hidden.py-1 data-dropmenu-target="menu"
-              ul.text-sm
-                li
-                  button.w-full.text-left.px-4.py-2.hover:bg-gray-100.transition-colors data-action="click->comments#sort" data-value="Newest to Oldest" Newest to Oldest
-                li
-                  button.w-full.text-left.px-4.py-2.hover:bg-gray-100.transition-colors data-action="click->comments#sort" data-value="Oldest to Newest" Oldest to Oldest
-
-        ul.space-y-4.mt-4 data-comments-target="commentList"
-          = render story.comments.order(created_at: @sort_order == "Oldest to Newest" ? :asc : :desc)
-
-        = render partial: "projects/comments/form", locals: { comment: Comment.new }
+      = render "projects/comments/activity", sort_order: @sort_order, commentable: story

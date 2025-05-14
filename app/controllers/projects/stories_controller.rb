@@ -4,8 +4,7 @@ class Projects::StoriesController < Projects::BaseController
 
   def my_work
     @stories = @project.stories
-      .joins(:story_owners)
-      .where(story_owners: { user_id: current_user.id })
+      .by_owner(current_user.id)
       .ranked
   end
 
@@ -14,7 +13,7 @@ class Projects::StoriesController < Projects::BaseController
   end
 
   def blocked
-    @stories = @project.stories.joins(:blockers).distinct
+    @stories = @project.stories.blocked.ranked
   end
 
   def new
@@ -185,7 +184,7 @@ class Projects::StoriesController < Projects::BaseController
         :_destroy
       ],
       comments_attributes: [
-        :body,
+        :content,
         attachments: []
       ]
     )

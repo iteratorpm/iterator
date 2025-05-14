@@ -1,11 +1,11 @@
-.bg-white.rounded-lg.border.border-gray-200.overflow-hidden.mb-4.px-3.py-2 data-panel-target="addStoryForm" data-controller="story-form" class=(story.id? ? nil : "hidden")
+.hidden.bg-white.overflow-hidden.mb-4.px-3.py-2 data-panel-target="addForm" data-controller="panel-form"
   section.model-details
-    = form_with model: [story.project, story], data: { action: "turbo:submit-end->story-form#resetAndClose", story_form_target: "form" } do |f|
+    = form_with model: [story.project, story], data: { action: "turbo:submit-end->panel-form#resetAndClose", panel_form_target: "form" } do |f|
       - if not story.id?
         = f.hidden_field :position, value: :first
 
       section.flex.items-start.mb-4
-        button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action=( story.id? ? "click->story#close" : "click->story-form#close")
+        button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action=( story.id? ? "click->story#close" : "click->panel-form#close")
           = inline_svg_tag 'icons/arrow-up.svg', class: "w-4 h-4 text-gray-500"
 
         fieldset.name.flex-1.ml-1
@@ -43,7 +43,7 @@
                   = inline_svg_tag 'icons/history.svg', class: "w-4 h-4 text-gray-500"
 
                 - if not story.id?
-                  button.p-2.hover:bg-gray-100 type="button" title="Delete story" data-action="click->story-form#close"
+                  button.p-2.hover:bg-gray-100 type="button" title="Delete story" data-action="click->panel-form#close"
                     = inline_svg_tag 'icons/trash.svg', class: "w-4 h-4 text-gray-500"
                 - else
                   = link_to project_story_path(story.project, story), data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo_frame: "_top" }, class: "p-2 hover:bg-gray-100 inline-block", title: "Delete story" do
@@ -59,7 +59,7 @@
                   = f.button "Cancel", \
                     type: :button, \
                     class: "px-3 py-1 text-sm text-gray-600 hover:bg-gray-200 mr-2", \
-                    data: { action: "click->story-form#close" }
+                    data: { action: "click->panel-form#close" }
                   = f.submit "Save", \
                     class: "text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
 

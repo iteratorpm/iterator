@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_12_095958) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_14_142932) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -106,7 +106,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_12_095958) do
     t.string "external_link"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position", null: false
     t.index ["label_id"], name: "index_epics_on_label_id"
+    t.index ["project_id", "position"], name: "index_epics_on_project_id_and_position", unique: true
     t.index ["project_id"], name: "index_epics_on_project_id"
   end
 

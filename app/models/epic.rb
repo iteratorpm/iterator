@@ -1,7 +1,7 @@
 class Epic < ApplicationRecord
   belongs_to :project
-  has_many :stories, dependent: :nullify
   belongs_to :label, optional: true
+  has_many :stories, through: :label
 
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :attachments, as: :attachable, dependent: :destroy
@@ -9,8 +9,11 @@ class Epic < ApplicationRecord
   validates :name, presence: true
   validates :project, presence: true
 
+  positioned on: :project
+
   # State scopes for stories
   scope :with_stories_in_state, ->(state) { joins(:stories).where(stories: { state: state }) }
+  scope :ranked, -> { order(position: :asc) }
 
   def self.ransackable_attributes(auth_object = nil)
     %w[
