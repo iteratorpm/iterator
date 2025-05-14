@@ -54,9 +54,9 @@ class Ability
 
     # Comments
     can [:create], Comment, project: { memberships: { user_id: user.id, role: [:owner, :member] } }
-    can :edit, Comment, user_id: user.id
+    can :edit, Comment, author_id: user.id
     can :destroy, Comment do |comment|
-      comment.user_id == user.id || comment.project.memberships.where(user_id: user.id, role: :owner).exists?
+      comment.author_id == user.id || comment.project.memberships.where(user_id: user.id, role: :owner).exists?
     end
 
     # Attachments

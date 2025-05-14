@@ -38,7 +38,7 @@ class Projects::DescriptionTemplatesController < ApplicationController
   def preview
     render json: {
       html: render_to_string(
-        partial: 'projects/description_templates/preview',
+        partial: 'projects/shared/markdown_preview',
         locals: { content: params[:template][:description] },
         formats: [:html]
       )

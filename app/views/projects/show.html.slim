@@ -1,5 +1,11 @@
 - content_for :page_title, "Stories"
 
+javascript:
+    window.autocompleteData = {
+      users: #{raw @project.users.pluck(:name, :username).to_json},
+      stories: #{raw @project.stories.pluck(:project_story_id, :name).to_json},
+    }
+
 = turbo_stream_from [@project, "stories"]
 
 .flex.h-full
@@ -18,7 +24,7 @@
         }
 
     / Panels container
-    .flex.space-x-2.relative.h-full.w-full.overflow-hidden
+    .flex.space-x-2.relative.h-full.w-full.overflow-hidden data-controller="autocomplete"
       / Current Panel (default visible)
       = turbo_frame_tag "current_panel",
         src: current_project_iterations_path(@project),

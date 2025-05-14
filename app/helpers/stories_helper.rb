@@ -15,10 +15,6 @@ module StoriesHelper
     classes.join(" ")
   end
 
-  def story_user_avatar user
-    render "projects/profile/mini_avatar", user: user
-  end
-
   def story_type_icon story
     type = (story.respond_to? :story_type) ? story.story_type : story.downcase
 

@@ -17,7 +17,7 @@ class Projects::ProfileController < ApplicationController
       format.json do
         render json: {
           html: render_to_string(
-            partial: 'projects/markdown_preview',
+            partial: 'projects/shared/markdown_preview',
             locals: { content: params[:content] },
             formats: [:html]
           )

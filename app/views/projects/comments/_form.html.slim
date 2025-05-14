@@ -1,0 +1,79 @@
+= form_with model: [@story, Comment.new],
+            url: project_comments_path(@project, @story),\
+            data: {\
+              controller: "drag-upload markdown-tabs form-validator",\
+              turbo_stream: true,\
+              markdown_tabs_preview_url_value: preview_project_comments_path(@project, @story),\
+              drag_upload_target: "form"\
+            },\
+            html: {\
+              id: "new_comment_form",\
+              class: "space-y-2",\
+            } do |f|
+
+  .bg-gray-50.rounded-lg.border.border-gray-200.mt-2.text-sm
+    .activity.relative.rounded-lg.mx-auto
+      .absolute.right-2.top-3
+        a.text-blue-600.hover:underline.text-xs href="#" Formatting help
+
+      / Tabs
+      .flex.pt-1.px-2.w-full.border-b.border-gray-200
+        button.text-gray-900.font-medium.mx-0.5.py-2.px-4.rounded-t-lg.border-gray-200.border-b-white.cursor-pointer.border-t.border-r.border-l.-mb-px.bg-white.transition-colors.duration-200[
+          type="button"
+          data-action="markdown-tabs#showEditor"
+          data-markdown-tabs-target="editTab"
+          data-active="true"
+        ] Write
+        button.text-gray-500.font-medium.py-2.px-4.rounded-t-lg.border-gray-200.cursor-pointer.transition-colors.duration-200[
+          type="button"
+          data-action="markdown-tabs#showPreview"
+          data-markdown-tabs-target="previewTab"
+          data-active="false"
+        ] Preview
+
+      .tab-contents-wrapper
+        .comment-write-area
+          .flex.px-3.py-2.bg-white.relative.items-start style="min-height: 120px;"
+            .pt-1.lm-1.mr-2
+              = user_avatar current_user, size: 8
+
+            = f.text_area :content,
+                          rows: 1,
+                          class: "relative w-full py-1 px-2 resize-none outline-none break-words text-sm border-none focus:ring-0 field-sizing-content",
+                          placeholder: "Add a comment or paste an image",
+                          data: {\
+                            form_validator_target: "input",\
+                            markdown_tabs_target: "editor",\
+                            drag_upload_target: "input",\
+                            autocomplete_target: "input",\
+                            action: "input->markdown-tabs#updatePreview keyup->markdown-tabs#updatePreview input->form-validator#validate"\
+                          }
+
+        / Preview tab
+        .hidden.p-4.bg-white[data-markdown-tabs-target="preview"]
+          .prose.prose-sm.max-w-none[data-markdown-tabs-target="previewContent"]
+          .flex.items-center.justify-center.py-8[data-markdown-tabs-target="previewLoading"]
+            = inline_svg_tag "spinner.svg", class: "animate-spin h-5 w-5 text-gray-500"
+            span.ml-2 Loading preview...
+
+      / Actions
+      .user-write-actions-wrapper
+        .flex.items-center.justify-between.relative.p-2.border-t.border-gray-200
+          .flex.items-center.space-x-1
+            button.user-write-actions-btn.p-1.rounded.hover:bg-gray-100 type="button" data-action="autocomplete#mentionUser"
+              = inline_svg_tag 'icons/mention.svg', class: "w-4 h-4 text-gray-500"
+            button.user-write-actions-btn.p-1.rounded.hover:bg-gray-100 type="button" data-action="drag-upload#openFileDialog"
+              = inline_svg_tag 'icons/paperclip.svg', class: "w-4 h-4 text-gray-500"
+            button.user-write-actions-btn.p-1.rounded.hover:bg-gray-100 type="button"
+              = inline_svg_tag 'icons/smile.svg', class: "w-4 h-4 text-gray-500"
+
+          = f.submit "Post comment",
+                    class: "bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors duration-200",
+                    disabled: true,
+                    data: { form_validator_target: "submit", markdown_tabs_target: "submitButton" }
+
+  = f.file_field :attachments,
+                 multiple: true,
+                 direct_upload: true,
+                 class: "hidden",
+                 data: { drag_upload_target: "fileInput" }

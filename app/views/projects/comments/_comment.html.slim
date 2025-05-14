@@ -1,0 +1,23 @@
+li.flex.items-start.gap-3.p-4.hover:bg-gray-50.rounded-lg.transition-colors.duration-200[
+  id=dom_id(comment)
+  data-comment-id=comment.id
+  data-timestamp=comment.created_at.iso8601
+]
+  .shrink-0
+    = user_avatar comment.author, size: 10
+
+  .flex-1.space-y-2.overflow-hidden
+    .flex.items-center.justify-between.gap-2
+      .flex.items-center.gap-2
+        span.font-medium.text-gray-900.text-sm.truncate = "@#{comment.author.username}"
+        span.text-gray-500.text-xs = comment.created_at.strftime("%b %d, %H:%M")
+
+      - if can?(:destroy, comment)
+        = button_to project_comment_path(@project, @story, comment),
+            method: :delete,
+            data: { turbo_confirm: "Are you sure?", turbo_stream: true },
+            class: "text-gray-400 hover:text-red-500 p-1 rounded-full hover:bg-gray-100 transition-colors",
+            aria: { label: "Delete comment" } do
+          = inline_svg_tag "icons/x.svg", class: "w-4 h-4"
+
+    p.text-gray-800.text-sm.whitespace-pre-line = comment.content

@@ -26,8 +26,8 @@ class Comment < ApplicationRecord
   private
 
   def notify_mentioned_users
-    # mentioned_users.each do |user|
-    #   NotificationService.notify(user, :mention_in_comment, self)
-    # end
+    mentioned_users.each do |user|
+      NotificationService.notify(user, :mention_in_comment, self)
+    end
   end
 end
