@@ -123,8 +123,7 @@ class Story < ApplicationRecord
   end
 
   def current?
-    (started? || finished? || delivered? || rejected?) ||
-      (iteration_id.present? && iteration.current?)
+    started? || finished? || delivered? || rejected?
   end
 
   def estimated?

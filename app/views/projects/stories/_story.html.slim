@@ -74,11 +74,11 @@
               title: "Reject",
               class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md bg-red-700 text-gray-200 text-sm border border-gray-300 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-gray-400"
         - elsif story.rejected?
-            = button_tag data: { action: "click->story#updateState", story_state_value: "started" },
-              title: "Restart",
-              class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md bg-gray-100 text-gray-800 text-sm border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400" do
-                span class="block rounded-full h-2 w-2 bg-[#AA1224]" aria-hidden="true"
-                | Restart
+          = button_tag data: { action: "click->story#updateState", story_state_value: "started" },
+            title: "Restart",
+            class: "inline-flex items-center justify-center gap-1 px-4 py-1.5 rounded-md bg-gray-100 text-gray-800 text-sm font-semibold border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer" do
+            = inline_svg_tag "icons/restart.svg", class: "h-4 w-4 text-red-800"
+            span Restart
 
     = image_tag "icons/checkbox-empty.svg", class: "selector undraggable ml-3 text-gray-500 cursor-pointer", title: "Select this story for bulk actions"
 

@@ -25,6 +25,14 @@ class Comment < ApplicationRecord
 
   private
 
+  def mentioned_users
+    # Extract usernames from content (matches @username)
+    usernames = content.scan(/@([a-zA-Z0-9_]+)/).flatten
+
+    # Find users with matching usernames, excluding the comment author
+    User.where(username: usernames).where.not(id: author_id)
+  end
+
   def notify_mentioned_users
     mentioned_users.each do |user|
       NotificationService.notify(user, :mention_in_comment, self)
