@@ -225,7 +225,7 @@ class Story < ApplicationRecord
   end
 
   def set_project_story_id
-    max_id = project.stories_count
+    max_id = project.stories.maximum(:project_story_id) || 0
     self.project_story_id = max_id + 1
   end
 

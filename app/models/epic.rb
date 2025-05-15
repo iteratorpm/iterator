@@ -1,5 +1,5 @@
 class Epic < ApplicationRecord
-  belongs_to :project
+  belongs_to :project, counter_cache: true
   belongs_to :label, optional: true
   has_many :stories, through: :label
 
@@ -14,6 +14,8 @@ class Epic < ApplicationRecord
   # State scopes for stories
   scope :with_stories_in_state, ->(state) { joins(:stories).where(stories: { state: state }) }
   scope :ranked, -> { order(position: :asc) }
+
+  before_create :set_project_epic_id
 
   def self.ransackable_attributes(auth_object = nil)
     %w[
@@ -51,5 +53,11 @@ class Epic < ApplicationRecord
   def completion_percentage
     return 0 if total_points.zero?
     ((accepted_points.to_f / total_points) * 100).round
+  end
+
+  private
+  def set_project_epic_id
+    max_id = project.epics.maximum(:project_epic_id) || 0
+    self.project_epic_id = max_id + 1
   end
 end

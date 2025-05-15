@@ -1,8 +1,7 @@
 .hidden.bg-white.overflow-hidden.mb-4.px-3.py-2 data-panel-target="addForm" data-controller="panel-form"
   section.model-details
     = form_with model: [story.project, story], data: { action: "turbo:submit-end->panel-form#resetAndClose", panel_form_target: "form" } do |f|
-      - if not story.id?
-        = f.hidden_field :position, value: :first
+      = f.hidden_field :position, value: :first
 
       section.flex.items-start.mb-4
         button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action=( story.id? ? "click->story#close" : "click->panel-form#close")

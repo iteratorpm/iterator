@@ -8,10 +8,6 @@ module TurboValidations
   def render_turbo_validation_errors(resource)
     return unless resource.errors.present?
 
-    render turbo_stream: turbo_stream.replace(
-      "modal",
-      partial: "shared/validation_errors",
-      locals: { resource: resource }
-    )
+    render partial: "shared/validation_errors", locals: { resource: resource }, layout: false
   end
 end

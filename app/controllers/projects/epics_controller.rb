@@ -20,8 +20,7 @@ class Projects::EpicsController < Projects::BaseController
       handle_successful_save
     else
       respond_to do |format|
-        format.turbo_stream { render_turbo_validation_errors(@epic) }
-        format.html { render :new }
+        format.html { render_turbo_validation_errors(@epic) }
       end
     end
   end
@@ -38,8 +37,7 @@ class Projects::EpicsController < Projects::BaseController
     else
       respond_to do |format|
         format.json
-        format.turbo_stream { render_turbo_validation_errors(@epic) }
-        format.html { render :edit }
+        format.html { render_turbo_validation_errors(@epic) }
       end
     end
   end
@@ -80,6 +78,7 @@ class Projects::EpicsController < Projects::BaseController
       :description,
       :label_id,
       :external_link,
+      :position,
       position: [:before, :after],
       comments_attributes: [
         :content,
@@ -93,14 +92,9 @@ class Projects::EpicsController < Projects::BaseController
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.prepend(
-            "epics-list",
+            "column-epics",
             partial: "projects/epics/epic",
             locals: { epic: @epic }
-          ),
-          turbo_stream.update(
-            "epic-form",
-            partial: "projects/epics/form",
-            locals: { epic: @project.epics.new }
           )
         ]
       end

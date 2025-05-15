@@ -52,6 +52,12 @@ class Ability
     can :read, Story, project: { memberships: { user_id: user.id, role: :viewer } }
     can :manage, Story, project: { memberships: { user_id: user.id, role: [:owner, :member] } }
 
+    can :read, Epic, project: { memberships: { user_id: user.id, role: :viewer } }
+    can :manage, Epic, project: { memberships: { user_id: user.id, role: [:owner, :member] } }
+
+    can :read, Label, project: { memberships: { user_id: user.id, role: :viewer } }
+    can :manage, Label, project: { memberships: { user_id: user.id, role: [:owner, :member] } }
+
     # Comments
     can [:create], Comment, project: { memberships: { user_id: user.id, role: [:owner, :member] } }
     can :edit, Comment, author_id: user.id

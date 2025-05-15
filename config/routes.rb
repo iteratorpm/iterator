@@ -70,7 +70,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :epics, module: "projects", only: [:new, :create, :index]
+    resources :epics, module: "projects", only: [:new, :create, :index, :destroy, :update]
     resources :labels, module: "projects", only: [:new, :create, :index]
     resources :histories, module: "projects", only: [:index]
 

@@ -173,6 +173,7 @@ class Projects::StoriesController < Projects::BaseController
       :blocked_by,
       :blocking,
       :description,
+      :position,
       position: [:before, :after],
       owner_ids: [],
       label_list: [],
@@ -194,7 +195,7 @@ class Projects::StoriesController < Projects::BaseController
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.prepend(
-          "stories-icebox",
+          "column-icebox",
           partial: "projects/stories/story",
           locals: { story: @story }
         )
