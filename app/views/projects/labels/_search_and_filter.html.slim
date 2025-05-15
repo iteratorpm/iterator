@@ -1,0 +1,22 @@
+.flex.py-4.px-5.text-xs
+  .flex-grow.bg-white
+    label.sr-only for="label-search" Search labels
+    .relative.flex.items-center
+      .absolute.inset-y-0.right-2.flex.items-center.text-gray-500.pointer-events-none
+        = inline_svg_tag "icons/search.svg", class: "w-3 h-3"
+      input#label-search.block.w-full.bg-transparent.py-2.pl-2.border.rounded placeholder="Search #{@project.labels.count} labels" type="search" data-labels-filter-target="search" data-action="input->labels-filter#filter"
+
+  details.group.relative.flex.items-center.justify-center.ml-2
+    summary.flex.items-center.cursor-pointer
+      = inline_svg_tag "icons/sliders.svg", class: "h-8 w-8 text-gray-500"
+    .absolute.right-0.mt-2.w-64.bg-white.rounded-md.shadow-lg.z-10
+      .py-1
+        .px-4.py-2.text-sm.text-gray-700.font-bold Sort By
+        = link_to "Name (A-Z)", "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        = link_to "Name (Z-A)", "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        = link_to "Story Count", "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        .border-t.my-1
+        .px-4.py-2.text-sm.text-gray-700.font-bold Filter By
+        = link_to "Active Only", "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        = link_to "Epics Only", "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        = link_to "Labels Only", "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

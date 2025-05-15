@@ -71,7 +71,11 @@ Rails.application.routes.draw do
     end
 
     resources :epics, module: "projects", only: [:new, :create, :index, :destroy, :update]
-    resources :labels, module: "projects", only: [:new, :create, :index]
+    resources :labels, module: "projects", only: [:new, :create, :index, :edit, :update, :destroy] do
+      member do
+        patch :convert_to_epic
+      end
+    end
     resources :histories, module: "projects", only: [:index]
 
     get 'search', to: 'projects/search#index', as: :search

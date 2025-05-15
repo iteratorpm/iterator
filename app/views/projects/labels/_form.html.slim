@@ -1,0 +1,13 @@
+= form_with model: [@project, label], local: true, class: "flex items-center gap-2 mb-4 px-5" do |f|
+  .flex-grow
+    = f.text_field :name,
+      placeholder: "Enter label name",
+      class: "w-full py-2 px-4 text-base border border-gray-200 rounded resize-none overflow-hidden"
+
+  = f.submit "Add",
+    class: "inline-flex justify-center rounded border border-transparent bg-blue-500 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+
+  = button_tag "Cancel",
+    type: "button",
+    class: "inline-flex justify-center rounded border border-gray-200 bg-white py-2 px-4 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+    data: { action: "click->labels#cancelAddLabel" }

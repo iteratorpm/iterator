@@ -98,6 +98,7 @@ class Story < ApplicationRecord
   scope :current, -> { where(state: [:started, :finished, :delivered, :rejected]) }
   scope :no_iteration, -> { where(iteration_id: nil) }
 
+  scope :unaccepted, -> { where.not(state: :accepted) }
   scope :unstarted, -> { where(state: :unstarted) }
   scope :started, -> { where(state: :started) }
   scope :rejected, -> { where(state: :rejected) }

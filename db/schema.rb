@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_15_074035) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_15_155056) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -182,8 +182,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_15_074035) do
     t.integer "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "color"
     t.integer "epic_id"
+    t.integer "label_type", default: 0, null: false
     t.index ["epic_id"], name: "index_labels_on_epic_id"
     t.index ["project_id", "name"], name: "index_labels_on_project_id_and_name", unique: true
     t.index ["project_id"], name: "index_labels_on_project_id"
