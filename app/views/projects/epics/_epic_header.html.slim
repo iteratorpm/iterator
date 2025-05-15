@@ -11,9 +11,8 @@
       span.h-full.bg-green-600 style="width: #{accepted_width}%"
       span.h-full.bg-yellow-300 style="width: #{in_progress_width}%"
       span.h-full.bg-gray-400 style="width: #{unstarted_width}%"
-      span.h-full.bg-gray-500 style="width: #{iceboxed_width}%"
+      span.h-full.bg-blue-300 style="width: #{iceboxed_width}%"
 
   .flex.items-center.py-2.px-3.bg-gray-200.hover:bg-gray-300.cursor-pointer
     button.epic-tasks.flex.items-center.h-full
-      svg.h-4.w-4.text-gray-500 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-        polyline points="9 18 15 12 9 6"
+      = inline_svg_tag "icons/chevron-right.svg", class: "h-4 w-4 text-gray-500"
