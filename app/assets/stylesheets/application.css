@@ -52,3 +52,13 @@
   height: 0;
   width: 0;
 }
+
+[data-dropmenu-target="menu"] {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+[data-dropmenu-target="menu"].hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}

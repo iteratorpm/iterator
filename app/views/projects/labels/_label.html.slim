@@ -1,27 +1,39 @@
 .label-wrapper.group.flex.flex-col.text-xs.border-t.border-gray-200.hover:bg-white data-labels-filter-target="label" data-label-name="#{label.name.downcase}"
-  .cursor-pointer.rounded-sm.py-2.px-2.5.flex
+  .cursor-pointer.rounded-sm.py-2.px-3.flex
     .flex-grow.flex.items-center
       - if label.epic?
-        = inline_svg_tag "icons/epic.svg", options: { class: "h-4 w-4 mr-2 text-purple-600" }
+        = inline_svg_tag "icons/epic.svg", class: "h-4 w-4 mr-2 text-purple-600"
       - else
-        = inline_svg_tag "icons/label.svg", options: { class: "h-4 w-4 mr-2 text-green-700" }
+        = inline_svg_tag "icons/label.svg", class: "h-4 w-4 mr-2 text-green-700"
 
       p.leading-7.font-bold.outline-none class="#{label.epic? ? 'text-purple-600' : 'text-green-700'}"
         = label.name
         span.ml-1.text-gray-500
           = "(#{label.stories.unaccepted.count})"
 
-    details.group.relative.flex.items-center.justify-center.ml-2
-      summary.flex.items-center.space-x-1.5.cursor-pointer
-        = inline_svg_tag "icons/chevron-down.svg", options: { class: "h-4 w-4 text-indigo-500" }
-      nav.absolute.mt-1.-right-1.top-full.min-w-max.shadow.rounded-sm.bg-white.border.border-gray-300.invisible.z-10.transition-all.opacity-0.group-focus-within:visible.group-focus-within:opacity-100.group-focus-within:translate-y-1
+    .relative.flex.items-center.justify-center.ml-2 data-controller="dropmenu" data-action="click->dropmenu#toggle click@window->dropmenu#hide"
+      button.flex.items-center.space-x-1.5.cursor-pointer type="button"
+        = inline_svg_tag "icons/arrow-down.svg", class: "h-4 w-4 text-indigo-500"
+
+      nav.hidden.absolute.mt-1.-right-1.top-full.min-w-max.shadow.rounded-sm.bg-white.border.border-gray-300.z-10.transition-all data-dropmenu-target="menu"
         ul.block.text-xs.text-gray-600
           li
-            = link_to "Delete", project_label_path(@project, label), method: :delete, data: { confirm: "Are you sure?" }, class: "flex items-center w-64 px-2 leading-8 hover:bg-gray-200 cursor-pointer"
+            = link_to "Delete",
+              project_label_path(@project, label),
+              method: :delete,
+              data: { confirm: "Are you sure?" },
+              class: "flex items-center w-64 px-2 leading-8 hover:bg-gray-200 cursor-pointer"
           li
-            = link_to "Rename", edit_project_label_path(@project, label), class: "flex items-center w-64 px-2 leading-8 hover:bg-gray-200"
+            = link_to "Rename",
+              edit_project_label_path(@project, label),
+              class: "flex items-center w-64 px-2 leading-8 hover:bg-gray-200"
           li
-            = link_to "Show Stories", project_stories_path(@project, search: "label:\"#{label.name}\""), class: "flex items-center w-64 px-2 leading-8 hover:bg-gray-200"
+            = link_to "Show Stories",
+              project_stories_path(@project, search: "label:\"#{label.name}\""),
+              class: "flex items-center w-64 px-2 leading-8 hover:bg-gray-200"
           - unless label.epic?
             li
-              = link_to "Convert to Epic", convert_to_epic_project_label_path(@project, label), method: :patch, class: "flex items-center w-64 px-2 leading-8 hover:bg-gray-200"
+              = link_to "Convert to Epic",
+                convert_to_epic_project_label_path(@project, label),
+                method: :patch,
+                class: "flex items-center w-64 px-2 leading-8 hover:bg-gray-200"

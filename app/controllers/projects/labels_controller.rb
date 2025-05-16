@@ -4,7 +4,6 @@ class Projects::LabelsController < Projects::BaseController
 
   def index
     @labels = @project.labels.includes(:stories).order(name: :asc)
-    @new_label = @project.labels.new
     @panel_id = "labels_panel"
   end
 

@@ -4,7 +4,7 @@
       = f.hidden_field :position, value: :first
 
       section.flex.items-start.mb-4
-        button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action=( story.id? ? "click->story#close" : "click->panel-form#close")
+        button.p-1.-ml-1.rounded.hover:bg-gray-100 type="button" data-action=("click->panel-form#close")
           = inline_svg_tag 'icons/arrow-up.svg', class: "w-4 h-4 text-gray-500"
 
         fieldset.name.flex-1.ml-1

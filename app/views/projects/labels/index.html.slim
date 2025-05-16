@@ -1,6 +1,6 @@
 = panel @panel_id, title: "Labels", add_label: true, close: true do
   = render "search_and_filter"
-  = render "form", label: @new_label
+  = render "form", label: @project.labels.new
 
   #column-labels
     - @labels.each do |label|
