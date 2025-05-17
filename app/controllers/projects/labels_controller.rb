@@ -24,7 +24,7 @@ class Projects::LabelsController < Projects::BaseController
 
   def update
     if @label.update(label_params)
-      redirect_to project_labels_path(@project), notice: 'Label was successfully updated.'
+      handle_successful_update
     else
       render :edit
     end
@@ -37,7 +37,8 @@ class Projects::LabelsController < Projects::BaseController
 
   def convert_to_epic
     @label.update(label_type: :epic)
-    redirect_to project_labels_path(@project), notice: 'Label was successfully converted to epic.'
+
+    handle_successful_update
   end
 
   private
@@ -48,5 +49,19 @@ class Projects::LabelsController < Projects::BaseController
 
   def label_params
     params.require(:label).permit(:name, :label_type)
+  end
+
+  def handle_successful_update
+    respond_to do |format|
+      format.json
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          @label,
+          partial: "projects/labels/label",
+          locals: { label: @label }
+        )
+      end
+      format.html { redirect_to project_labels_path(@project), notice: 'Label was successfully updated.' }
+    end
   end
 end

@@ -10,7 +10,7 @@
     button.flex.items-center.cursor-pointer type="button"
       = inline_svg_tag "icons/sliders.svg", class: "h-6 w-6 text-gray-800"
 
-    .hidden.absolute.right-0.mt-2.w-64.bg-white.rounded-md.shadow-lg.z-10.border.border-gray-200 data-dropmenu-target="menu"
+    .hidden.absolute.right-0.top-full.mt-2.w-64.bg-white.rounded-md.shadow-lg.z-10.border.border-gray-200 data-dropmenu-target="menu"
       .py-1
         .px-4.py-2.text-sm.text-gray-700.font-bold Sort By
         = link_to "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", data: { action: "click->labels#sort", sort_by: "name_asc" } do

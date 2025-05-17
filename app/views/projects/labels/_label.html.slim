@@ -1,4 +1,4 @@
-.label-wrapper.group.flex.flex-col.text-xs.border-t.border-gray-200.hover:bg-white data-labels-filter-target="label" data-label-name="#{label.name.downcase}"
+.label-wrapper.group.flex.flex-col.text-xs.border-t.border-gray-200.hover:bg-white data-labels-filter-target="label" data-label-name="#{label.name.downcase}" data-id=label.id id=dom_id(label)
   .cursor-pointer.rounded-sm.py-2.px-3.flex
     .flex-grow.flex.items-center
       - if label.epic?
@@ -20,12 +20,12 @@
           li
             = link_to "Delete",
               project_label_path(@project, label),
-              method: :delete,
-              data: { confirm: "Are you sure?" },
+              data: { turbo_confirm: "Are you sure?", turbo_method: :delete},
               class: "flex items-center w-64 px-2 leading-8 hover:bg-gray-200 cursor-pointer"
           li
             = link_to "Rename",
               edit_project_label_path(@project, label),
+              data: { turbo_frame: "modal" },
               class: "flex items-center w-64 px-2 leading-8 hover:bg-gray-200"
           li
             = link_to "Show Stories",
@@ -35,5 +35,5 @@
             li
               = link_to "Convert to Epic",
                 convert_to_epic_project_label_path(@project, label),
-                method: :patch,
+                data: { turbo_method: :patch },
                 class: "flex items-center w-64 px-2 leading-8 hover:bg-gray-200"
