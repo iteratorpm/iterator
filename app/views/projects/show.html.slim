@@ -24,7 +24,7 @@ javascript:
         }
 
     / Panels container
-    .flex.space-x-2.relative.h-full.w-full.overflow-hidden data-controller="autocomplete"
+    #panels-container.flex.space-x-2.relative.h-full.w-full.overflow-hidden data-controller="autocomplete"
       / My Work Panel
       = turbo_frame_tag "my_work_panel",
         src: my_work_project_stories_path(@project),

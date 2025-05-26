@@ -43,4 +43,11 @@ export default class extends Controller {
       })
     }
   }
+
+  closePanel(event) {
+    event.preventDefault()
+    const panel = event.target.closest("[data-panel]")
+    panel.remove()
+    this.resizePanels()
+  }
 }

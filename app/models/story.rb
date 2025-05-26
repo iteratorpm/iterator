@@ -5,7 +5,8 @@ class Story < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
     # Whitelist only the attributes you want searchable
     %w[
-      title
+      id
+      name
       description
       story_type
       state

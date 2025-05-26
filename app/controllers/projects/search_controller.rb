@@ -13,6 +13,14 @@ module Projects
       }
 
       respond_to do |format|
+        format.html
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.append(
+            "panels-container",
+            partial: "projects/search/results",
+            locals: { search_results: @search_results }
+          )
+        end
         format.json { render json: @search_results }
       end
     end
@@ -32,7 +40,7 @@ module Projects
     def search_stories
       query = @search_service.stories_query
       @project.stories.ransack(query).result(distinct: true)
-        .includes(:owners, :requester, :labels, :epic)
+        .includes(:owners, :requester, :labels)
         .limit(MAX_RESULTS)
     end
 

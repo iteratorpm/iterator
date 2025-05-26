@@ -11,6 +11,21 @@ FactoryBot.define do
 
     association :requester, factory: :user
 
+    trait :with_labels do
+      after(:create) do |story|
+        create_list(:label, 2, project: story.project)
+        story.labels << Label.last(2)
+      end
+    end
+
+    trait :with_epic do
+      after(:create) do |story|
+        epic = create(:epic, project: story.project)
+        label = create(:label, project: epic.project, epic: epic)
+        create :story_label, story: story, label: label
+      end
+    end
+
     trait :accepted do
       state { "accepted" }
       accepted_at { 1.week.ago }

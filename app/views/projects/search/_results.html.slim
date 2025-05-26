@@ -1,0 +1,33 @@
+- timestamp = Time.now.to_i
+
+= turbo_frame_tag "search_panel_#{timestamp}",
+  class: "panel h-full border-r-1 border-gray-300",
+  data: { panel: "search",
+          panels_target: "panel",
+          action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility" } do
+
+  .panel-header.flex.items-center.justify-between.px-4.py-3.border-b.border-gray-300
+    h2.font-medium.text-gray-700
+      | Search Results for "#{params[:q]}"
+    = link_to "×", "#",
+              class: "text-gray-500 hover:text-gray-700",
+              data: { action: "click->panels#closePanel" }
+
+  .panel-content.p-4.overflow-y-auto
+    - if @search_results[:stories].any?
+      h3.font-medium.mb-2 Stories
+      - @search_results[:stories].each do |story|
+        = render "projects/stories/story", story: story
+
+    - if @search_results[:epics].any?
+      h3.font-medium.mb-2 Epics
+      - @search_results[:epics].each do |epic|
+        = render "projects/epics/epic", epic: epic
+
+    - if @search_results[:labels].any?
+      h3.font-medium.mb-2 Labels
+      - @search_results[:labels].each do |label|
+        = render "projects/labels/label", label: label
+
+    - if @search_results.values.all?(&:empty?)
+      p.text-gray-500 No results found

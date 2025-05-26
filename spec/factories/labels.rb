@@ -1,10 +1,10 @@
 FactoryBot.define do
   factory :label do
-    name { "MyString" }
+    name { Faker::Lorem.unique.sentence }
     project
 
-    trait :epic do
-      epic
+    trait :for_epic do
+      association :epic, factory: :epic, project: project
     end
   end
 end

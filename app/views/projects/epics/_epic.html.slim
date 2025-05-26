@@ -1,4 +1,4 @@
 .overflow-hidden id=dom_id(epic) data-id=epic.id data-controller="epic" data-selected="false"
-  = render partial: 'epic_header', locals: { epic: epic }
+  = render partial: 'projects/epics/epic_header', locals: { epic: epic }
   .hidden.undraggable data-epic-target="form"
-    = render partial: 'epic_details', locals: { epic: epic }
+    = render partial: 'projects/epics/epic_details', locals: { epic: epic }
