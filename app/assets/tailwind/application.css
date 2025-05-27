@@ -5,3 +5,53 @@
     max-height: 400px;
   }
 }
+
+.prose {
+  @apply text-gray-700 leading-relaxed;
+  
+  h1 { @apply text-3xl font-bold mt-8 mb-4 text-gray-900; }
+  h2 { @apply text-2xl font-bold mt-6 mb-3 text-gray-900; }
+  h3 { @apply text-xl font-bold mt-4 mb-2 text-gray-900; }
+  h4 { @apply text-lg font-semibold mt-3 mb-2 text-gray-900; }
+  
+  p { @apply mb-4; }
+  
+  ul { @apply list-disc pl-6 mb-4; }
+  ol { @apply list-decimal pl-6 mb-4; }
+  li { @apply mb-1; }
+  
+  blockquote { 
+    @apply border-l-4 border-gray-300 pl-4 italic text-gray-600 my-4;
+  }
+  
+  code { 
+    @apply bg-gray-100 text-gray-800 px-1 py-0.5 rounded text-sm font-mono;
+  }
+  
+  pre {
+    @apply bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto mb-4;
+    
+    code {
+      @apply bg-transparent text-gray-100 p-0;
+    }
+  }
+  
+  table { 
+    @apply w-full border-collapse mb-4;
+  }
+  
+  th { 
+    @apply border border-gray-300 px-4 py-2 bg-gray-50 font-semibold text-left;
+  }
+  
+  td { 
+    @apply border border-gray-300 px-4 py-2;
+  }
+  
+  a { 
+    @apply text-blue-600 hover:text-blue-800 underline;
+  }
+  
+  strong { @apply font-semibold; }
+  em { @apply italic; }
+}

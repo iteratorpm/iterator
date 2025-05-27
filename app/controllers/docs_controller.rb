@@ -5,31 +5,21 @@ class DocsController < ApplicationController
   def show
     @slug = params[:page] || "getting_started"
     @path = resolve_doc_path(@slug)
+    @sidebar = build_sidebar
+
+    @content = markdown.render(File.read(@path))
+  end
+
+  def whats_new_updates
+    @slug = "_whats_new_updates"
+    @path = resolve_doc_path(@slug)
 
     unless @path && File.exist?(@path)
-      return render plain: "Doc not found", status: :not_found
+      return render plain: "What's New doc not found", status: :not_found
     end
 
     @markdown_content = File.read(@path)
-    @content = markdown.render(@markdown_content)
-    @sidebar = build_sidebar
-  end
-
-  def highlights
-    markdown = File.read(resolve_doc_path("docs/whats_new"))
-    sections = markdown.split(/^---$/)
-    top_versions = sections.select { |s| s.include?('> highlight') }.first(3)
-
-    highlights = top_versions.map do |section|
-      version = section.match(/\[v(.*?)\]/)[1] rescue "Unknown"
-      changes = section.scan(/^- (.+)$/).flatten
-      {
-        version: version,
-        changes: changes
-      }
-    end
-
-    render json: highlights
+    @updates = extract_highlights(@markdown_content)
   end
 
   private
@@ -61,6 +51,8 @@ class DocsController < ApplicationController
       folder = rel_path.dirname.to_s == "." ? "General" : rel_path.dirname.to_s.titleize
       page_slug = rel_path.sub_ext("").to_s
 
+      next if page_slug.first == "_"
+
       sidebar[folder] ||= []
       sidebar[folder] << {
         title: page_slug.split("/").last.titleize,
@@ -69,5 +61,24 @@ class DocsController < ApplicationController
     end
 
     sidebar
+  end
+
+  def extract_highlights(content)
+    sections = content.split(/^> highlight$/).reject(&:blank?)
+
+    sections.first(3).map do |section|
+      next unless section.present?
+
+      version = section.match(/### \[(.*?)\]/)&.captures&.first
+      date = section.match(/- (.*?)$/)&.captures&.first
+      changes = section.scan(/^- (.*?)$/).flatten
+
+      {
+        version: version,
+        date: date,
+        changes: changes,
+        image: section.match(/!\[.*?\]\((.*?)\)/)&.captures&.first
+      }
+    end.compact
   end
 end

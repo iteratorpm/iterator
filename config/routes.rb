@@ -26,7 +26,7 @@ Rails.application.routes.draw do
 
   resources :favorites, only: [:create, :destroy]
 
-  get "/api/whats-new/highlights", to: "docs#highlights"
+  get '/docs/whats_new_updates', to: 'docs#whats_new_updates', as: :whats_new_updates
   get '/docs(/:page)', to: 'docs#show', as: :docs
 
   resources :projects do
