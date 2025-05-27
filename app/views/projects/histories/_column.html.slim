@@ -1,0 +1,37 @@
+.history-feed.space-y-6
+  - @activities.group_by(&:trackable).each do |subject, grouped_activities|
+    - first_activity = grouped_activities.first
+    .item.activity_entry.border-l-2.border-gray-200.pl-4.py-2 data-cid="activity_#{first_activity.id}"
+      header.preview.flex.items-start.gap-4 tabindex="0"
+        - subject_type = subject.class.name.downcase
+        header.group.flex.items-center.gap-2 class="type-#{subject_type}"
+          = link_to '#', class: 'reveal #{subject_type} button text-gray-500 hover:text-gray-700', tabindex: '-1', target: '_blank', rel: 'noopener noreferrer', data: { type: subject_type, id: subject.id } do
+            span.locator.text-xs title="Reveal this #{subject_type}" →
+          h1.text-sm.font-medium.text-gray-900= subject.respond_to?(:name) ? subject.name : subject.to_s
+
+        span.occurred_at.text-xs.text-gray-500.whitespace-nowrap title=first_activity.created_at.strftime('%d %b %Y, %I:%M %p')
+          span data-millis="#{first_activity.created_at.to_i * 1000}"
+            = first_activity.created_at.strftime('%d %b')
+
+      - grouped_activities.each do |activity|
+        .box.bg-gray-50.rounded.p-3.mt-2.flex.items-start.gap-2 data-cid="activity_#{activity.id}"
+          .icons.flex-shrink-0
+            - if activity.metadata.present?
+              a.details_expander.text-gray-400.hover:text-gray-600.cursor-pointer ›
+          .message.tracker_markup.text-sm.text-gray-700
+            p
+              span.font-medium= activity.user.name
+              strong.font-semibold.ml-1<= activity.action.humanize
+
+              - case activity.action
+              - when 'moved'
+                span.ml-1 this story before '#{activity.metadata['target_name']}'
+              - when 'estimated'
+                span.ml-1 this feature as #{activity.metadata['points']} points
+              - when 'commented'
+                span.ml-1 ": #{activity.metadata['comment_body']}"
+              - else
+                span.ml-1 this #{activity.subject_type.downcase}
+
+        - if activity.metadata.present?
+          .details.hidden.ml-8.mt-2.bg-gray-100.rounded.p-3.text-sm.text-gray-700

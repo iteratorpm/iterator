@@ -2,6 +2,14 @@ class Story < ApplicationRecord
   include Discard::Model
   has_paper_trail
 
+  include PublicActivity::Model
+  tracked owner: ->(controller, model) { controller&.current_user },
+    recipient: ->(controller, model) { model.project },
+    parameters: {
+      changes: :tracked_changes,
+      name: :name
+    }
+
   def self.ransackable_attributes(auth_object = nil)
     # Whitelist only the attributes you want searchable
     %w[
