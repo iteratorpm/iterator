@@ -33,8 +33,8 @@
 
         .flex.space-x-6
           .flex.flex-col.items-center
-            span.text-lg.font-bold.text-gray-800= org.projects_count
-            span.text-xs.text-gray-500= "project".pluralize(org.projects_count)
+            span.text-lg.font-bold.text-gray-800= org.projects.size
+            span.text-xs.text-gray-500= "project".pluralize(org.projects.size)
 
           .flex.flex-col.items-center
             span.text-lg.font-bold.text-gray-800= org.admins_count
@@ -44,9 +44,9 @@
             span.text-lg.font-bold.text-gray-800= org.collaborators_count
             span.text-xs.text-gray-500= "collaborator".pluralize(org.collaborators_count)
 
-      - if org.projects.any?
+      - if org.projects.active.any?
         ul.divide-y
-          - org.projects.each do |project|
+          - org.projects.active.each do |project|
             li.p-4
               .flex.justify-between.items-start
                 .flex-1

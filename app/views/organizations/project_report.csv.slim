@@ -1,0 +1,53 @@
+= CSV.generate(headers: true) do |csv|
+  - csv << [ \
+    "ID",
+    "Name",
+    "Project URL",
+    "Creation date",
+    "Last updated",
+    "Last command at",
+    "Type",
+    "Status",
+    "Owner names",
+    "Owner usernames",
+    "Owner emails",
+    "Member names",
+    "Member usernames",
+    "Member emails",
+    "Viewer names",
+    "Viewer usernames",
+    "Viewer emails",
+    "Total memberships",
+    "Owner count",
+    "Member count",
+    "Viewer count" \
+  ]
+
+  - @organization.projects.each do |project|
+    - owners = project.memberships.owners.includes(:user).map(&:user)
+    - members = project.memberships.members.includes(:user).map(&:user)
+    - viewers = project.memberships.viewers.includes(:user).map(&:user)
+
+    - csv << [ \
+      project.id,
+      project.name,
+      project.url,
+      project.created_at,
+      project.updated_at,
+      project.last_command_at,
+      project.project_type,
+      project.status,
+      owners.map(&:name).join('; '),
+      owners.map(&:username).join('; '),
+      owners.map(&:email).join('; '),
+      members.map(&:name).join('; '),
+      members.map(&:username).join('; '),
+      members.map(&:email).join('; '),
+      viewers.map(&:name).join('; '),
+      viewers.map(&:username).join('; '),
+      viewers.map(&:email).join('; '),
+      project.memberships.count,
+      owners.count,
+      members.count,
+      viewers.count \
+    ]

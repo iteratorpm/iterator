@@ -22,7 +22,7 @@ class Project < ApplicationRecord
   scope :active, -> { where(archived: false) }
   scope :archived, -> { where(archived: true) }
 
-  belongs_to :organization
+  belongs_to :organization, counter_cache: true
   has_many :memberships, class_name: "ProjectMembership", dependent: :destroy
   has_many :users, through: :memberships
   has_many :integrations, dependent: :destroy

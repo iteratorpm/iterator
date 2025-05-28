@@ -76,7 +76,7 @@ RSpec.describe "Projects::Search", type: :request do
     end
 
     context "with empty search query" do
-      fit "returns empty results" do
+      it "returns empty results" do
         get project_search_path(project, q: "")
         expect(assigns(:search_results)[:epics]).to be_empty
         expect(assigns(:search_results)[:stories]).to be_empty
@@ -92,9 +92,9 @@ RSpec.describe "Projects::Search", type: :request do
       end
 
       it "raises an authorization error" do
-        expect {
-          get project_search_path(project)
-        }.to raise_error(CanCan::AccessDenied)
+        get project_search_path(project)
+
+        expect(response).to have_http_status(:redirect)
       end
     end
   end

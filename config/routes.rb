@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     post 'tokens', to: 'profiles#create_token', as: :tokens
     delete 'tokens/:id', to: 'profiles#destroy_token', as: :token
 
+    post :set_default
+
     post 'avatar', to: 'profiles#update_avatar'
     delete 'avatar', to: 'profiles#remove_avatar'
 
@@ -148,9 +150,8 @@ Rails.application.routes.draw do
     member do
       get :plans_and_billing
       get :projects
-      get "projects/report", to: "organizations#project_report", as: :projects_report
+      get :project_report
     end
-    post :set_default
   end
 
   resources :notifications, only: [:index] do

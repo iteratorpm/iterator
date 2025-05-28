@@ -32,7 +32,10 @@
           h4 class="text-sm font-medium text-gray-500"
             | Owner
           div class="mt-1 text-sm text-gray-900"
-            = @organization.owner.name
+            - if @organization.owner.present?
+              = @organization.owner.name
+            - else
+              | ???
             p class="mt-1 text-sm text-gray-500"
               | The owner is responsible for this organization. The owner or any administrator can change organization ownership on the organization members page.
 

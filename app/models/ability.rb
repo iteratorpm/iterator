@@ -9,9 +9,10 @@ class Ability
 
     # Organization permissions
     can :read, Organization, memberships: { user_id: user.id }
+    can :create, Organization
 
     can :manage, Organization, memberships: { user_id: user.id, role: :owner }
-    can :manage_billing, Organization, memberships: { user_id: user.id, role: :owner }
+    can :plans_and_billing, Organization, memberships: { user_id: user.id, role: :owner }
 
     can [:read, :update, :transfer_ownership], Organization, memberships: { user_id: user.id, role: :admin }
 
@@ -73,8 +74,9 @@ class Ability
 
     # Account-wide actions
     if user.memberships.where(role: [:owner, :admin]).exists?
-      can :view_all_projects, Organization
-      can :manage_account_members, Organization
+      can :projects, Organization
+      can :memberships, Organization
+      can :project_report, Organization
     end
   end
 end

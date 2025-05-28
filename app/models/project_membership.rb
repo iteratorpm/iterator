@@ -8,6 +8,10 @@ class ProjectMembership < ApplicationRecord
     viewer: 2
   }, default: :member
 
+  scope :owners, -> { where(role: :owner) }
+  scope :members, -> { where(role: :member) }
+  scope :viewers, -> { where(role: :viewer) }
+
   validates :role, presence: true
   validates :user_id, uniqueness: { scope: :project_id }
 

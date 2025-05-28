@@ -81,6 +81,23 @@ class ProfilesController < ApplicationController
     end
   end
 
+  def set_default
+    organization = Organization.find(params[:organization_id])
+
+    if current_user.organizations.exists?(organization.id) && current_user.update(current_organization_id: organization.id)
+      respond_to do |format|
+        format.html { redirect_back fallback_location: profile_path, notice: 'Default organization updated.' }
+        format.json { render json: { message: 'Default organization updated' } }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_back fallback_location: profile_path, alert: 'Failed to update default organization.' }
+        format.json { render json: { error: 'Failed to update default organization' }, status: :unprocessable_entity }
+      end
+    end
+  end
+
+
   private
 
   def set_user
