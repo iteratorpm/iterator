@@ -185,6 +185,10 @@ class Project < ApplicationRecord
     "#{((mean_deviation / average) * 100).round}%"
   end
 
+  def muted_by?(user)
+    user.muted_projects.exists?(id)
+  end
+
   private
 
   def recalculate_if_velocity_settings_changed

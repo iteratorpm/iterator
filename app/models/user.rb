@@ -19,7 +19,7 @@ class User < ApplicationRecord
 
   has_many :favorites
   has_many :muted_projects
-  has_many :notification_settings
+  has_one :notification_setting
   has_many :notifications
   has_many :favorite_projects, through: :favorites, source: :project
   has_many :authored_comments, class_name: 'Comment', foreign_key: 'author_id', dependent: :nullify

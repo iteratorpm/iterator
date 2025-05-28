@@ -1,0 +1,24 @@
+= form_with model: user, url: notification_settings_path, method: :put, class: "bg-white rounded-lg shadow overflow-hidden", data: { section: "other" } do |f|
+  = f.hidden_field :section, value: "other"
+
+  .px-6.py-4.border-b.flex.justify-between.items-center
+    h2.text-lg.font-medium.text-gray-900 Other
+    .flex.space-x-3
+      = link_to "Edit", "#", class: "text-blue-600 hover:text-blue-800", data: { action: "click->notification-settings#toggleEdit", "notification-settings-section-param": "other", "notification-settings-target": "other_editButton" }
+      = link_to "Cancel", "#", class: "text-gray-600 hover:text-gray-800 hidden", data: { action: "click->notification-settings#cancelEdit", "notification-settings-section-param": "other", "notification-settings-target": "other_cancelButton" }
+      = link_to "Save", "#", class: "text-blue-600 hover:text-blue-800 hidden", data: { action: "click->notification-settings#saveForm", "notification-settings-section-param": "other", "notification-settings-target": "other_saveButton" }
+
+  .px-6.py-4.space-y-4
+    / Read Mode
+    .space-y-4 data-notification-settings-target="other_readMode"
+      .border-b.pb-2
+        h3.text-sm.font-medium.text-gray-500 Product Updates & Newsletters
+        p.text-sm.text-gray-900 = user.optin? ? "I'd like to get occasional product updates, newsletters, or surveys via email" : "Not subscribed to updates"
+
+    / Edit Mode
+    .space-y-4.hidden data-notification-settings-target="other_editMode"
+      .border-b.pb-2
+        = label_tag :optin, "Product Updates & Newsletters", class: "block text-sm font-medium text-gray-700"
+        .flex.items-center.mt-1
+          = check_box_tag :optin, "1", user.optin?, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          span.ml-2.text-sm.text-gray-900 I'd like to get occasional product updates, newsletters, or surveys via email

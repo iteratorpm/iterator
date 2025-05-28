@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_27_082106) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_28_153012) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -233,22 +233,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_27_082106) do
 
   create_table "notification_settings", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.integer "project_id"
-    t.integer "story_creation", default: 0
-    t.integer "comments", default: 1
-    t.integer "comment_source", default: 0
-    t.integer "story_state_changes", default: 1
-    t.integer "blockers", default: 1
-    t.integer "comment_reactions", default: 1
-    t.integer "reviews", default: 1
-    t.integer "in_app_state", default: 1
-    t.integer "email_state", default: 1
-    t.integer "mute_state", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_notification_settings_on_project_id"
-    t.index ["user_id", "project_id"], name: "index_notification_settings_on_user_id_and_project_id", unique: true
-    t.index ["user_id"], name: "index_notification_settings_on_user_id"
+    t.integer "in_app_story_creation", default: 0
+    t.integer "in_app_comments", default: 1
+    t.integer "in_app_comment_source", default: 0
+    t.integer "in_app_story_state_changes", default: 1
+    t.integer "in_app_blockers", default: 1
+    t.integer "in_app_comment_reactions", default: 1
+    t.integer "in_app_reviews", default: 1
+    t.integer "email_story_creation", default: 0
+    t.integer "email_comments", default: 1
+    t.integer "email_comment_source", default: 0
+    t.integer "email_story_state_changes", default: 1
+    t.integer "email_blockers", default: 1
+    t.integer "email_comment_reactions", default: 1
+    t.integer "email_reviews", default: 1
+    t.integer "email_state", default: 1
+    t.integer "in_app_state", default: 1
+    t.index ["user_id"], name: "index_notification_settings_on_user_id", unique: true
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -436,6 +439,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_27_082106) do
     t.integer "current_organization_id"
     t.string "time_zone", default: "Eastern Time (US & Canada)", null: false
     t.string "api_token"
+    t.boolean "optin", default: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["current_organization_id"], name: "index_users_on_current_organization_id"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -498,7 +502,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_27_082106) do
   add_foreign_key "memberships", "users"
   add_foreign_key "muted_projects", "projects"
   add_foreign_key "muted_projects", "users"
-  add_foreign_key "notification_settings", "projects"
   add_foreign_key "notification_settings", "users"
   add_foreign_key "notifications", "projects"
   add_foreign_key "notifications", "users"

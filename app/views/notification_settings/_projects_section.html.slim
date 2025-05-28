@@ -1,0 +1,33 @@
+= form_with url: notification_settings_path, method: :put, class: "bg-white rounded-lg shadow overflow-hidden", data: { section: "project_notifications" } do |f|
+  = hidden_field_tag :section, "project_notifications"
+
+  .px-6.py-4.border-b.flex.justify-between.items-center
+    h2.text-lg.font-medium.text-gray-900 Project Notifications
+    .flex.space-x-3
+      = link_to "Edit", "#", class: "text-blue-600 hover:text-blue-800", data: { action: "click->notification-settings#toggleEdit", "notification-settings-section-param": "projects", "notification-settings-target": "projects_editButton" }
+      = link_to "Cancel", "#", class: "text-gray-600 hover:text-gray-800 hidden", data: { action: "click->notification-settings#cancelEdit", "notification-settings-section-param": "projects", "notification-settings-target": "projects_cancelButton" }
+      = link_to "Save", "#", class: "text-blue-600 hover:text-blue-800 hidden", data: { action: "click->notification-settings#saveForm", "notification-settings-section-param": "projects", "notification-settings-target": "projects_saveButton" }
+
+  .px-6.py-4.space-y-4
+    p.text-sm.text-gray-600.mb-4
+      ' This setting lets you mute general notifications from specified projects.
+      ' You will only receive mentions from muted projects if you are mentioned.
+
+    / Read Mode
+    .space-y-4 data-notification-settings-target="projects_readMode"
+      .border-b.pb-2
+        h3.text-sm.font-medium.text-gray-500 Projects that get notifications
+        - muted_project_ids = muted_projects.pluck(:project_id)
+        - projects.each do |project|
+          - unless muted_project_ids.include?(project.id)
+            p.text-sm.text-gray-900 = project.name
+
+    / Edit Mode
+    .space-y-4.hidden data-notification-settings-target="projects_editMode"
+      .border-b.pb-2
+        h3.text-sm.font-medium.text-gray-500.mb-2 Projects that get notifications
+        - muted_project_ids = muted_projects.pluck(:project_id)
+        - projects.each do |project|
+          .flex.items-center.mb-2
+            = check_box_tag "project_notifications[#{project.id}]", "1", !muted_project_ids.include?(project.id), class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            span.ml-2.text-sm.text-gray-900 = project.name

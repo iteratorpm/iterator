@@ -1,0 +1,21 @@
+- content_for :page_title, "Notification Settings"
+
+= render "shared/user_management_header"
+
+.max-w-4xl.mx-auto.space-y-6 data-controller="notification-settings"
+
+  / In-App Notifications Card
+  #in_app_section
+    = render partial: "in_app_section", locals: { settings: @notification_setting }
+
+  / Email Notifications Card
+  #email_section
+    = render partial: "email_section", locals: { settings: @notification_setting }
+
+  / Other Settings Card
+  #other_section
+    = render partial: "other_section", locals: { user: current_user }
+
+  / Project Notifications Card
+  #projects_section
+    = render partial: "projects_section", locals: { projects: @projects, muted_projects: @muted_projects }

@@ -1,0 +1,71 @@
+= form_with model: settings, url: notification_settings_path, method: :put, class: "bg-white rounded-lg shadow overflow-hidden", data: { section: "email" } do |f|
+  = f.hidden_field :section, value: "email"
+
+  .px-6.py-4.border-b.flex.justify-between.items-center
+    .flex.items-center.space-x-4
+      .flex.items-center
+        = check_box_tag :email_enabled, "1", settings.email_state == "enabled", class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+      h2.text-lg.font-medium.text-gray-900 Email Notifications
+    .flex.space-x-3
+      = link_to "Edit", "#", class: "text-blue-600 hover:text-blue-800", data: { action: "click->notification-settings#toggleEdit", "notification-settings-section-param": "email", "notification-settings-target": "email_editButton" }
+      = link_to "Cancel", "#", class: "text-gray-600 hover:text-gray-800 hidden", data: { action: "click->notification-settings#cancelEdit", "notification-settings-section-param": "email", "notification-settings-target": "email_cancelButton" }
+      = link_to "Save", "#", class: "text-blue-600 hover:text-blue-800 hidden", data: { action: "click->notification-settings#saveForm", "notification-settings-section-param": "email", "notification-settings-target": "email_saveButton" }
+
+  .px-6.py-4.space-y-4
+    / Read Mode
+    .space-y-4 data-notification-settings-target="email_readMode"
+      .grid.grid-cols-1.md:grid-cols-2.gap-4
+        .border-b.pb-2
+          h3.text-sm.font-medium.text-gray-500 New Stories/Epics
+          p.text-sm.text-gray-900 = settings.email_story_creation == "yes" ? "Notify me when a new story/epic is created" : "No notifications"
+        .border-b.pb-2
+          h3.text-sm.font-medium.text-gray-500 Story State
+          p.text-sm.text-gray-900 = story_state_display(settings.email_story_state_changes)
+
+      .border-t.my-2
+
+      .grid.grid-cols-1.md:grid-cols-2.gap-4
+        .border-b.pb-2
+          h3.text-sm.font-medium.text-gray-500 Comments
+          p.text-sm.text-gray-900 = comment_display(settings.email_comments)
+        .border-b.pb-2
+          h3.text-sm.font-medium.text-gray-500 Blockers
+          p.text-sm.text-gray-900 = blocker_display(settings.email_blockers)
+        .border-b.pb-2
+          h3.text-sm.font-medium.text-gray-500 Reactions
+          p.text-sm.text-gray-900 = reaction_display(settings.email_comment_reactions)
+        .border-b.pb-2
+          h3.text-sm.font-medium.text-gray-500 Reviews
+          p.text-sm.text-gray-900 = review_display(settings.email_reviews)
+
+    / Edit Mode
+    .space-y-4.hidden data-notification-settings-target="email_editMode"
+      .grid.grid-cols-1.md:grid-cols-2.gap-4
+        .border-b.pb-2
+          = label_tag :email_new, "New Stories/Epics", class: "block text-sm font-medium text-gray-700"
+          .flex.items-center.mt-1
+            = check_box_tag :email_new, "1", settings.email_story_creation == "yes", class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            span.ml-2.text-sm.text-gray-900 Notify me when a new story/epic is created
+
+        .border-b.pb-2
+          = label_tag :email_story_state, "Story State", class: "block text-sm font-medium text-gray-700"
+          = select_tag :email_story_state, options_for_select(story_state_options, story_state_value(settings.email_story_state_changes)), class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+
+      .border-t.my-2
+
+      .grid.grid-cols-1.md:grid-cols-2.gap-4
+        .border-b.pb-2
+          = label_tag :email_comments, "Comments", class: "block text-sm font-medium text-gray-700"
+          = select_tag :email_comments, options_for_select(comment_options, comment_value(settings.email_comments)), class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+
+        .border-b.pb-2
+          = label_tag :email_blockers, "Blockers", class: "block text-sm font-medium text-gray-700"
+          = select_tag :email_blockers, options_for_select(blocker_options, blocker_value(settings.email_blockers)), class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+
+        .border-b.pb-2
+          = label_tag :email_reactions, "Reactions", class: "block text-sm font-medium text-gray-700"
+          = select_tag :email_reactions, options_for_select(reaction_options, reaction_value(settings.email_comment_reactions)), class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+
+        .border-b.pb-2
+          = label_tag :email_reviews, "Reviews", class: "block text-sm font-medium text-gray-700"
+          = select_tag :email_reviews, options_for_select(review_options, review_value(settings.email_reviews)), class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"

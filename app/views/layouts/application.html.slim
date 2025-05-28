@@ -23,5 +23,8 @@ html
 
     main
       = turbo_frame_tag "flash"
+      #flash_messages.fixed.top-4.right-4.z-50.w-full.max-w-xs
+        - flash.each do |type, message|
+          = render partial: "shared/flash_message", locals: { type: type, message: message }
 
       = yield
