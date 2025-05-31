@@ -1,4 +1,9 @@
+- column_type = local_assigns[:column_type] || :icebox
 - if local_assigns[:stories]
   = render partial: 'projects/stories/story', collection: local_assigns[:stories]
 - else
-  = render partial: 'projects/stories/story', collection: Project.find(local_assigns[:project_id]).stories.where(state: local_assigns[:state]).ranked
+  - case column_type
+  - when :icebox
+    = render partial: 'projects/stories/story', collection: Project.find(local_assigns[:project_id]).stories.where(state: :unscheduled).ranked
+  - when :my_work
+    = render partial: 'projects/stories/story', collection: Project.find(local_assigns[:project_id]).stories.by_owner(local_assigns[:user_id]).ranked

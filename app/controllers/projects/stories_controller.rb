@@ -23,16 +23,19 @@ class Projects::StoriesController < Projects::BaseController
   end
 
   def create
-    @story = @project.stories.build(story_params)
-    authorize! :create, @story
+    story = @project.stories.build(story_params)
+    authorize! :create, story
 
-    story, success = StoryService.create(@project, @story)
+    story, success = StoryService.create(@project, story_params, existing_story: story)
 
     if success
-      handle_successful_save
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to project_path(@project), notice: 'Story was successfully created.' }
+      end
     else
       respond_to do |format|
-        format.turbo_stream { render_turbo_validation_errors(@story) }
+        format.turbo_stream { render_turbo_validation_errors(story) }
         format.html { render :new }
       end
     end
@@ -49,7 +52,11 @@ class Projects::StoriesController < Projects::BaseController
     service = StoryService.new(@story, current_user)
 
     if service.update(story_params)
-      handle_successful_update
+      respond_to do |format|
+        format.json
+        format.turbo_stream
+        format.html { redirect_to project_path(@project), notice: 'Story was successfully updated.' }
+      end
     else
       respond_to do |format|
         format.json
@@ -189,27 +196,6 @@ class Projects::StoriesController < Projects::BaseController
         attachments: []
       ]
     )
-  end
-
-  def handle_successful_save
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.prepend(
-          "column-icebox",
-          partial: "projects/stories/story",
-          locals: { story: @story }
-        )
-      end
-      format.html { redirect_to project_path(@project), notice: 'Story was successfully created.' }
-    end
-  end
-
-  def handle_successful_update
-    respond_to do |format|
-      format.json
-      format.turbo_stream
-      format.html { redirect_to project_path(@project), notice: 'Story was successfully updated.' }
-    end
   end
 
 end

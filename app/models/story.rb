@@ -46,7 +46,7 @@ class Story < ApplicationRecord
     started: 2,      # Current
     finished: 3,     # Current
     delivered: 4,    # Current
-    accepted: 5,     # Done
+    accepted: 5,     # Current / Done
     rejected: 6      # Current
   }
   enum :priority, { none: 0, critical: 1, high: 2, medium: 3, low: 4 }, prefix: :priority
@@ -116,10 +116,11 @@ class Story < ApplicationRecord
   scope :unestimated, -> { where(estimate: -1) }
   scope :ranked, -> { order(position: :asc) }
 
+  attr_accessor :owner_ids_before_update
+
   after_update :notify_if_delivered, if: :saved_change_to_state?
   before_update :track_state_changes
   before_create :set_project_story_id
-  after_commit :broadcast_story_update
 
   def done?
     accepted?
@@ -205,18 +206,100 @@ class Story < ApplicationRecord
     # Calculate time spent in a particular state
   end
 
-  def current_panel
-    return :icebox if unscheduled?
-    return :backlog if unstarted?
-    return :current if started? || finished? || delivered? || rejected?
-    return :done if accepted?
-  end
-
   def iteration_recalculation_needed?
     saved_change_to_estimate? ||
     saved_change_to_iteration_id? ||
     saved_change_to_state? ||
     saved_change_to_story_type?
+  end
+
+  # Efficiently determine which column(s) this story should appear in
+  # Pass user_id explicitly since models shouldn't access current user directly
+  def current_columns(user_id = nil)
+    columns = []
+
+    # Check if story is owned by the specified user for "My Work"
+    if user_id && owner_ids.include?(user_id)
+      columns << :my_work
+    end
+
+    # Determine primary column based on state and iteration
+    case state.to_sym
+    when :unscheduled
+      columns << :icebox
+    when :unstarted
+      if iteration&.backlog?
+        columns << :backlog
+      elsif iteration&.current?
+        columns << :current
+      end
+    when :started, :finished, :delivered, :rejected
+      columns << :current
+    when :accepted
+      if iteration&.current?
+        columns << :current
+      elsif iteration&.done?
+        columns << :done
+      end
+    end
+
+    columns.uniq
+  end
+
+  def previous_columns_from_changes(changes_hash, user_id = nil)
+    return [] if changes_hash.empty?
+
+    # Create a snapshot with previous values
+    prev_story = self.dup
+    changes_hash.each do |attr, (old_val, _new_val)|
+      prev_story.send("#{attr}=", old_val)
+    end
+
+    # Handle iteration changes specially
+    if changes_hash.key?('iteration_id')
+      old_iteration_id = changes_hash['iteration_id'][0]
+      prev_story.iteration = old_iteration_id ? Iteration.find(old_iteration_id) : nil
+    end
+
+    prev_story.current_columns(user_id)
+  end
+
+  def current_columns_for_all_users
+    # Get all users who might be affected (owners + project members)
+    relevant_user_ids = (owner_ids + project.membership_ids).uniq
+
+    # Build a hash of user_id => columns for detailed broadcasting
+    columns_by_user = {}
+
+    # Get columns for each relevant user (includes :my_work if they're an owner)
+    relevant_user_ids.each do |user_id|
+      user_columns = current_columns(user_id)
+      columns_by_user[user_id] = user_columns if user_columns.any?
+    end
+
+    # Also include general columns (non-user-specific) under a nil key
+    general_columns = current_columns(nil)
+    columns_by_user[nil] = general_columns if general_columns.any?
+
+    columns_by_user
+  end
+
+  # Helper method to get all unique columns this story appears in
+  def all_current_columns
+    # Get all users who might be affected (owners + project members)
+    relevant_user_ids = (owner_ids + project.member_ids).uniq
+
+    all_columns = Set.new
+
+    # Get columns for each relevant user (includes :my_work if they're an owner)
+    relevant_user_ids.each do |user_id|
+      all_columns.merge(current_columns(user_id))
+    end
+
+    # Also include general columns (non-user-specific)
+    all_columns.merge(current_columns(nil))
+
+    all_columns.to_a
   end
 
   private
@@ -239,23 +322,6 @@ class Story < ApplicationRecord
     self.project_story_id = max_id + 1
   end
 
-  def broadcast_story_update
-    panel = current_panel
-
-    partial = if panel == :current
-      "projects/iterations/column"
-    else
-      "projects/stories/column"
-    end
-
-    broadcast_replace_later_to(
-      [project, "stories"],
-      target: "column-#{panel}",
-      partial: partial,
-      locals: { project_id: project.id, state: state }
-    )
-  end
-
   def trigger_iteration_recalculation
     project.recalculate_iterations
   end
@@ -273,4 +339,24 @@ class Story < ApplicationRecord
       self.rejected_at ||= Time.current
     end
   end
+
+  # Get previous columns before changes (for cleanup)
+  def previous_columns(user_id = nil)
+    return [] unless saved_changes.any?
+
+    # Create a temporary story object with previous attributes
+    prev_story = self.dup
+    saved_changes.each do |attr, (old_val, _new_val)|
+      prev_story.send("#{attr}=", old_val)
+    end
+
+    # Handle iteration changes specially since it's an association
+    if saved_changes.key?('iteration_id')
+      old_iteration_id = saved_changes['iteration_id'][0]
+      prev_story.iteration = old_iteration_id ? Iteration.find(old_iteration_id) : nil
+    end
+
+    prev_story.current_columns(user_id)
+  end
+
 end

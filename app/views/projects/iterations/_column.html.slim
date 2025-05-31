@@ -1,6 +1,9 @@
-- iterations.each do |i|
-  = render "projects/iteration", iteration: i
-
-  - if i.stories.any?
-    = render partial: 'projects/stories/story', collection: i.stories, as: :story
-
+- iteration_state = local_assigns[:iteration_state] || :backlog
+- if local_assigns[:iterations]
+  - iterations = local_assigns[:iterations]
+- else
+  - iterations = Project.find(local_assigns[:project_id]).iterations.where(state: iteration_state).ranked
+- iterations.each do |iteration|
+  = render "projects/iteration", iteration: iteration
+  - if iteration.stories.any?
+    = render partial: 'projects/stories/story', collection: iteration.stories.ranked, as: :story

@@ -15,7 +15,7 @@ class Projects::IterationsController < Projects::BaseController
   end
 
   def backlog
-    @iterations = @project.iterations.backlog.includes(:stories)
+    @iterations = @project.iterations.backlog.ranked.includes(:stories)
   end
 
   def update

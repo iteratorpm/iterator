@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_28_153012) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_31_064419) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -370,10 +370,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_28_153012) do
     t.integer "position", null: false
     t.integer "project_story_id", null: false
     t.index ["discarded_at"], name: "index_stories_on_discarded_at"
+    t.index ["iteration_id", "state"], name: "index_stories_on_iteration_id_and_state"
     t.index ["iteration_id"], name: "index_stories_on_iteration_id"
     t.index ["priority"], name: "index_stories_on_priority"
     t.index ["project_id", "position"], name: "index_stories_on_project_id_and_position", unique: true
     t.index ["project_id", "project_story_id"], name: "index_stories_on_project_id_and_project_story_id", unique: true
+    t.index ["project_id", "state", "iteration_id"], name: "index_stories_on_project_id_and_state_and_iteration_id"
+    t.index ["project_id", "state"], name: "index_stories_on_project_id_and_state"
     t.index ["project_id"], name: "index_stories_on_project_id"
     t.index ["requester_id"], name: "index_stories_on_requester_id"
     t.index ["state"], name: "index_stories_on_state"

@@ -3,8 +3,7 @@ class NotificationSettingsController < ApplicationController
   before_action :set_notification_setting, only: [:update]
 
   def index
-    @notification_setting = current_user.notification_setting ||
-                           current_user.create_notification_setting
+    @notification_setting = current_user.find_or_create_notification_setting
     @muted_projects = current_user.muted_projects.includes(:project)
     @projects = current_user.projects
   end

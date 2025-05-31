@@ -47,6 +47,10 @@ class User < ApplicationRecord
 
   before_save :set_initials_if_blank
 
+  def find_or_create_notification_setting
+    notification_setting || create_notification_setting
+  end
+
   def add_to_organization(organization, role = :member)
     memberships.find_or_create_by!(organization: organization) do |m|
       m.role = role

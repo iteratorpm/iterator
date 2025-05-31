@@ -7,6 +7,7 @@ javascript:
     }
 
 = turbo_stream_from [@project, "stories"]
+= turbo_stream_from [@project, "stories", "user_#{current_user.id}"]
 
 .flex.h-full
   = render 'projects/sidebar', project: @project

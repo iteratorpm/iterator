@@ -4,9 +4,9 @@ nav[aria-label="Project navigation"]
     .flex.items-center
       - nav_items = [ \
         { name: 'Stories', path: project_path(project) }, \
-        { name: 'Analytics', path: project_analytics_overview_path(project) }, \
+        #{ name: 'Analytics', path: project_analytics_overview_path(project) }, \
         { name: 'Members', path: project_memberships_path(project) }, \
-        { name: 'Integrations', path: project_integrations_path(project) }, \
+        #{ name: 'Integrations', path: project_integrations_path(project) }, \
         { name: 'More', path: edit_project_path(project) } \
       ]
 

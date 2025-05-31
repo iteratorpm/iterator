@@ -8,6 +8,7 @@ class Iteration < ApplicationRecord
 
   scope :current, -> { where(state: :current) }
   scope :backlog, -> { where(state: :backlog) }
+  scope :ranked, -> { order(start_date: :asc) }
   scope :done, -> { where(state: :done) }
   scope :for_date, ->(date) { where("start_date <= ? AND end_date >= ?", date, date) }
 

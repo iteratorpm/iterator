@@ -3,4 +3,4 @@
   #column-current data-controller="sortable" data-sortable-column-value="current"
     = render 'projects/iterations/column', iterations: [@current_iteration]
 
-  = render "projects/stories/form", story: @project.stories.new
+  = render "projects/stories/form", story: @project.stories.new, state: :unstarted

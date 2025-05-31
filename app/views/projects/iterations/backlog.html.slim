@@ -1,6 +1,6 @@
 = panel @panel_id, title: "Backlog", add_story: true, close: true, actions: true do
 
-  = render "projects/stories/form", story: @project.stories.new
+  = render "projects/stories/form", story: @project.stories.new, state: :unstarted
 
   #column-backlog data-controller="sortable" data-sortable-column-value="backlog"
     = render 'projects/iterations/column', iterations: @iterations

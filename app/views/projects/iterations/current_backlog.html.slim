@@ -5,7 +5,7 @@
   - @current_iteration.stories do |i|
     = render partial: 'projects/stories/story', collection: i.stories, as: :story
 
-  = render "projects/stories/form", story: @project.stories.new
+  = render "projects/stories/form", story: @project.stories.new, state: :unstarted
 
   - @backlog_iterations.each do |i|
     = render "projects/iteration", iteration: i
