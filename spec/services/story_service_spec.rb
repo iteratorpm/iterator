@@ -8,7 +8,7 @@ RSpec.describe StoryService do
 
   # Mock Turbo broadcasting to avoid actual broadcasts in tests
   before do
-    allow(Turbo::StreamsChannel).to receive(:broadcast_replace_later_to)
+    allow(Turbo::StreamsChannel).to receive(:broadcast_update_later_to)
   end
 
   describe '.create' do
@@ -88,7 +88,7 @@ RSpec.describe StoryService do
 
       it 'does not broadcast when save fails' do
         bad_attrs = { name: nil }
-        expect(Turbo::StreamsChannel).not_to receive(:broadcast_replace_later_to)
+        expect(Turbo::StreamsChannel).not_to receive(:broadcast_update_later_to)
         described_class.create(project, bad_attrs)
       end
     end
@@ -259,7 +259,7 @@ RSpec.describe StoryService do
 
     describe '#broadcast_column_update' do
       it 'broadcasts icebox column update' do
-        expect(Turbo::StreamsChannel).to receive(:broadcast_replace_later_to).with(
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_later_to).with(
           [project, "stories"],
           target: "column-icebox",
           partial: "projects/stories/column",
@@ -274,7 +274,7 @@ RSpec.describe StoryService do
       end
 
       it 'broadcasts backlog column update' do
-        expect(Turbo::StreamsChannel).to receive(:broadcast_replace_later_to).with(
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_later_to).with(
           [project, "stories"],
           target: "column-backlog",
           partial: "projects/iterations/column",
@@ -289,7 +289,7 @@ RSpec.describe StoryService do
       end
 
       it 'broadcasts current column update' do
-        expect(Turbo::StreamsChannel).to receive(:broadcast_replace_later_to).with(
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_later_to).with(
           [project, "stories"],
           target: "column-current",
           partial: "projects/iterations/column",
@@ -304,7 +304,7 @@ RSpec.describe StoryService do
       end
 
       it 'broadcasts done column update' do
-        expect(Turbo::StreamsChannel).to receive(:broadcast_replace_later_to).with(
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_later_to).with(
           [project, "stories"],
           target: "column-done",
           partial: "projects/iterations/column",
@@ -319,7 +319,7 @@ RSpec.describe StoryService do
       end
 
       it 'broadcasts my_work column update with user_id' do
-        expect(Turbo::StreamsChannel).to receive(:broadcast_replace_later_to).with(
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_later_to).with(
           [project, "stories", "user_#{user.id}"],
           target: "column-my-work",
           partial: "projects/stories/column",

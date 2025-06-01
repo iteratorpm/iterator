@@ -39,10 +39,15 @@ export default class extends Controller {
     const to = event.to.dataset.sortableColumnValue
     const action = [to, from].sort().join()
 
+    if (to === "current" && event.dragged.querySelector(".estimate")) {
+      return false
+    }
+
     if (from === to) return true;
 
-    // Only allow moving between icebox and unstarted, or to epic_ columns
-    if (action === "icebox,unstarted") return true
+    if (action === "backlog,icebox") return true
+    if (action === "backlog,current") return true
+    if (action === "current,icebo") return true
     if (to?.startsWith("epic_") && from?.startsWith("epic_")) return true
     return false
   }
@@ -72,10 +77,6 @@ export default class extends Controller {
       payload.add_label = epicLabel
     }
 
-    if (this.hasPositioningColumnValue) {
-      payload.column = this.columnValue
-    }
-
     const requestUID = uuid()
 
     put(url, {
@@ -93,7 +94,8 @@ export default class extends Controller {
 
   mapColumnToState(column) {
     if (column === "icebox") return "unscheduled"
-    if (column === "unstarted") return "unstarted"
+    if (column === "backlog") return "unstarted"
+    if (column === "current") return "started"
     return undefined
   }
 

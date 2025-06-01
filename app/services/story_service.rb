@@ -204,7 +204,7 @@ class StoryService
   def broadcast_column_update(column, user_id = nil)
     case column
     when :icebox
-      broadcast_replace_later_to(
+      broadcast_update_later_to(
         [@project, "stories"],
         target: "column-icebox",
         partial: "projects/stories/column",
@@ -215,7 +215,7 @@ class StoryService
         }
       )
     when :backlog
-      broadcast_replace_later_to(
+      broadcast_update_later_to(
         [@project, "stories"],
         target: "column-backlog",
         partial: "projects/iterations/column",
@@ -226,7 +226,7 @@ class StoryService
         }
       )
     when :current
-      broadcast_replace_later_to(
+      broadcast_update_later_to(
         [@project, "stories"],
         target: "column-current",
         partial: "projects/iterations/column",
@@ -237,7 +237,7 @@ class StoryService
         }
       )
     when :done
-      broadcast_replace_later_to(
+      broadcast_update_later_to(
         [@project, "stories"],
         target: "column-done",
         partial: "projects/iterations/column",
@@ -248,7 +248,7 @@ class StoryService
         }
       )
     when :my_work
-      broadcast_replace_later_to(
+      broadcast_update_later_to(
         [@project, "stories", "user_#{user_id}"],
         target: "column-my-work",
         partial: "projects/stories/column",
@@ -261,9 +261,9 @@ class StoryService
     end
   end
 
-  def broadcast_replace_later_to(stream_name, **options)
+  def broadcast_update_later_to(stream_name, **options)
     # Use Turbo::StreamsChannel to broadcast
-    Turbo::StreamsChannel.broadcast_replace_later_to(
+    Turbo::StreamsChannel.broadcast_update_later_to(
       stream_name,
       **options
     )

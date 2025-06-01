@@ -2,13 +2,17 @@ module StoriesHelper
 
   # Generate appropriate classes based on story attributes
   def story_classes(story)
-    classes = ["story-preview-item", "cursor-move"]
+    classes = ["story-header"]
+
+    classes << "cursor-move" if !story.done?
 
     classes << "bg-blue-100 hover:bg-blue-200" if story.icebox?
 
     classes << "bg-yellow-100 hover:bg-yellow-200" if story.current?
 
     classes << "bg-green-100 hover:bg-green-200" if story.done?
+
+    classes << "hover:bg-gray-200" if story.backlog?
 
     classes << border_color_class(story)
 

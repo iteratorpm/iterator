@@ -82,6 +82,8 @@ class Story < ApplicationRecord
 
   validates :estimate, numericality: { greater_than_or_equal_to: -1 }, allow_nil: false
 
+  # validate :cannot_move_unestimated_feature_to_current_iteration
+  validate :cannot_start_unestimated_feature
   validates :project_story_id, uniqueness: { scope: :project_id }
 
   # Scopes for common queries (performance optimization)
@@ -139,7 +141,7 @@ class Story < ApplicationRecord
   end
 
   def estimated?
-    estimate != -1
+    estimate.present? && estimate != -1
   end
 
   def estimatable?
@@ -359,4 +361,18 @@ class Story < ApplicationRecord
     prev_story.current_columns(user_id)
   end
 
+  def cannot_start_unestimated_feature
+    return unless will_save_change_to_state?
+    return unless feature? && !estimated?
+
+    if !%i[unscheduled unstarted].include?(state.to_sym)
+      errors.add(:base, "Feature must be estimated before starting")
+    end
+  end
+
+  def cannot_move_unestimated_feature_to_current_iteration
+    if feature? && !estimated? && iteration&.current?
+      errors.add(:base, "Feature must be estimated before moving to the current iteration")
+    end
+  end
 end
