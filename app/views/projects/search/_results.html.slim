@@ -1,7 +1,7 @@
 - timestamp = Time.now.to_i
 
 = turbo_frame_tag "search_panel_#{timestamp}",
-  class: "panel h-full border-r-1 border-gray-300",
+  class: "panel h-full",
   data: { panel: "search",
           panels_target: "panel",
           action: "turbo:frame-load->panels#resizePanels panel-toggle:change->panels#toggleVisibility" } do

@@ -1,0 +1,13 @@
+- story.available_next_states.each do |state|
+  - config = story_action_button_config(state)
+  - if config[:icon]
+    = button_tag data: { action: "click->story#updateState", story_state_value: config[:value] },
+        title: config[:label],
+        class: "inline-flex items-center justify-center gap-1 px-4 py-1.5 rounded-md #{config[:classes]} text-sm font-semibold border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer" do
+      = inline_svg_tag config[:icon], class: "h-4 w-4 text-red-800"
+      span= config[:label]
+  - else
+    = button_tag config[:label],
+        data: { action: "click->story#updateState", story_state_value: config[:value] },
+        title: config[:label],
+        class: "cursor-pointer px-4 font-semibold py-1.5 rounded-md #{config[:classes]} text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"

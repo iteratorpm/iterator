@@ -1,4 +1,4 @@
-.hidden.bg-white.overflow-hidden.mb-4.px-3.py-2 data-panel-target="addForm" data-controller="panel-form"
+.hidden.bg-white.overflow-hidden.px-3.py-2 data-panel-target="addForm" data-controller="panel-form"
   section.model-details
     = form_with model: [story.project, story], data: { action: "turbo:submit-end->panel-form#resetAndClose", panel_form_target: "form" } do |f|
       = f.hidden_field :position, value: :first

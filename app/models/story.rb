@@ -84,6 +84,7 @@ class Story < ApplicationRecord
 
   # validate :cannot_move_unestimated_feature_to_current_iteration
   validate :cannot_start_unestimated_feature
+  validate :state_must_be_valid_for_story_type
   validates :project_story_id, uniqueness: { scope: :project_id }
 
   # Scopes for common queries (performance optimization)
@@ -122,7 +123,21 @@ class Story < ApplicationRecord
 
   after_update :notify_if_delivered, if: :saved_change_to_state?
   before_update :track_state_changes
+  before_update :unscheduled_remove_iteration
   before_create :set_project_story_id
+
+  def available_states
+    case story_type.to_sym
+    when :feature, :bug
+      %i[unscheduled unstarted started finished delivered accepted rejected]
+    when :chore
+      %i[unscheduled unstarted started finished accepted rejected] # No :delivered
+    when :release
+      %i[unscheduled unstarted started accepted] # No :finished/:delivered/:rejected
+    else
+      []
+    end
+  end
 
   def done?
     accepted?
@@ -304,6 +319,36 @@ class Story < ApplicationRecord
     all_columns.to_a
   end
 
+  def available_next_states
+    case story_type.to_sym
+    when :feature, :bug
+      case state.to_sym
+      when :unscheduled, :unstarted then [:started]
+      when :started                then [:finished]
+      when :finished               then [:delivered]
+      when :delivered              then [:accepted, :rejected]
+      when :rejected               then [:restarted] # Maps to :started
+      else []
+      end
+    when :chore
+      case state.to_sym
+      when :unscheduled, :unstarted then [:started]
+      when :started                then [:finished]
+      when :finished               then [:accepted, :rejected] # No :delivered
+      when :rejected               then [:restarted]
+      else []
+      end
+    when :release
+      case state.to_sym
+      when :unscheduled, :unstarted            then [:started]
+      when :started                then [:accepted] # Skip :finished/:delivered
+      else []
+      end
+    else
+      []
+    end
+  end
+
   private
   def notify_if_delivered
     if delivered? && state_before_last_save != 'accepted'
@@ -326,6 +371,14 @@ class Story < ApplicationRecord
 
   def trigger_iteration_recalculation
     project.recalculate_iterations
+  end
+
+  def unscheduled_remove_iteration
+    return unless state_changed?
+
+    if unscheduled?
+      self.iteration = nil
+    end
   end
 
   def track_state_changes
@@ -374,5 +427,10 @@ class Story < ApplicationRecord
     if feature? && !estimated? && iteration&.current?
       errors.add(:base, "Feature must be estimated before moving to the current iteration")
     end
+  end
+
+  def state_must_be_valid_for_story_type
+    return if available_states.include?(state.to_sym)
+    errors.add(:state, "is not valid for story type #{story_type}")
   end
 end

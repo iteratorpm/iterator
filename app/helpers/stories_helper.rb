@@ -4,17 +4,24 @@ module StoriesHelper
   def story_classes(story)
     classes = ["story-header"]
 
-    classes << "cursor-move" if !story.done?
+    if story.done?
+      classes << "bg-green-100 hover:bg-green-200 text-gray-800"
+    else
 
-    classes << "bg-blue-100 hover:bg-blue-200" if story.icebox?
+      classes << "cursor-move"
 
-    classes << "bg-yellow-100 hover:bg-yellow-200" if story.current?
+      if story.release?
+        classes << "bg-sky-700 hover:bg-sky-800 text-gray-100"
+      else
+        classes << "text-gray-800"
 
-    classes << "bg-green-100 hover:bg-green-200" if story.done?
+        classes << "bg-blue-100 hover:bg-blue-200" if story.icebox?
 
-    classes << "hover:bg-gray-200" if story.backlog?
+        classes << "bg-yellow-100 hover:bg-yellow-200" if story.current?
 
-    classes << border_color_class(story)
+        classes << "bg-gray-50 hover:bg-gray-200" if story.backlog?
+      end
+    end
 
     classes.join(" ")
   end
@@ -35,22 +42,6 @@ module StoriesHelper
     end
   end
 
-  # Determine border color class based on story type
-  def border_color_class(story)
-    case story.story_type
-    when "feature"
-      "border-yellow-500"
-    when "bug"
-      "border-red-500"
-    when "chore"
-      "border-gray-500"
-    when "release"
-      "border-blue-500"
-    else
-      "border-purple-500"
-    end
-  end
-
   def story_color_class(story_type)
     case story_type
     when "feature"
@@ -60,7 +51,7 @@ module StoriesHelper
     when "chore"
       "text-gray-500"
     when "release"
-      "text-blue-500"
+      "text-gray-900"
     else
       "text-purple-500"
     end
@@ -79,6 +70,56 @@ module StoriesHelper
       "fail.svg"
     else
       "unstarted.svg"
+    end
+  end
+
+  def story_state_options(story)
+    case story.story_type.to_sym
+    when :feature, :bug
+      [
+        ["unstarted", "Unstarted"],
+        ["started", "Started"],
+        ["finished", "Finished"],
+        ["delivered", "Delivered"],
+        ["accepted", "Accepted"],
+        ["rejected", "Rejected"]
+      ]
+    when :chore
+      [
+        ["unstarted", "Unstarted"],
+        ["started", "Started"],
+        ["finished", "Finished"],
+        ["accepted", "Accepted"],
+        ["rejected", "Rejected"]
+      ]
+    when :release
+      [
+        ["unscheduled", "Unscheduled"],
+        ["unstarted", "Unstarted"],
+        ["started", "Started"],
+        ["accepted", "Accepted"]
+      ]
+    else
+      []  # Fallback for unknown types
+    end
+  end
+
+  def story_action_button_config(state)
+    case state.to_sym
+    when :started
+      { label: "Start", classes: "bg-gray-100 text-gray-800 hover:bg-gray-200", icon: nil, value: "started" }
+    when :finished
+      { label: "Finish", classes: "bg-blue-700 text-gray-200 hover:bg-blue-800", icon: nil, value: "finished" }
+    when :delivered
+      { label: "Deliver", classes: "bg-amber-600 text-gray-200 hover:bg-amber-700", icon: nil, value: "delivered" }
+    when :accepted
+      { label: "Accept", classes: "bg-lime-700 text-gray-200 hover:bg-lime-800", icon: nil, value: "accepted" }
+    when :rejected
+      { label: "Reject", classes: "bg-red-700 text-gray-200 hover:bg-red-800", icon: nil, value: "rejected" }
+    when :restarted
+      { label: "Restart", classes: "bg-gray-100 text-gray-800 hover:bg-gray-200", icon: "icons/restart.svg", value: "started" }
+    else
+      { label: state.to_s.humanize, classes: "bg-gray-300 text-gray-800", icon: nil, value: state }
     end
   end
 end

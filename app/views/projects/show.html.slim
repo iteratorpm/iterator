@@ -11,7 +11,7 @@ javascript:
 - if signed_in?
   = turbo_stream_from [@project, "stories", "user_#{current_user.id}"]
 
-.flex.h-full
+.flex.h-full.h-screen
   = render 'projects/sidebar', project: @project
 
   .main.flex-1.overflow-hidden data-controller="panels"
@@ -27,12 +27,12 @@ javascript:
         }
 
     / Panels container
-    #panels-container.flex.space-x-2.relative.h-full.w-full.overflow-hidden data-controller="autocomplete"
+    #panels-container.px-2.flex.space-x-2.relative.h-full.w-full.overflow-hidden.bg-gray-600 data-controller="autocomplete"
       / My Work Panel
       = turbo_frame_tag "my_work_panel",
         src: my_work_project_stories_path(@project),
         loading: :lazy,
-        class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-my_work'].present?}",
+        class: "panel h-full #{'hidden' unless cookies['toggle-my_work'].present?}",
         data: {\
           panel: "my_work",
           panels_target: "panel",
@@ -43,7 +43,7 @@ javascript:
       = turbo_frame_tag "current_panel",
         src: current_project_iterations_path(@project),
         loading: :lazy,
-        class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-current'].present?}",
+        class: "panel h-full #{'hidden' unless cookies['toggle-current'].present?}",
         data: {\
           panel: "current",
           panels_target: "panel",
@@ -54,7 +54,7 @@ javascript:
       = turbo_frame_tag "backlog_panel",
         src: backlog_project_iterations_path(@project),
         loading: :lazy,
-        class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-backlog'].present?}",
+        class: "panel h-full #{'hidden' unless cookies['toggle-backlog'].present?}",
         data: {\
           panel: "backlog",
           panels_target: "panel",
@@ -64,7 +64,7 @@ javascript:
       / Icebox Panel
       = turbo_frame_tag "icebox_panel",
         src: icebox_project_stories_path(@project),
-        class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-icebox'].present?}",
+        class: "panel h-full #{'hidden' unless cookies['toggle-icebox'].present?}",
         data: {\
           panel: "icebox",
           panels_target: "panel",
@@ -75,7 +75,7 @@ javascript:
       = turbo_frame_tag "done_panel",
         src: done_project_iterations_path(@project),
         loading: :lazy,
-        class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-done'].present?}",
+        class: "panel h-full #{'hidden' unless cookies['toggle-done'].present?}",
         data: {\
           panel: "done",
           panels_target: "panel",
@@ -86,7 +86,7 @@ javascript:
       = turbo_frame_tag "blocked_panel",
         src: blocked_project_stories_path(@project),
         loading: :lazy,
-        class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-blocked'].present?}",
+        class: "panel h-full #{'hidden' unless cookies['toggle-blocked'].present?}",
         data: {\
           panel: "blocked",
           panels_target: "panel",
@@ -97,7 +97,7 @@ javascript:
       = turbo_frame_tag "epics_panel",
         src: project_epics_path(@project),
         loading: :lazy,
-        class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-epics'].present?}",
+        class: "panel h-full #{'hidden' unless cookies['toggle-epics'].present?}",
         data: {\
           panel: "epics",
           panels_target: "panel",
@@ -108,7 +108,7 @@ javascript:
       = turbo_frame_tag "labels_panel",
         src: project_labels_path(@project),
         loading: :lazy,
-        class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-labels'].present?}",
+        class: "panel h-full #{'hidden' unless cookies['toggle-labels'].present?}",
         data: {\
           panel: "labels",
           panels_target: "panel",
@@ -119,7 +119,7 @@ javascript:
       = turbo_frame_tag "history_panel",
         src: project_histories_path(@project),
         loading: :lazy,
-        class: "panel h-full border-r-1 border-gray-300 #{'hidden' unless cookies['toggle-history'].present?}",
+        class: "panel h-full #{'hidden' unless cookies['toggle-history'].present?}",
         data: {\
           panel: "history",
           panels_target: "panel",
