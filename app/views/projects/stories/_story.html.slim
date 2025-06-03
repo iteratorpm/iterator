@@ -19,6 +19,9 @@
       .story-name.font-medium
         span.tracker-markup = story.name
 
+        - if !story.release? && story.owners.any?
+          = render "projects/stories/story_owners", owners: story.owners
+
       .metadata.flex.flex-wrap.items-center.mt-1
         - if not story.priority_none?
           button.priority.px-1.text-xs.rounded.bg-gray-200.mr-2 title="Priority: #{story.priority_label}"
