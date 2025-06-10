@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: iterator
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  web:
+    image: iteratorpm/iterator:latest
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+
+volumes:
+  pgdata:

@@ -1,90 +1,94 @@
-# 🚀 Iterator – Open-Source Agile Tracker for Developers
+<div align="center">
+  <h1 align="center">Iterator</h1>
+  <p align="center" class="text-xl">The <strong>developer-friendly</strong> project management tool for agile teams. Based on the proven methodology of Pivotal Tracker.</p>
+</div>
 
-**Iterator** is a self-hosted alternative to Pivotal Tracker built by developers, for developers. Get **lightweight agile planning** without SaaS lock-in or enterprise bloat.
+<div align="center">
+  <a href="https://iteratorpm.com/changelog">Changelog</a>
+  ·
+  <a href="https://iteratorpm.com">Website</a>
+  ·
+  <a href="https://iteratorpm.com/docs">Docs</a>
+  ·
+  <a href="https://discord.gg/">Community</a>
+</div>
 
-![screenshot](docs/screenshot.png)
+<div align="center">
+  <a href="https://github.com/iteratorpm/iterator/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-AGPLv3-purple"></a>
+  <a href="https://github.com/iteratorpm/iterator/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/iteratorpm/iterator?color=black"></a>
+</div>
 
----
+## 🚀 Key Features
 
-## 🔥 Why Developers Choose Iterator
+### 📅 Planning & Workflow
+- **Velocity Planning**: Automatic/manual iteration modes with intelligent tracking
+- **Story States & Labels**: Customizable workflows with keyboard shortcuts
+- **Methodology Flexibility**: Combine Kanban and Scrum approaches
 
-### ⚡ **Git-Native Workflow**
-- Auto-sync stories with **GitHub/GitLab issues/PRs**
-- CLI tools for terminal lovers
-- REST API for custom integrations
+### 📊 Powerful Analytics (Planned)
+- **Velocity & Cycle Time**: Track team performance over time
+- **Burnup Charts**: Monitor scope creep and progress
+- **Cumulative Flow**: Visualize work distribution and bottlenecks
 
-### 🧠 **Smart Agile Features**
-- AI-assisted backlog grooming *(beta)*
-- Velocity tracking with burn-down charts
-- Keyboard-first navigation (Vim-style shortcuts)
+### 🔌 Developer Experience (Planned)
+- **GitHub/GitLab Integration**: Automatic commit linking and PR status
+- **REST API + Webhooks**: Connect with your existing toolchain
+- **Real-time Activity Sync**: Unified feeds across all tools
 
-### 🛠️ **Painless Self-Hosting**
-- Deploy in 5 mins with Docker/Kamal
-- Sqlite support (no PostgreSQL required for small teams)
-- Minimal infrastructure footprint
-
----
-
-## ✨ Core Features
-
-| Developer Essentials | Agile Power-Ups |
-|----------------------|-----------------|
-| ✅ GitHub/GitLab sync | ✅ Auto-sprint planning |
-| ✅ CLI + REST API | ✅ Velocity tracking |
-| ✅ Kamal deployment | ✅ Icebox prioritization |
-| ✅ Keyboard shortcuts | ✅ Iteration reports |
+## 🖼️ Screenshot
 
 ---
 
 ## 🛠️ Tech Stack
 
 - **Ruby on Rails 8** (Hotwire Turbo + Stimulus)
-- **Sqlite/Postgres/MySql** (your choice)
-- **Kamal** (zero-downtime deploys)
-- **RSpec** (100% test coverage goal)
+- **SQLite/PostgreSQL** (your choice)
+- **Tailwind CSS** for modern styling
+- **Docker** for easy deployment
 
 ---
 
-## 🚀 Self-Hosting Guide
+## 🚀 Get Started in Minutes
 
-### 1. Docker Quickstart
+### One-Line Docker Demo (Quick Test)
 ```bash
-git clone https://github.com/your-repo/iterator
+docker run -p 3000:3000 iteratorpm/iterator
+```
+Visit `http://localhost:3000` with demo credentials:
+- Email: `demo@example.com`
+- Password: `password`
+
+⚠️  This runs in demo mode with in-memory SQLite and no email verification.
+
+### Docker Compose (Persistent Setup)
+```bash
+git clone https://github.com/iteratorpm/iterator
 cd iterator
-cp .env.example .env  # Configure your secrets
-docker compose up -d  # That's it!
+cp .env.example .env
+docker compose up -d
 ```
 
-### 2. Kamal for Production
+### Kamal (Production Deployment) (Planned)
 ```bash
-# Set up Kamal (1-time)
+kamal init
 kamal env push
-kamal accessory boot
-
-# Deploy!
+kamal a
 kamal deploy
 ```
 
-📘 Full docs: [SELF_HOSTING.md](docs/SELF_HOSTING.md)
+📘 [Full deployment guide](https://iteratorpm.com/docs/installation)
 
 ---
 
-## 💡 Why We Built This
+## 💬 Join Our Community
 
-After struggling with:
-- Jira's complexity
-- Pivotal Tracker's shutdown
-- GitHub Projects' lack of agile features
+[![Discord](https://img.shields.io/badge/chat-Discord-7289DA)](https://discord.gg/)
+[![GitHub Issues](https://img.shields.io/github/issues/iteratorpm/iterator)](https://github.com/iteratorpm/iterator/issues)
 
-...we made **Iterator** to give teams:
-- **Control** (self-host anywhere)
-- **Transparency** (100% open-source)
-- **Developer joy** (no more PM tool frustration)
+We welcome contributions! Check out our [contribution guidelines](CONTRIBUTING.md).
 
 ---
 
-## 👥 Join the Community
-[![Discord](https://img.shields.io/badge/chat-Discord-7289DA)](your-invite-link)
-[![GitHub Issues](https://img.shields.io/github/issues/your-repo/iterator)](https://github.com/bendangelo/iterator/issues)
+## 📜 License
 
-**Contribute:** We welcome PRs! See [CONTRIBUTING.md](CONTRIBUTING.md)
+Iterator is [AGPLv3 licensed](LICENSE).
