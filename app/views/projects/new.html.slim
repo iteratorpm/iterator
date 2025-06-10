@@ -1,8 +1,8 @@
-= modal
-  .max-w-2xl.mx-auto.py-8.px-4
+.max-w-2xl.mx-auto.py-8.px-4
+  = modal
     h1.text-2xl.font-bold.text-gray-800.mb-6 Create a new project
 
-    = form_with model: @project, local: true, data: { controller: 'organizations', action: 'organizations#toggleNewOrganization' } do |f|
+    = form_with model: @project, local: true, data: { controller: 'organizations' } do |f|
       / Project Name Field
       .mb-6
         = f.label :name, "Project Name", class: "block mb-2 text-sm font-medium text-gray-700"
@@ -15,7 +15,7 @@
         - if @organizations.any?
           = f.select :organization_id, options_for_select(@organizations.map { |org| [org.name, org.id] }, f.object.organization_id), { prompt: "Select an organization" }, class: "bg-white w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500", required: true, data: { action: "change->organizations#checkSelection" }
           .mt-2.text-sm.text-gray-500
-            | Don't see your organization?
+            |> Don't see your organization?
             = link_to "Create new organization", "#", class: "text-blue-600 hover:text-blue-800", data: { action: "click->organizations#showNewOrganizationForm" }
         - else
           .p-4.border.border-gray-200.rounded-md.bg-gray-50.mb-4
@@ -28,7 +28,7 @@
           h3.text-lg.font-medium.text-gray-800.mb-3 Create New Organization
           .mb-4
             = label_tag :new_organization_name, "Organization Name", class: "block mb-2 text-sm font-medium text-gray-700"
-            = text_field_tag :new_organization_name, nil, class: "w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500", placeholder: "Enter organization name", required: true, data: { organizations_target: "newOrganizationName" }
+            = text_field_tag :new_organization_name, nil, class: "w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500", placeholder: "Enter organization name", data: { organizations_target: "newOrganizationName" }
           .flex.justify-end.space-x-3
             = button_tag "Cancel", type: "button", class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500", data: { action: "click->organizations#hideNewOrganizationForm" }
             = button_tag "Create Organization", type: "button", class: "px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500", data: { action: "click->organizations#createOrganization" }
@@ -53,8 +53,8 @@
                 = image_tag "icons/public.svg", class: "w-4 h-4 mr-2"
                 = f.label :public_true, "Public", class: "text-sm font-medium text-gray-700 cursor-pointer"
               p.text-xs.text-gray-500.mt-1
-                | The project is visible to anyone with the link. Only project owners and members can edit it.
-                = link_to "Learn more", "http://www.pivotaltracker.com/help/articles/using_public_projects/", class: "text-blue-600 hover:text-blue-800", target: "_blank", rel: "noopener noreferrer"
+                |> The project is visible to anyone with the link. Only project owners and members can edit it.
+                = link_to "Learn more", docs_path("public-projects"), class: "text-blue-600 hover:text-blue-800", target: "_blank", rel: "noopener noreferrer"
 
       .flex.justify-end.space-x-3
         = link_to "Cancel", projects_path, class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"

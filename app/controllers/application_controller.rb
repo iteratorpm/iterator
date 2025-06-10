@@ -27,6 +27,9 @@ class ApplicationController < ActionController::Base
   end
 
   def set_recent_projects
-    @recent_projects = Project.order(created_at: :desc).limit(5)
+    @recent_projects = Project.joins(:memberships)
+      .where(project_memberships: { user_id: current_user.id })
+      .order(created_at: :desc)
+      .limit(5)
   end
 end

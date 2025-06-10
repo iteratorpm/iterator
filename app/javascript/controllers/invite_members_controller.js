@@ -10,6 +10,10 @@ export default class extends Controller {
     this.selectedEmails = new Set()
   }
 
+  connect() {
+    this.clone = this.resultTemplateTarget.content
+  }
+
   search(event) {
     const term = this.searchInputTarget.value.trim()
     if (term.length < 2) {
@@ -35,7 +39,7 @@ export default class extends Controller {
     }
 
     users.forEach(user => {
-      const clone = this.resultTemplateTarget.content.cloneNode(true)
+      const clone = this.clone.cloneNode(true)
       clone.querySelector('[data-invite-members-target="initials"]').textContent = user.initials
       clone.querySelector('[data-invite-members-target="name"]').textContent = user.name
       clone.querySelector('[data-invite-members-target="email"]').textContent = user.email

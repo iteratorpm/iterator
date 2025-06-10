@@ -1,7 +1,7 @@
 module NotificationSettingsHelper
 
   # Story State Options and Display
-  def story_state_options
+  def notification_story_state_options
     [
       ["No state changes", "no"],
       ["State changes relevant to me", "relevant"],

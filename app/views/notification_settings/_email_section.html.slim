@@ -49,7 +49,7 @@
 
         .border-b.pb-2
           = label_tag :email_story_state, "Story State", class: "block text-sm font-medium text-gray-700"
-          = select_tag :email_story_state, options_for_select(story_state_options, story_state_value(settings.email_story_state_changes)), class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+          = select_tag :email_story_state, options_for_select(notification_story_state_options, story_state_value(settings.email_story_state_changes)), class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
 
       .border-t.my-2
 

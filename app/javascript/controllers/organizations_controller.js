@@ -27,7 +27,7 @@ export default class extends Controller {
     }
 
     // Create organization via AJAX
-    fetch('/organizations', {
+    fetch('/organizations.json', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
