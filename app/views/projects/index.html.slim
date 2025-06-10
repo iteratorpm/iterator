@@ -68,7 +68,7 @@ div class="min-h-screen bg-gray-50"
       - else
         div class="text-center py-8 text-gray-500"
           p You don't have any active projects yet.
-          = link_to "Create your first project", new_project_path, class: "text-blue-600 hover:text-blue-700"
+          = link_to "Create your first project", new_project_path, class: "text-blue-600 hover:text-blue-700", data: {turbo_frame: "modal"}
 
     / Archived Projects Section (hidden by default)
     div class="hidden" data-project-filter-target="archived"

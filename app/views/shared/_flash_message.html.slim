@@ -16,9 +16,9 @@ div class="bg-#{color}-50 border border-#{color}-200 rounded-lg p-4 shadow-lg mb
         path fill-rule="evenodd" d=icon_path clip-rule="evenodd"
     .ml-3
       p class="text-sm font-medium text-#{color}-800" = message
-      - if errors.present?
+      - if local_assigns[:errors].present?
         ul class="list-disc list-inside text-sm text-#{color}-700 mt-1"
-          - errors.each do |error|
+          - local_assigns[:errors].each do |error|
             li = error
     .ml-auto.pl-3
       button class="-mx-1.5 -my-1.5 inline-flex rounded-md p-1.5 text-#{color}-500 hover:text-#{color}-600 focus:outline-none focus:ring-2 focus:ring-#{color}-600 focus:ring-offset-2 focus:ring-offset-#{color}-50" data-action="flash#dismiss"

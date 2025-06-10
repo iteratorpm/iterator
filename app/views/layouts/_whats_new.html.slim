@@ -10,10 +10,10 @@ li.relative data-controller="dropmenu"
         / Header
         .flex.items-center.justify-between.px-4.py-3.bg-gray-50.border-b
           h3.text-sm.font-medium.text-gray-900 What's New
-          = link_to "View all updates", docs_path("whats_new"), class: "text-xs.text-blue-600.hover:text-blue-800", target: "_blank", rel: "noopener noreferrer"
+          = link_to "View all updates", changelog_path, class: "text-xs.text-blue-600.hover:text-blue-800", target: "_blank", rel: "noopener noreferrer"
 
         / Turbo Frame for loading updates
-        turbo-frame#whats-new-updates src="#{whats_new_updates_path}" loading="lazy"
+        turbo-frame#whats-new-updates src="#{whats_new_path}" loading="lazy"
           / Loading state
           .p-4.text-center
             = inline_svg_tag "icons/spinner.svg", class: "animate-spin h-5 w-5 mx-auto text-gray-500"

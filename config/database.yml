@@ -1,9 +1,3 @@
-# SQLite. Versions 3.8.0 and up are supported.
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem "sqlite3"
-#
 default: &default
   adapter: sqlite3
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
@@ -20,22 +14,46 @@ test:
   <<: *default
   database: storage/test.sqlite3
 
-
-# Store production database in the storage/ directory, which by default
-# is mounted as a persistent Docker volume in config/deploy.yml.
 production:
+<% if ENV['DATABASE_URL'] %>
+  # If DATABASE_URL is set, use PostgreSQL for all production databases.
+  # All databases connect to the same URL.
+  primary: &production_db
+    adapter: postgresql
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    timeout: 5000
+    url: <%= ENV['DATABASE_URL'] %>
+
+  cache:
+    <<: *production_db
+    migrations_paths: db/cache_migrate
+
+  queue:
+    <<: *production_db
+    migrations_paths: db/queue_migrate
+
+  cable:
+    <<: *production_db
+    migrations_paths: db/cable_migrate
+<% else %>
+  # If DATABASE_URL is not set, fall back to SQLite databases.
+  # This uses the original multi-database SQLite setup.
   primary:
     <<: *default
     database: storage/production.sqlite3
+
   cache:
     <<: *default
     database: storage/production_cache.sqlite3
     migrations_paths: db/cache_migrate
+
   queue:
     <<: *default
     database: storage/production_queue.sqlite3
     migrations_paths: db/queue_migrate
+
   cable:
     <<: *default
     database: storage/production_cable.sqlite3
     migrations_paths: db/cable_migrate
+<% end %>

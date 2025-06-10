@@ -28,8 +28,7 @@ Rails.application.routes.draw do
 
   resources :favorites, only: [:create, :destroy]
 
-  get '/docs/whats_new_updates', to: 'docs#whats_new_updates', as: :whats_new_updates
-  get '/docs(/:page)', to: 'docs#show', as: :docs
+  get '/whats_new', to: 'whats_new#whats_new', as: :whats_new
 
   resources :projects do
     resources :webhooks, only: [:index, :create, :destroy], module: 'projects' do

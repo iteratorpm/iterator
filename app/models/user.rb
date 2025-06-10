@@ -36,21 +36,8 @@ class User < ApplicationRecord
   belongs_to :current_organization, class_name: 'Organization', optional: true
 
   # Include default devise modules. Others available are:
-  devise_modules = [
-    :database_authenticatable,
-    :registerable,
-    :recoverable,
-    :rememberable,
-    :validatable
-  ]
-
-  # Conditionally include :confirmable if SMTP is configured
-  if ENV["DEMO_MODE"] != "true"
-    devise_modules << :confirmable
-  end
-
-  # Apply the modules to Devise
-  devise(*devise_modules)
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable, :confirmable
 
   validates :name, length: { minimum: 1, maximum: 30 }
   validates :username, length: { minimum: 1, maximum: 30 }
