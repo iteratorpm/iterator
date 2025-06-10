@@ -22,12 +22,12 @@ header.bg-white.shadow-sm
                         button.flex.items-center.text-xs.text-gray-500.border.border-gray-300.rounded.px-2.py-1.hover:bg-gray-50 type="button" All
                         / Dropdown arrow could be added here if needed
 
-                    button.text-xs.text-blue-600.hover:text-blue-800 data-aid="NotificationsTitleBar__markAllAsRead" aria-label="Mark all notifications as read" type="button"
+                    button.text-xs.text-blue-600.hover:text-blue-800 aria-label="Mark all notifications as read" type="button"
                       | Mark all as read
 
                   / Empty state
                   .p-4.text-center
-                    .text-sm.text-gray-500 data-aid="NotificationsList__emptyMessage" No notifications
+                    .text-sm.text-gray-500 No notifications
 
           / Navigation Items
           ul.flex.items-center.space-x-6
@@ -47,7 +47,7 @@ header.bg-white.shadow-sm
               / Dropdown menu (hidden by default)
               .hidden.absolute.right-0.mt-2.w-64.rounded-md.shadow-lg.bg-white.ring-1.ring-black.ring-opacity-5.z-50 data-dropmenu-target="menu"
                 .py-1 role="menu" aria-orientation="vertical"
-                  div tabindex="0" data-aid="Dropdown__tabstop" style="outline: none;"
+                  div tabindex="0" style="outline: none;"
                     .px-4.py-3.flex.items-center
                       .flex-shrink-0
                         .w-10.h-10.rounded-full.bg-blue-500.flex.items-center.justify-center.text-white.font-bold = current_user.initials
