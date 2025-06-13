@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import _ from "lodash"
 
 export default class extends Controller {
   static targets = ["searchInput", "resultsContainer", "resultTemplate", "submitButton", "form"]

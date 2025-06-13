@@ -1,7 +1,7 @@
 .max-w-2xl.mx-auto.py-8.px-4
-  = modal
+  div.px-6.py-4.border-b.text-lg.font-medium Invite to #{@project.name}
+  = modal title: "Invite to #{@project.name}"
     = form_with model: @membership, url: project_memberships_path(@project), data: { invite_members_target: "form", controller: "invite-members", invite_members_url_value: search_users_project_memberships_path(@project) } do |f|
-      div.px-6.py-4.border-b.text-lg.font-medium Invite to #{@project.name}
       div.p-6
           div.relative.flex.items-center
             = f.text_field :emails, \

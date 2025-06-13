@@ -8,7 +8,6 @@ pin_all_from "app/javascript/controllers", under: "controllers"
 pin "ultimate_turbo_modal" # @2.0.3
 pin "chartkick" # @5.0.1
 pin "Chart.bundle", to: "Chart.bundle.js"
-pin "lodash" # @4.17.21
 pin "hotkeys-js" # @3.13.9
 pin "sortablejs" # @1.15.6
 pin "stimulus-use" # @0.52.3
