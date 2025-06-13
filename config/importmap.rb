@@ -18,3 +18,4 @@ pin "tributejs" # @5.1.3
 pin "cocoon-js-vanilla" # @1.5.1
 pin "taggle" # @1.15.0
 pin "autocompleter" # @9.3.2
+pin "lodash.debounce" # @4.0.8

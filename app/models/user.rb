@@ -46,6 +46,30 @@ class User < ApplicationRecord
 
   before_save :set_initials_if_blank
 
+  def self.find_or_invite_by_email(email)
+    user = find_by(email: email.downcase)
+    return user if user
+
+    # Create unconfirmed user with temporary password and random username
+    temp_password = SecureRandom.hex(16)
+    temp_username = "user_#{SecureRandom.hex(8)}"
+
+    user = new(
+      email: email.downcase,
+      password: temp_password,
+      username: temp_username,
+      time_zone: 'UTC', # default timezone
+      confirmation_token: SecureRandom.urlsafe_base64
+    )
+
+    if user.save
+      UserInvitationJob.perform_later(user.id)
+      user
+    else
+      nil
+    end
+  end
+
   def find_or_create_notification_setting
     notification_setting || create_notification_setting
   end

@@ -1,7 +1,6 @@
 class ProjectMembershipsController < ApplicationController
-  load_and_authorize_resource
-  before_action :set_project
-  before_action :set_membership, only: [:update, :destroy]
+  load_and_authorize_resource :project
+  load_and_authorize_resource :membership, through: :project, except: [:search_users]
 
   def index
     @memberships = @project.memberships.includes(:user)
@@ -12,23 +11,33 @@ class ProjectMembershipsController < ApplicationController
   end
 
   def search_users
-    @q = User.ransack(name_or_email_cont: params[:term])
+    organization_users = @project.organization.users
+
+    @q = organization_users.ransack(name_or_email_cont: params[:term])
+
     @users = @q.result.where.not(id: @project.user_ids).limit(10)
-    render json: @users
+
+    render json: @users.as_json(only: [:name, :email, :initials])
   end
 
   def create
     emails = membership_params[:emails].split(/[\s,]+/).reject(&:blank?)
+    @memberships = []
 
-    @memberships = emails.map do |email|
+    emails.each do |email|
       user = User.find_or_invite_by_email(email)
-      @project.memberships.create(user: user, role: :member)
+      if user
+        membership = @project.memberships.build(user: user, role: :member)
+        @memberships << membership if membership.save
+      end
     end
 
-    if @memberships.all?(&:persisted?)
+    if @memberships.size == emails.size
       redirect_to project_memberships_path(@project), notice: 'Invitations sent successfully.'
     else
-      render :index
+      @membership = ProjectMembership.new(emails: membership_params[:emails])
+      flash.now[:alert] = 'Some invitations could not be sent.'
+      render :new
     end
   end
 
@@ -36,6 +45,7 @@ class ProjectMembershipsController < ApplicationController
     if @membership.update(membership_params)
       redirect_to project_memberships_path(@project), notice: 'Role updated successfully.'
     else
+      flash.now[:alert] = @membership.errors.full_messages.to_sentence
       render :index
     end
   end
@@ -47,15 +57,7 @@ class ProjectMembershipsController < ApplicationController
 
   private
 
-  def set_project
-    @project = Project.find(params[:project_id])
-  end
-
-  def set_membership
-    @membership = @project.memberships.find(params[:id])
-  end
-
   def membership_params
-    params.require(:membership).permit(:emails, :role)
+    params.require(:project_membership).permit(:emails, :role)
   end
 end

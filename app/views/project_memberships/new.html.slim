@@ -1,41 +1,53 @@
 .max-w-2xl.mx-auto.py-8.px-4
   div.px-6.py-4.border-b.text-lg.font-medium Invite to #{@project.name}
   = modal title: "Invite to #{@project.name}"
-    = form_with model: @membership, url: project_memberships_path(@project), data: { invite_members_target: "form", controller: "invite-members", invite_members_url_value: search_users_project_memberships_path(@project) } do |f|
+    = form_with model: @membership, url: project_memberships_path(@project), data: { controller: "invite-members", invite_members_url_value: search_users_project_memberships_path(@project) } do |f|
       div.p-6
-          div.relative.flex.items-center
-            = f.text_field :emails, \
-              placeholder: "Find by name or email", \
-              id: "invite-modal-search-bar", \
-              class: "pl-8 pr-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500", \
-              data: { \
-                action: "input->invite-members#search keydown->invite-members#handleKeydown", \
-                invite_members_target: "searchInput" \
-              }, \
-              autofocus: true, \
-              autocomplete: "off"
+        / This container will hold our email pills and the actual input field
+        div.relative.flex.flex-wrap.items-center.gap-2.p-2.border.rounded-lg data-action="click->invite-members#focusInput"
+          / Container for the pills
+          span data-invite-members-target="pillsContainer"
 
-            / Search icon
-            div.absolute.left-2.top-2.text-gray-400
-              svg.w-5.h-5.fill-current xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+          / The actual text input for searching and typing emails
+          = text_field_tag :search, nil, \
+            placeholder: "Find by name or email", \
+            id: "invite-modal-search-bar", \
+            class: "flex-1 outline-none bg-transparent", \
+            data: { \
+              action: "input->invite-members#search keydown->invite-members#handleKeydown", \
+              invite_members_target: "searchInput" \
+            }, \
+            autofocus: true, \
+            autocomplete: "off"
 
-          / Search results container
-          div.hidden.mt-2.border.rounded-lg.overflow-hidden data-invite-members-target="resultsContainer"
-            ul.divide-y
-              template data-invite-members-target="resultTemplate"
-                li.p-3.hover:bg-gray-50.cursor-pointer data-action="click->invite-members#selectUser"
-                  div.flex.items-center
-                    div.w-8.h-8.rounded-full.bg-gray-200.flex.items-center.justify-center.mr-3
-                      span.text-gray-700 data-invite-members-target="initials"
-                    div.flex-1
-                      div.font-medium data-invite-members-target="name"
-                      div.text-sm.text-gray-500 data-invite-members-target="email"
+        / Hidden field that will store the emails for form submission
+        = f.hidden_field :emails, data: { invite_members_target: "hiddenEmailsInput" }
 
-          div
-          p.text-sm.text-gray-500.mt-4 Please separate multiple emails with commas and press Enter to add users.
-          p.text-sm.text-gray-400.mt-2 Copy and paste a list of emails, or search and select people to invite.
+        / Search results dropdown
+        div.hidden.mt-2.border.rounded-lg.overflow-hidden data-invite-members-target="resultsContainer"
+          ul.divide-y
+            / Template for a single search result
+            template data-invite-members-target="resultTemplate"
+              li.list-none.p-3.hover:bg-blue-100.cursor-pointer data-action="click->invite-members#selectUser"
+                div.flex.items-center
+                  div.w-8.h-8.rounded-full.bg-gray-200.flex.items-center.justify-center.mr-3
+                    span.text-gray-700 data-invite-members-target="initials"
+                  div.flex-1
+                    div.font-medium data-invite-members-target="name"
+                    div.text-sm.text-gray-500 data-invite-members-target="email"
+
+        / Template for a single email "pill"
+        template data-invite-members-target="pillTemplate"
+          span.inline-flex.items-center.gap-x-1.py-1.pl-2.pr-1.text-sm.font-medium.bg-blue-100.text-blue-700.rounded-full
+            span data-invite-members-target="pillEmail"
+            button.flex-shrink-0.h-4.w-4.rounded-full.inline-flex.items-center.justify-center.text-blue-400.hover:bg-blue-200.hover:text-blue-500.focus:outline-none.focus:bg-blue-500.focus:text-white type="button" data-action="click->invite-members#removePill"
+              svg.h-3.w-3 fill="currentColor" viewBox="0 0 8 8"
+                path d="M4 3.3l2.8-2.8.7.7-2.8 2.8 2.8 2.8-.7.7-2.8-2.8L.5 7.5l-.7-.7L2.8 4 .5 1.2l.7-.7L4 3.3z"
+
+        div
+          p.text-sm.text-gray-600.mt-4 Please separate multiple emails with commas and press Enter to add users.
+          p.text-sm.text-gray-500.mt-2 Copy and paste a list of emails, or search and select people to invite.
 
       footer.px-6.py-4.border-t.flex.justify-end.space-x-3
         button.bg-green-500.text-white.font-medium.py-2.px-4.rounded-lg.text-sm.opacity-50.cursor-not-allowed disabled=true data-invite-members-target="submitButton" Invite (0)
-        button.bg-white.border.text-gray-700.font-medium.py-2.px-4.rounded-lg.text-sm data-action="click->modal#hide" Cancel
+        button.bg-white.border.text-gray-700.font-medium.py-2.px-4.rounded-lg.text-sm data-action="click->modal#hide" type="button" Cancel
