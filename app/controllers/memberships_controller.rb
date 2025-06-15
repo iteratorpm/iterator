@@ -33,11 +33,11 @@ class MembershipsController < ApplicationController
   end
 
   def create_with_new_user
-    user = User.invite!(
+    user = User.invite!({
       email: new_user_params[:email],
       name: new_user_params[:name],
       initials: new_user_params[:initials]
-    ) do |u|
+    }, current_user) do |u|
       u.skip_invitation = true
     end
 
@@ -102,20 +102,6 @@ class MembershipsController < ApplicationController
 
     if params[:hide_non_collaborators] == '1'
       @memberships = @memberships.where.not(role: :member)
-    end
-  end
-
-  def invite_user_and_create_membership
-    user = User.invite!(email: membership_params[:email]) do |u|
-      u.skip_invitation = true
-    end
-    @membership.user = user
-
-    if @membership.save
-      user.deliver_invitation
-      redirect_to organization_memberships_path(@organization), notice: 'Invitation sent successfully.'
-    else
-      render :new, alert: @membership.errors.full_messages.join(', ')
     end
   end
 

@@ -25,7 +25,7 @@ class ProjectMembershipsController < ApplicationController
     @memberships = []
 
     emails.each do |email|
-      user = User.find_or_invite_by_email(email)
+      user = User.find_or_invite_by_email(email, current_user)
       if user
         membership = @project.memberships.build(user: user, role: :member)
         @memberships << membership if membership.save

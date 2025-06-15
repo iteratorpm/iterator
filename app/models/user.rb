@@ -36,7 +36,7 @@ class User < ApplicationRecord
   belongs_to :current_organization, class_name: 'Organization', optional: true
 
   # Include default devise modules. Others available are:
-  devise :database_authenticatable, :registerable,
+  devise :invitable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :confirmable
 
   validates :name, length: { minimum: 1, maximum: 30 }
@@ -46,28 +46,19 @@ class User < ApplicationRecord
 
   before_save :set_initials_if_blank
 
-  def self.find_or_invite_by_email(email)
+  def self.find_or_invite_by_email(email, invited_by=nil)
     user = find_by(email: email.downcase)
     return user if user
 
-    # Create unconfirmed user with temporary password and random username
-    temp_password = SecureRandom.hex(16)
-    temp_username = "user_#{SecureRandom.hex(8)}"
+    temp_username = "user #{SecureRandom.hex(4)}"
 
-    user = new(
+    user = invite!({
       email: email.downcase,
-      password: temp_password,
       username: temp_username,
-      time_zone: 'UTC', # default timezone
-      confirmation_token: SecureRandom.urlsafe_base64
-    )
+      name: temp_username
+    }, invited_by)
 
-    if user.save
-      UserInvitationJob.perform_later(user.id)
-      user
-    else
-      nil
-    end
+    user
   end
 
   def find_or_create_notification_setting
@@ -117,6 +108,10 @@ class User < ApplicationRecord
     update(api_token: SecureRandom.hex(16))
   end
 
+  def pending_invite?
+    invitation_accepted_at.nil? && invitation_sent_at.present?
+  end
+
   def clear_api_token!
     update(api_token: nil)
   end
@@ -132,7 +127,7 @@ class User < ApplicationRecord
 
   def set_initials_if_blank
     if initials.blank? && name.present?
-      self.initials.split.map(&:first).join.upcase
+      self.initials = name.split.map(&:first).join.upcase
     end
   end
 

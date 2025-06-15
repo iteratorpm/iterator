@@ -46,6 +46,7 @@ gem "thruster", require: false
 
 gem "cancancan"
 gem "devise"
+gem 'devise_invitable', '~> 2.0.0'
 gem 'slim'
 gem "oj"
 gem "ultimate_turbo_modal"

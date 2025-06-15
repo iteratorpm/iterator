@@ -7,7 +7,7 @@
 
       = link_to "Invite people", new_project_membership_path, class: "bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg text-sm", data: { turbo_frame: "modal" }
 
-    div.border.rounded-lg.overflow-hidden.px-4
+    div.border.rounded-lg.px-4.bg-white
       ul
         - @memberships.each do |membership|
           li.flex.items-center.p-4.border-b.last:border-b-0.hover:bg-gray-50 data-member-name=membership.user.name data-member-email=membership.user.email data-search-memberships-target="item"
@@ -22,14 +22,26 @@
                 = membership.user.name
               div class=["text-sm", membership == current_user.project_memberships.find_by(project: @project) ? "text-gray-700" : "text-gray-400"] title="#{membership.user.email}"
                 = membership.user.email
+                - if membership.user.pending_invite?
+                  span.ml-2.bg-yellow-100.text-yellow-800.text-xs.font-medium.px-2.py-0.5.rounded-full Pending invitation
 
-            div.text-sm.text-gray-500.mx-4 = membership.role.capitalize
+            div.text-sm.mx-4
+              - case membership.role.to_sym
+              - when :member
+                span.bg-gray-100.text-gray-800.text-xs.font-medium.px-2.5.py-0.5.rounded-full = membership.role.capitalize
+              - when :project_creator
+                span.bg-blue-100.text-blue-800.text-xs.font-medium.px-2.5.py-0.5.rounded-full = membership.role.capitalize
+              - when :admin
+                span.bg-purple-100.text-purple-800.text-xs.font-medium.px-2.5.py-0.5.rounded-full = membership.role.capitalize
+              - when :owner
+                span.bg-green-100.text-green-800.text-xs.font-medium.px-2.5.py-0.5.rounded-full = membership.role.capitalize
 
-            div.relative
-              div.relative
-                div.absolute.right-0.mt-2.w-48.bg-white.rounded-md.shadow-lg.z-10.py-1.hidden.group-hover:block
-                  button.px-2.py-1.text-gray-500.hover:text-gray-700.group •••
-                  div.absolute.right-0.mt-2.w-48.bg-white.rounded-md.shadow-lg.z-10.py-1.hidden.group-hover:block
+            div.relative data-controller="dropmenu"
+              button.px-3.py-1.rounded-md.border.border-gray-300.bg-white.text-gray-500.hover:bg-gray-50.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:ring-offset-2 data-action="dropmenu#toggle click@window->dropmenu#hide" type="button"
+                | •••
+              .hidden.absolute.right-0.mt-2.w-48.rounded-md.shadow-lg.bg-white.ring-1.ring-black.ring-opacity-5.z-50 data-dropmenu-target="menu"
+                .py-1 role="menu" aria-orientation="vertical"
+                  div tabindex="0" style="outline: none;"
                     - if membership == current_user.project_memberships.find_by(project: @project)
                       div.block.px-4.py-2.text-sm.text-gray-700.border-b Assign another owner to change your role or leave.
                     div.block.px-4.py-2.text-sm.text-gray-700 Change role to...
@@ -43,9 +55,9 @@
 
                     - if can?(:destroy, membership)
                       - if membership == current_user.project_memberships.find_by(project: @project)
-                        = button_to "Leave project", project_membership_path(@project, membership), method: :delete, class: "block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", data: { aid: "leave-project", confirm: "Are you sure you want to leave this project?" }
+                        = button_to "Leave project", project_membership_path(@project, membership), method: :delete, class: "block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-red-500", data: { aid: "leave-project", confirm: "Are you sure you want to leave this project?" }
                       - else
-                        = button_to "Remove member", project_membership_path(@project, membership), method: :delete, class: "block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", data: { aid: "remove-member", confirm: "Are you sure you want to remove this member?" }
+                        = button_to "Remove member", project_membership_path(@project, membership), method: :delete, class: "block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-red-500", data: { aid: "remove-member", confirm: "Are you sure you want to remove this member?" }
                     - else
                       button.block.w-full.text-left.px-4.py-2.text-sm.text-gray-400.opacity-50.cursor-not-allowed data-aid="leave-project" Leave project
 
