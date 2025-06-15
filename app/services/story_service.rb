@@ -172,7 +172,7 @@ class StoryService
     end
 
     # Also update My Work for all project members
-    @project.memberships.find_each do |user|
+    @project.project_memberships.find_each do |user|
       broadcast_column_update(:my_work, user.id)
     end
   end
@@ -191,7 +191,7 @@ class StoryService
 
   def capture_story_columns_for_all_users
     # Get all users who might be affected (owners + project members)
-    relevant_user_ids = (@story.owner_ids + @project.membership_ids).uniq
+    relevant_user_ids = (@story.owner_ids + @project.project_membership_ids).uniq
 
     columns_snapshot = {}
     relevant_user_ids.each do |user_id|

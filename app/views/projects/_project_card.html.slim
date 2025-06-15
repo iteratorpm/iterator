@@ -30,7 +30,7 @@ li class="bg-white overflow-hidden shadow rounded-sm border border-gray-200 hove
         span class="font-medium" #{project.stories.count}
       div
         span Members:
-        span class="font-medium" #{project.memberships.count}
+        span class="font-medium" #{project.project_memberships.count}
 
     / Velocity and analytics section
     - iterations = project.iterations.order(start_date: :desc).limit(3)

@@ -24,7 +24,6 @@ Rails.application.routes.draw do
   get "analytics", to: "profile#recent_analytics"
 
   resources :security_settings
-  resources :memberships
 
   resources :favorites, only: [:create, :destroy]
 
@@ -34,11 +33,15 @@ Rails.application.routes.draw do
     resources :webhooks, only: [:index, :create, :destroy], module: 'projects' do
       patch :toggle, on: :member
     end
-    resources :memberships, path: "memberships", controller: "project_memberships", only: [:new, :index, :create, :update, :destroy] do
+    resources :memberships, path: "memberships", controller: "project_memberships", only: [:new, :index, :create, :update, :destroy], shallow: true do
+      member do
+        put :resend_invitation
+      end
       collection do
         get :search_users
       end
     end
+
     member do
       post :archive
     end
@@ -130,7 +133,6 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :memberships, only: [:index]
     resources :integrations, path: 'integrations', controller: 'project_integrations', except: [:show]
 
   end

@@ -23,8 +23,8 @@ class Project < ApplicationRecord
   scope :archived, -> { where(archived: true) }
 
   belongs_to :organization, counter_cache: true
-  has_many :memberships, class_name: "ProjectMembership", dependent: :destroy
-  has_many :users, through: :memberships
+  has_many :project_memberships, dependent: :destroy
+  has_many :users, through: :project_memberships
   has_many :integrations, dependent: :destroy
   has_many :epics, dependent: :destroy
   has_many :labels, dependent: :destroy
@@ -70,20 +70,20 @@ class Project < ApplicationRecord
 
   # Helper methods for common role checks
   def owner?(user)
-    memberships.exists?(user: user, role: :owner)
+    project_memberships.exists?(user: user, role: :owner)
   end
 
   def member?(user)
-    memberships.exists?(user: user)
+    project_memberships.exists?(user: user)
   end
 
   def viewer?(user)
-    memberships.exists?(user: user, role: :viewer)
+    project_memberships.exists?(user: user, role: :viewer)
   end
 
   # Add a user with a specific role
   def add_member(user, role = :member)
-    memberships.create(user: user, role: role)
+    project_memberships.create(user: user, role: role)
   end
 
   def current_iteration

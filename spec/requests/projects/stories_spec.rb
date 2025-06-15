@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Projects::Stories", type: :request do
   let(:project) { create(:project, :with_members) }
-  let(:user) { project.memberships.first.user }
+  let(:user) { project.project_memberships.first.user }
   let(:story) { create(:story, project: project) }
 
   before do

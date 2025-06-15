@@ -180,7 +180,7 @@ RSpec.describe StoryService do
 
     before do
       allow(story).to receive(:owner_ids).and_return([user.id])
-      allow(project).to receive(:membership_ids).and_return([user.id, other_user.id])
+      allow(project).to receive(:project_membership_ids).and_return([user.id, other_user.id])
       allow(story).to receive(:current_columns).and_return([:backlog])
     end
 
@@ -244,7 +244,7 @@ RSpec.describe StoryService do
 
     describe '#broadcast_full_project_update' do
       before do
-        allow(project).to receive_message_chain(:memberships, :find_each).and_yield(double(id: user.id))
+        allow(project).to receive_message_chain(:project_memberships, :find_each).and_yield(double(id: user.id))
       end
 
       it 'broadcasts updates to all main columns' do
@@ -337,7 +337,7 @@ RSpec.describe StoryService do
     describe '#capture_story_columns_for_all_users' do
       before do
         allow(story).to receive(:owner_ids).and_return([user.id])
-        allow(project).to receive(:membership_ids).and_return([user.id, other_user.id])
+        allow(project).to receive(:project_membership_ids).and_return([user.id, other_user.id])
         allow(story).to receive(:current_columns).with(user.id).and_return([:backlog])
         allow(story).to receive(:current_columns).with(other_user.id).and_return([:icebox])
       end

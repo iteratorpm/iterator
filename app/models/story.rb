@@ -283,7 +283,7 @@ class Story < ApplicationRecord
 
   def current_columns_for_all_users
     # Get all users who might be affected (owners + project members)
-    relevant_user_ids = (owner_ids + project.membership_ids).uniq
+    relevant_user_ids = (owner_ids + project.project_membership_ids).uniq
 
     # Build a hash of user_id => columns for detailed broadcasting
     columns_by_user = {}

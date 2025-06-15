@@ -95,7 +95,7 @@ RSpec.describe "Projects", type: :request do
       it "creates project membership for current user as owner" do
         post projects_path, params: valid_attributes
         project = Project.last
-        membership = project.memberships.find_by(user: current_user)
+        membership = project.project_memberships.find_by(user: current_user)
         expect(membership.owner?).to be true
       end
 
@@ -189,7 +189,7 @@ RSpec.describe "Projects", type: :request do
 
     context "when unauthorized" do
       it "denies access to non-owners" do
-        project.memberships.create(user: member, role: :viewer)
+        project.project_memberships.create(user: member, role: :viewer)
         sign_in member
         get edit_project_path(project)
 
@@ -239,7 +239,7 @@ RSpec.describe "Projects", type: :request do
 
     context "when unauthorized" do
       it "denies access to non-owners" do
-        project.memberships.create(user: member, role: :viewer)
+        project.project_memberships.create(user: member, role: :viewer)
         sign_in member
         patch project_path(project), params: { project: new_attributes }
         expect(response).to have_http_status(:redirect)
@@ -263,7 +263,7 @@ RSpec.describe "Projects", type: :request do
 
     context "when unauthorized" do
       it "denies access to non-owners" do
-        project.memberships.create(user: member, role: :member)
+        project.project_memberships.create(user: member, role: :member)
         sign_in member
         delete project_path(project)
         expect(response).to have_http_status(:redirect)

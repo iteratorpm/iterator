@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Projects::Epics", type: :request do
   let(:project) { create(:project, :with_members) }
-  let(:user) { project.memberships.first.user }
+  let(:user) { project.project_memberships.first.user }
   let(:epic) { create(:epic, project: project) }
   let(:valid_attributes) { attributes_for(:epic, position: :first) }
   let(:invalid_attributes) { attributes_for(:epic, name: '') }

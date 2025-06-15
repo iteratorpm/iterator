@@ -1,33 +1,35 @@
 class ProjectMembershipsController < ApplicationController
-  load_and_authorize_resource :project
-  load_and_authorize_resource :membership, through: :project, except: [:search_users]
+  load_and_authorize_resource :project, only: [:index, :new, :create, :search_users]
+  load_and_authorize_resource :project_membership, through: :project,
+                              shallow: true,
+                              except: [:create]
 
   def index
-    @memberships = @project.memberships.includes(:user)
+    @memberships = @project.project_memberships.includes(:user)
   end
 
   def new
-    @membership = ProjectMembership.new
+    @membership = @project.project_memberships.build
   end
 
   def search_users
     organization_users = @project.organization.users
-
     @q = organization_users.ransack(name_or_email_cont: params[:term])
-
     @users = @q.result.where.not(id: @project.user_ids).limit(10)
-
     render json: @users.as_json(only: [:name, :email, :initials])
   end
 
   def create
+    authorize! :create, ProjectMembership.new(project: @project)
+
     emails = membership_params[:emails].split(/[\s,]+/).reject(&:blank?)
+    role = membership_params[:role] || 'member'
     @memberships = []
 
     emails.each do |email|
       user = User.find_or_invite_by_email(email, current_user)
       if user
-        membership = @project.memberships.build(user: user, role: :member)
+        membership = @project.project_memberships.build(user: user, role: role)
         @memberships << membership if membership.save
       end
     end
@@ -35,24 +37,38 @@ class ProjectMembershipsController < ApplicationController
     if @memberships.size == emails.size
       redirect_to project_memberships_path(@project), notice: 'Invitations sent successfully.'
     else
-      @membership = ProjectMembership.new(emails: membership_params[:emails])
+      @membership = @project.project_memberships.build(emails: membership_params[:emails])
       flash.now[:alert] = 'Some invitations could not be sent.'
       render :new
     end
   end
 
-  def update
-    if @membership.update(membership_params)
-      redirect_to project_memberships_path(@project), notice: 'Role updated successfully.'
+  def resend_invitation
+    project = @project_membership.project
+
+    if @project_membership.user.invitation_pending?
+      @project_membership.user.invite!
+      redirect_to project_memberships_path(project), notice: 'Invitation resent successfully.'
     else
-      flash.now[:alert] = @membership.errors.full_messages.to_sentence
+      redirect_to project_memberships_path(project), alert: 'User has already accepted the invitation.'
+    end
+  end
+
+  def update
+    project = @project_membership.project
+
+    if @project_membership.update(membership_params)
+      redirect_to project_memberships_path(project), notice: 'Role updated successfully.'
+    else
+      flash.now[:alert] = @project_membership.errors.full_messages.to_sentence
       render :index
     end
   end
 
   def destroy
-    @membership.destroy
-    redirect_to project_memberships_path(@project), notice: 'Member removed successfully.'
+    project = @project_membership.project
+    @project_membership.destroy
+    redirect_to project_memberships_path(project), notice: 'Member removed successfully.'
   end
 
   private

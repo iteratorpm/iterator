@@ -23,6 +23,10 @@
         / Hidden field that will store the emails for form submission
         = f.hidden_field :emails, data: { invite_members_target: "hiddenEmailsInput" }
 
+        div.mt-4
+          label.block.text-sm.font-medium.text-gray-700 Role
+          = f.select :role, ProjectMembership.roles.keys.map { |r| [r.titleize, r] }, {}, class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+
         / Search results dropdown
         div.hidden.mt-2.border.rounded-lg.overflow-hidden data-invite-members-target="resultsContainer"
           ul.divide-y

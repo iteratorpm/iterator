@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :name])
     devise_parameter_sanitizer.permit(:invite, keys: [:username, :name])
+    devise_parameter_sanitizer.permit(:accept_invitation, keys: [:name, :username])
   end
 
   def use_user_time_zone(&block)
@@ -28,7 +29,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_recent_projects
-    @recent_projects = Project.joins(:memberships)
+    @recent_projects = Project.joins(:project_memberships)
       .where(project_memberships: { user_id: current_user.id })
       .order(created_at: :desc)
       .limit(5)

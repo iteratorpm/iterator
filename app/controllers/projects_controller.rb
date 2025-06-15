@@ -32,7 +32,7 @@ class ProjectsController < ApplicationController
 
     if @project.save
       # Add current user as owner
-      @project.memberships.create(user: current_user, role: :owner)
+      @project.project_memberships.create(user: current_user, role: :owner)
 
       redirect_to @project, notice: 'Project was successfully created.'
     else

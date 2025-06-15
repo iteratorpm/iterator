@@ -20,8 +20,8 @@ RSpec.describe Project, type: :model do
 
   describe 'associations' do
     it { is_expected.to belong_to(:organization) }
-    it { is_expected.to have_many(:memberships).dependent(:destroy) }
-    it { is_expected.to have_many(:users).through(:memberships) }
+    it { is_expected.to have_many(:project_memberships).dependent(:destroy) }
+    it { is_expected.to have_many(:users).through(:project_memberships) }
     it { is_expected.to have_many(:integrations).dependent(:destroy) }
     it { is_expected.to have_many(:epics).dependent(:destroy) }
     it { is_expected.to have_many(:labels).dependent(:destroy) }
@@ -186,15 +186,15 @@ RSpec.describe Project, type: :model do
     it 'adds a member with default role' do
       expect {
         project.add_member(user)
-      }.to change(project.memberships, :count).by(1)
-      expect(project.memberships.last.role).to eq('member')
+      }.to change(project.project_memberships, :count).by(1)
+      expect(project.project_memberships.last.role).to eq('member')
     end
 
     it 'adds a member with specified role' do
       expect {
         project.add_member(user, :owner)
-      }.to change(project.memberships, :count).by(1)
-      expect(project.memberships.last.role).to eq('owner')
+      }.to change(project.project_memberships, :count).by(1)
+      expect(project.project_memberships.last.role).to eq('owner')
     end
   end
 

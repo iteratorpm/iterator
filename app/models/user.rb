@@ -108,7 +108,7 @@ class User < ApplicationRecord
     update(api_token: SecureRandom.hex(16))
   end
 
-  def pending_invite?
+  def invitation_pending?
     invitation_accepted_at.nil? && invitation_sent_at.present?
   end
 

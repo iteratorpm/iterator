@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Projects::Search", type: :request do
   let(:project) { create(:project, :with_members) }
-  let(:user) { project.memberships.first.user }
+  let(:user) { project.project_memberships.first.user }
 
   let!(:epic) { create(:epic, :with_label, project: project, name: "Important Epic") }
   let!(:story) { create(:story, :with_epic, :with_labels, project: project, name: "Critical Story") }

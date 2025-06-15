@@ -1,0 +1,25 @@
+.max-w-md.mx-auto.mt-8.mb-16.px-4.sm:px-6
+  h2.text-2xl.font-bold.text-gray-800.mb-6 Invite a New Member
+
+  = form_for(resource, as: resource_name, url: invitation_path(resource_name), html: { method: :post, class: "max-w-md bg-white rounded-lg p-6 shadow-md" }) do |f|
+
+    - if notice.present?
+      p.text-green-600.mb-2 = notice
+    - if alert.present?
+      p.bg-red-50.border.border-red-200.rounded-md.p-4.mb-6.text-red-800.text-sm data-turbo-cache="false" = alert
+    - if flash[:error].present?
+      p.bg-red-50.border.border-red-200.rounded-md.p-4.mb-6.text-red-800.text-sm data-turbo-cache="false" = flash[:error]
+
+    .mb-4
+      = f.label :email, class: "block text-sm font-medium text-gray-700 mb-1"
+      = f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+
+    .mb-4
+      = f.label :name, class: "block text-sm font-medium text-gray-700 mb-1"
+      = f.text_field :name, autocomplete: "name", class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+
+    .mb-6
+      = f.label :username, class: "block text-sm font-medium text-gray-700 mb-1"
+      = f.text_field :username, autocomplete: "username", class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+
+    = f.submit t("devise.invitations.new.submit_button"), class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
