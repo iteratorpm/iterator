@@ -75,7 +75,7 @@ class Ability
 
     # Follow / Notification access for viewers
     can :follow, Story, project: { project_memberships: { user_id: user.id, role: :viewer } }
-    can :read, Notification, user_id: user.id
+    can :manage, Notification, user_id: user.id
 
     # Account-wide actions
     if user.memberships.where(role: [:owner, :admin]).exists?

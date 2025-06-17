@@ -8,7 +8,7 @@ div class="min-h-screen bg-gray-50"
           span class="border-b-2 border-transparent px-1 py-2 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300" Workspaces
 
         div class="self-center"
-          a class="text-white text-sm font-semibold mx-1 py-2 px-2.5 bg-blue-600 border border-transparent rounded-sm hover:bg-blue-700" href="/import/new" Import Projects
+          / a class="text-white text-sm font-semibold mx-1 py-2 px-2.5 bg-blue-600 border border-transparent rounded-sm hover:bg-blue-700" href="/import/new" Import Projects
           = link_to "Create project", new_project_path, class: "text-white text-sm mx-1 py-2 px-2.5 bg-green-600 border border-transparent rounded-sm hover:bg-green-700", data: { turbo_frame: "modal" }
 
   / Projects Pane
@@ -22,13 +22,12 @@ div class="min-h-screen bg-gray-50"
         input#projects-search-bar.bg-white.rounded-sm.border.border-gray-300.text-gray-700.text-sm.w-full.h-9.py-2.pl-10.pr-4.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500 type="text" placeholder="Search Active Projects" autocomplete="off"
 
       .relative.ml-4.group.list-none[data-controller="dropmenu"]
-        input#projects-filter.peer.hidden[type="checkbox" data-dropmenu="toggle"]
 
-        label.flex.items-center.cursor-pointer.h-9.px-4.rounded-sm.hover:bg-gray-100.text-sm.text-gray-700 for="projects-filter"
+        button.flex.items-center.cursor-pointer.h-9.px-4.rounded-sm.hover:bg-gray-100.text-sm.text-gray-700 data-action="dropmenu#toggle click@window->dropmenu#hide" type="button"
           | Active Projects
           = image_tag('icons/arrow-down.svg', class: 'w-4 h-4 ml-2 text-gray-500')
 
-        .hidden.absolute.right-0.mt-1.bg-white.rounded-md.shadow-lg.ring-1.ring-black.ring-opacity-5.peer-checked:block.z-50
+        .hidden.absolute.right-0.mt-1.bg-white.rounded-md.shadow-lg.ring-1.ring-black.ring-opacity-5.z-50 data-dropmenu-target="menu"
           ul.py-1
             li.px-4.py-2.text-sm.text-gray-700.hover:bg-gray-100
               input#active_projects.hidden.peer[type="radio" name="project_filter" checked=""]

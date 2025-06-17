@@ -2,6 +2,10 @@ class Comment < ApplicationRecord
   belongs_to :commentable, polymorphic: true
   belongs_to :author, class_name: 'User'
 
+  def project
+    commentable.try(:project)
+  end
+
   def self.ransackable_attributes(auth_object = nil)
     %w[content created_at updated_at]
   end

@@ -1,6 +1,6 @@
 class Notification < ApplicationRecord
   belongs_to :user
-  belongs_to :project, optional: true
+  belongs_to :project
   belongs_to :notifiable, polymorphic: true
 
   enum :notification_type, {
@@ -26,7 +26,39 @@ class Notification < ApplicationRecord
   scope :for_project, ->(project_id) { where(project_id: project_id) }
   scope :with_mentions, -> { where(notification_type: :mention_in_comment) }
 
+  validates :project, presence: true
+  validates :user, presence: true
+  validates :notifiable, presence: true
+
   def mark_as_read
     update(read_at: Time.current)
+  end
+
+  def story_name
+    case notifiable_type
+    when "Story"
+      notifiable&.name
+    when "User"
+      nil
+    when "Comment"
+      notifiable&.commentable&.name
+    else
+      notifiable&.story&.name
+    end
+  end
+
+  def story_url
+    story = case notifiable_type
+    when "Story"
+      notifiable
+    when "User"
+      nil
+    when "Comment"
+      notifiable&.commentable
+    else
+      notifiable&.story
+    end
+
+    story ? Rails.application.routes.url_helpers.project_story_path(story.project, story) : nil
   end
 end

@@ -5,7 +5,8 @@
     div.flex.justify-between.items-center.mb-4.py-4
       = render "search_form"
 
-      = link_to "Invite people", new_project_membership_path, class: "bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg text-sm", data: { turbo_frame: "modal" }
+      - if can? :create, ProjectMembership.new(project: @project)
+        = link_to "Invite people", new_project_membership_path, class: "bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg text-sm", data: { turbo_frame: "modal" }
 
     div.border.rounded-lg.px-4.bg-white
       ul

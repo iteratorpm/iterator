@@ -1,6 +1,6 @@
 div.relative
   = form_tag "#", data: { search_memberships_target: "form" } do
-    input#project-members-search-bar.pl-8.pr-8.py-2.border.rounded-lg.w-full.focus:outline-none.focus:ring-2.focus:ring-blue-500 type="text" placeholder="Find by name or email" data-search-memberships-target="input" data-action="input->search-memberships#filter keydown->search-memberships#handleKeydown" autofocus=true autocomplete="off"
+    input#project-members-search-bar.pl-8.pr-8.py-2.border.rounded-lg.w-full.focus:outline-none.focus:ring-2.focus:ring-blue-500.bg-white type="text" placeholder="Find by name or email" data-search-memberships-target="input" data-action="input->search-memberships#filter keydown->search-memberships#handleKeydown" autofocus=true autocomplete="off"
 
     / Search icon
     div.absolute.left-2.top-2.text-gray-400

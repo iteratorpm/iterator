@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe NotificationService, type: :service do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, name: "Alice") }
   let(:project) { create(:project) }
   let(:notifiable_user) { create(:user) }
   let(:story) { create(:story, project: project, requester: notifiable_user, name: "Important Story") }
@@ -41,7 +41,7 @@ RSpec.describe NotificationService, type: :service do
           expect(notification.notification_type).to eq("story_created")
           expect(notification.project).to eq(project)
           expect(notification.user).to eq(user)
-          expect(notification.message).to include("New story")
+          expect(notification.message).to include("new story")
         end
       end
 
@@ -443,25 +443,21 @@ RSpec.describe NotificationService, type: :service do
       end
     end
 
-    describe 'message generation' do
-      it 'generates correct messages for different notification types' do
-        test_cases = [
-          [:story_created, story, "New story '#{story.name}' was created"],
-          [:story_delivered, story, "Story '#{story.name}' was delivered"],
-          [:story_accepted, story, "Story '#{story.name}' was accepted"],
-          [:story_rejected, story, "Story '#{story.name}' was rejected"],
-          [:comment_created, comment, "New comment on story '#{comment.commentable.name}'"],
-          [:mention_in_comment, comment, "You were mentioned in a comment on '#{comment.commentable.name}'"]
-        ]
+    it 'generates correct messages for different notification types' do
+      test_cases = [
+        [:story_created, story, "#{story.requester.name} created a new story"],
+        [:story_delivered, story, "#{story.requester.name} delivered story for review"],
+        [:story_accepted, story, "#{story.requester.name} accepted your story"],
+        [:story_rejected, story, "#{story.requester.name} rejected your story with feedback"],
+        [:comment_created, comment, "#{comment.author.name} commented on this story"],
+        [:mention_in_comment, comment, "#{comment.author.name} mentioned you in a comment"]
+      ]
 
-        test_cases.each do |notification_type, notifiable, expected_message|
-          notification = NotificationService.notify(user, notification_type, notifiable, :in_app)
-          if notification.is_a?(Array)
-            expect(notification.first.message).to eq(expected_message)
-          else
-            expect(notification.message).to eq(expected_message)
-          end
-        end
+      test_cases.each do |notification_type, notifiable, expected_message|
+        notification = NotificationService.notify(user, notification_type, notifiable, :in_app)
+
+        message = notification.is_a?(Array) ? notification.first.message : notification.message
+        expect(message).to eq(expected_message)
       end
     end
   end

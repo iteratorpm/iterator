@@ -7,7 +7,7 @@ class NotificationService
     # Check if project is muted
     if project && muted?(user, project)
       return if notification_type != :mention_in_comment ||
-               (muted_except_mentions?(user, project) && notification_type == :mention_in_comment)
+               (!muted_except_mentions?(user, project) && notification_type == :mention_in_comment)
     end
 
     # Check user's notification settings
@@ -139,46 +139,35 @@ class NotificationService
   end
 
   def self.generate_message(notification_type, notifiable)
+    actor_name = extract_actor_name(notifiable)
+
     case notification_type.to_sym
     when :story_created
-      "New story '#{notifiable.name}' was created"
-
+      "#{actor_name} created a new story"
     when :story_delivered
-      "Story '#{notifiable.name}' was delivered"
-
+      "#{actor_name} delivered story for review"
     when :story_accepted
-      "Story '#{notifiable.name}' was accepted"
-
+      "#{actor_name} accepted your story"
     when :story_rejected
-      "Story '#{notifiable.name}' was rejected"
-
+      "#{actor_name} rejected your story with feedback"
     when :story_assigned
-      "You were assigned to story '#{notifiable.name}'"
-
+      "#{actor_name} assigned you to this story"
     when :comment_created
-      "New comment on story '#{notifiable.commentable.name}'"
-
+      "#{actor_name} commented on this story"
     when :mention_in_comment
-      "You were mentioned in a comment on '#{notifiable.commentable.name}'"
-
+      "#{actor_name} mentioned you in a comment"
     when :blocker_added
-      "Blocker added to story '#{notifiable.story.name}'"
-
+      "#{actor_name} added a blocker to this story"
     when :blocker_resolved
-      "Blocker resolved on story '#{notifiable.story.name}'"
-
+      "#{actor_name} resolved a blocker on this story"
     when :story_blocking
-      "Story '#{notifiable.name}' is blocking another story"
-
+      "This story is blocking other work and needs attention"
     when :comment_reaction
-      "Someone reacted to your comment on story '#{notifiable.commentable.name}'"
-
+      "#{actor_name} reacted to your comment"
     when :review_assigned
-      "You were assigned as a reviewer on story '#{notifiable.story.name}'"
-
+      "#{actor_name} assigned you as a reviewer"
     when :review_delivered
-      "Story '#{notifiable.story.name}' you are reviewing has been delivered"
-
+      "A story you're reviewing has been delivered by #{actor_name}"
     else
       "You have a new notification"
     end
@@ -187,4 +176,27 @@ class NotificationService
   def self.send_notification_email(notification)
     NotificationMailer.with(notification: notification).notification_email.deliver_later
   end
+
+  private
+
+  def self.extract_actor_name(notifiable)
+    # Try to extract the actor from different possible associations
+    actor = case notifiable
+            when Comment
+              notifiable.author
+            when Story
+              notifiable.requester || notifiable.owner
+            when Blocker
+              notifiable.creator
+            when Review
+              notifiable.reviewer
+            when User
+              notifiable
+            else
+              nil
+            end
+
+    actor&.name || "Someone"
+  end
+
 end

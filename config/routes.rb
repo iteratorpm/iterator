@@ -156,8 +156,14 @@ Rails.application.routes.draw do
   end
 
   resources :notifications, only: [:index] do
-    post :mark_as_read, on: :member
-    post :mark_all_as_read, on: :collection
+    collection do
+      get :unread_count
+      patch :mark_all_as_read
+    end
+
+    member do
+      patch :mark_as_read
+    end
   end
 
   patch '/notification_settings', to: 'notification_settings#update', as: :notification_settings

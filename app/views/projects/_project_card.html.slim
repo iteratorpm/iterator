@@ -27,10 +27,10 @@ li class="bg-white overflow-hidden shadow rounded-sm border border-gray-200 hove
     div class="flex justify-between text-sm text-gray-600 mb-3"
       div
         span Stories:
-        span class="font-medium" #{project.stories.count}
+        span.ml-2 class="font-medium" #{project.stories.count}
       div
         span Members:
-        span class="font-medium" #{project.project_memberships.count}
+        span.ml-2 class="font-medium" #{project.project_memberships.count}
 
     / Velocity and analytics section
     - iterations = project.iterations.order(start_date: :desc).limit(3)
@@ -40,12 +40,12 @@ li class="bg-white overflow-hidden shadow rounded-sm border border-gray-200 hove
           div class="projectTileAnalyticsArea__data"
             span class="text-sm text-gray-600"
               | Velocity
-              span class="font-medium" #{project.average_velocity || 0}
+              span.ml-2 class="font-medium" #{project.average_velocity || 0}
             span class="text-sm text-gray-600 ml-4"
               | Volatility
-              span class="font-medium" #{project.volatility || '0%'}
+              span.ml-2 class="font-medium" #{project.volatility || '0%'}
 
-          = link_to "View Analytics",  project_analytics_overview_path(project), class: "text-sm text-blue-600 hover:text-blue-800 hover:underline"
+          / = link_to "View Analytics",  project_analytics_overview_path(project), class: "text-sm text-blue-600 hover:text-blue-800 hover:underline"
 
       / Chart bars for recent iterations
       div class="pointsBars flex h-8 w-full gap-1"
@@ -65,17 +65,17 @@ li class="bg-white overflow-hidden shadow rounded-sm border border-gray-200 hove
                   span class="font-medium ml-2" 100%
 
     / Mini chart showing velocity trend
-    - if iterations.any?
-      div class="mt-2 h-16"
-        = line_chart iterations.reverse.map { |i| [l(i.start_date.to_date, format: :short), i.points_completed] }, \
-          colors: ["#4CAF50"], \
-          height: "60px", \
-          library: { \
-            chart: { spacing: [0, 0, 0, 0] }, \
-            plotOptions: { series: { marker: { enabled: false } } }, \
-            xAxis: { visible: false }, \
-            yAxis: { visible: false }, \
-            legend: { enabled: false }, \
-            tooltip: { enabled: false }, \
-            credits: { enabled: false } \
-          }
+    / - if iterations.any?
+    /   div class="mt-2 h-16"
+    /     = line_chart iterations.reverse.map { |i| [l(i.start_date.to_date, format: :short), i.points_completed] }, \
+    /       colors: ["#4CAF50"], \
+    /       height: "60px", \
+    /       library: { \
+    /         chart: { spacing: [0, 0, 0, 0] }, \
+    /         plotOptions: { series: { marker: { enabled: false } } }, \
+    /         xAxis: { visible: false }, \
+    /         yAxis: { visible: false }, \
+    /         legend: { enabled: false }, \
+    /         tooltip: { enabled: false }, \
+    /         credits: { enabled: false } \
+    /       }

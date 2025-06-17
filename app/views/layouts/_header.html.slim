@@ -5,42 +5,20 @@ header.bg-white.shadow-sm
 
       .flex.items-center.space-x-6
         - if signed_in?
-          / Notification Bell Dropdown
-          .relative data-controller="dropmenu"
-            button.cursor-pointer.text-gray-600.hover:text-gray-900.focus:outline-none.p-1 data-action="dropmenu#toggle click@window->dropmenu#hide" aria-label="Notifications" type="button"
-              = inline_svg_tag "icons/bell.svg", class: "w-5 h-5"
-
-            / Dropdown menu (hidden by default)
-            .hidden.absolute.right-0.mt-2.w-80.rounded-md.shadow-lg.bg-white.ring-1.ring-black.ring-opacity-5.z-50 data-dropmenu-target="menu"
-              .py-1 role="menu" aria-orientation="vertical"
-                div tabindex="0" style="outline: none;"
-                  / Header
-                  .flex.items-center.justify-between.px-4.py-3.border-b
-                    .flex.items-center
-                      h3.text-sm.font-medium.text-gray-900 Notifications
-                      .relative.ml-2
-                        button.flex.items-center.text-xs.text-gray-500.border.border-gray-300.rounded.px-2.py-1.hover:bg-gray-50 type="button" All
-                        / Dropdown arrow could be added here if needed
-
-                    button.text-xs.text-blue-600.hover:text-blue-800 aria-label="Mark all notifications as read" type="button"
-                      | Mark all as read
-
-                  / Empty state
-                  .p-4.text-center
-                    .text-sm.text-gray-500 No notifications
+          = render "layouts/notifications", notifications: current_user.notifications
 
           / Navigation Items
           ul.flex.items-center.space-x-6
-            - if @project&.id?
+            - if @active_panel.present?
               = render "layouts/search_bar"
 
             = render "layouts/whats_new"
 
             li
-              a.cursor-pointer.text-gray-600.hover:text-gray-900.font-medium.focus:outline-none href=docs_path("quick-start") Help
+              a.cursor-pointer.text-gray-600.hover:text-gray-900.font-medium.focus:outline-none href=docs_path target="_blank" Help
 
             li.relative data-controller="dropmenu"
-              button.flex.items-center.text-gray-600.hover:text-gray-900.font-medium.focus:outline-none data-action="dropmenu#toggle click@window->dropmenu#hide" type="button"
+              button.flex.items-center.text-gray-600.hover:text-gray-900.font-medium.focus:outline-none.cursor-pointer data-action="dropmenu#toggle click@window->dropmenu#hide" type="button"
                 = current_user.username
                 = inline_svg_tag "icons/arrow-down.svg", class: "w-3 h-3 ml-1"
 
