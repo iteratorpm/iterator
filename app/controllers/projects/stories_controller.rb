@@ -1,6 +1,6 @@
 class Projects::StoriesController < Projects::BaseController
-  before_action :set_story, only: [:edit, :show, :update, :destroy, :reject, :rejection]
-  authorize_resource only: [:edit, :show, :update, :destroy]
+  before_action :set_story, only: [:edit, :update, :destroy, :reject, :rejection]
+  authorize_resource only: [:edit, :update, :destroy]
 
   def my_work
     @stories = @project.stories
@@ -39,9 +39,6 @@ class Projects::StoriesController < Projects::BaseController
         format.html { render :new }
       end
     end
-  end
-
-  def show
   end
 
   def edit

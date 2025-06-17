@@ -1,4 +1,8 @@
 = panel @panel_id, title: "Blocked", close: true, actions: true do
 
-  - if @stories&.any?
-    = render partial: 'projects/stories/story', collection: @stories
+  #column-blocked.bg-gray-500 data-turbo-permanent="true"
+    - if @stories&.any?
+      = render partial: 'projects/stories/story', collection: @stories
+    - else
+      .empty-state.text-center.text-gray-300.py-8.text-sm
+        .mb-1 No stories are blocked

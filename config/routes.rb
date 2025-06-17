@@ -55,7 +55,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :stories, module: "projects", except: [:index] do
+    resources :stories, module: "projects", except: [:index, :show] do
       member do
         patch :reject
         get :rejection

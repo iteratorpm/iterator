@@ -11,6 +11,8 @@ services:
 
   web:
     image: iteratorpm/iterator:latest
+    environment:
+      DATABASE_URL: postgres://postgres:password@db/iterator
     depends_on:
       - db
     ports:

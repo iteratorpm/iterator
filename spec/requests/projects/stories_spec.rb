@@ -37,6 +37,34 @@ RSpec.describe "Projects::Stories", type: :request do
     end
   end
 
+  describe "GET /edit" do
+    context "when accessing edit" do
+      before do
+        story = create(:story, :icebox, project: project)
+        create(:story_owner, story: story, user: user)
+      end
+
+      it "returns success for blocked" do
+        get edit_project_story_path(project, story)
+        expect(response).to be_successful
+        expect(response.body).to include(story.name)
+      end
+    end
+
+    context "when user is not authorized" do
+      let(:non_member) { create(:user) }
+
+      before do
+        sign_in non_member
+      end
+
+      it "raises authorization error" do
+        get edit_project_story_path(project, story)
+        expect(response).to be_access_denied
+      end
+    end
+  end
+
   describe "GET /my_work" do
     context "when accessing my_work" do
       before do

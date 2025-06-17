@@ -1,6 +1,6 @@
 <div align="center">
   <h1 align="center">Iterator</h1>
-  <p align="center" class="text-xl">The <strong>developer-friendly</strong> project management tool for agile teams. Based on the proven methodology of Pivotal Tracker.</p>
+  <p align="center" class="text-xl">The <strong>developer-friendly</strong> project management tool for agile teams — inspired by the proven methodology of Pivotal Tracker.</p>
 </div>
 
 <div align="center">
@@ -18,22 +18,49 @@
   <a href="https://github.com/iteratorpm/iterator/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/iteratorpm/iterator?color=black"></a>
 </div>
 
+---
+
+⚠️ **Early Alpha Warning**  
+Iterator is currently in early alpha. Many features are incomplete or unstable, and the hosted version may break frequently.  
+We're offering everything for free during the beta — and **feedback, bug reports, and contributions are very welcome**!
+
+---
+
 ## 🚀 Key Features
 
 ### 📅 Planning & Workflow
-- **Velocity Planning**: Automatic/manual iteration modes with intelligent tracking
-- **Story States & Labels**: Customizable workflows with keyboard shortcuts
-- **Methodology Flexibility**: Combine Kanban and Scrum approaches
+- **Velocity Planning**  
+  Manual and automatic iteration modes with intelligent tracking to predict delivery dates.
+- **Story States & Labels**  
+  Custom workflows, rich labeling, and keyboard shortcuts for fast team execution.
+- **Workflow Flexibility**  
+  Combine Kanban and Scrum with adaptable project structures.
 
-### 📊 Powerful Analytics (Planned)
-- **Velocity & Cycle Time**: Track team performance over time
-- **Burnup Charts**: Monitor scope creep and progress
-- **Cumulative Flow**: Visualize work distribution and bottlenecks
+### 📊 Analytics & Reporting _(Planned)_
+- **Velocity & Cycle Time**  
+  Visualize team throughput and identify bottlenecks.
+- **Burnup & Cumulative Flow Charts**  
+  Monitor scope creep and visualize work distribution.
+- **Activity Feed**  
+  Track every comment, status change, and assignment.
 
-### 🔌 Developer Experience (Planned)
-- **GitHub/GitLab Integration**: Automatic commit linking and PR status
-- **REST API + Webhooks**: Connect with your existing toolchain
-- **Real-time Activity Sync**: Unified feeds across all tools
+### 🔌 Developer Experience _(Planned)_
+- **Version Control Integration**  
+  GitHub and GitLab integration for commit linking and PR status updates.
+- **API + Webhooks**  
+  A powerful REST API and custom webhook support for toolchain integrations.
+- **Real-time Activity Sync**  
+  Unified notifications and event streams across connected tools.
+
+---
+
+## 💡 Why Iterator?
+
+With Pivotal Tracker shutting down, we needed a replacement that kept its best ideas — automatic sprint planning, tight workflow, and release planning — but none of the outdated UX. Modern tools are bloated or are a kanban board that can't estimate when features will be completed.
+
+**Iterator is built for developers** who want to spend less time managing and more time building. It's designed so that 99% of your time is spent on a single, focused screen — no jumping between tabs, views, or dashboards.
+
+We're also rethinking the developer experience from the ground up, with features like keyboard-first navigation, AI integration, and Git workflows — all optimized for speed and flow.
 
 ## 🖼️ Screenshot
 
@@ -44,23 +71,30 @@
 - **Ruby on Rails 8** (Hotwire Turbo + Stimulus)
 - **SQLite/PostgreSQL** (your choice)
 - **Tailwind CSS** for modern styling
-- **Docker** for easy deployment
+- **Docker/Kamal** for easy deployment
 
 ---
 
 ## 🚀 Get Started in Minutes
 
-### One-Line Docker Demo (Quick Test)
+### One-Line Docker Command
 ```bash
-docker run -p 3000:3000 iteratorpm/iterator
+docker run -d \
+  -p 3000:3000 \
+  -e ADMIN=admin@example.com:password \
+  -v ./iterator-db:/usr/src/app/storage \
+  iteratorpm/iterator:latest
 ```
+
 Visit `http://localhost:3000` with demo credentials:
-- Email: `demo@example.com`
+
+- Email: `admin@example.com`
 - Password: `password`
 
-⚠️  This runs in demo mode with in-memory SQLite and no email verification.
+⚠️  This runs in demo mode with no email verification.
 
-### Docker Compose (Persistent Setup)
+### Docker Compose
+
 ```bash
 git clone https://github.com/iteratorpm/iterator
 cd iterator
@@ -76,7 +110,7 @@ kamal a
 kamal deploy
 ```
 
-📘 [Full deployment guide](https://iteratorpm.com/docs/installation)
+📘 [Full deployment guide](https://iteratorpm.com/docs/guides/installation/)
 
 ---
 
