@@ -55,7 +55,9 @@ class Ability
 
     # Stories
     can :read, Story, project: { project_memberships: { user_id: user.id, role: [:viewer, :member, :owner] } }
-    can :manage, Story, project: { project_memberships: { user_id: user.id, role: [:owner, :member] } }
+    can :manage, Story do |story|
+      story.project.project_memberships.exists?(user: user, role: [:owner, :member])
+    end
 
     can :read, Epic, project: { project_memberships: { user_id: user.id, role: [:viewer, :member, :owner] } }
     can :manage, Epic, project: { project_memberships: { user_id: user.id, role: [:owner, :member] } }
