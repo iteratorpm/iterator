@@ -21,8 +21,8 @@
 ---
 
 ⚠️ **Early Alpha Warning**  
-Iterator is currently in early alpha. Many features are incomplete or unstable, and the hosted version may break frequently.  
-We're offering everything for free during the beta — and **feedback, bug reports, and contributions are very welcome**!
+Iterator is currently in early alpha. Many features are incomplete or unstable, and may break frequently.  
+We're offering everything for free on the cloud during the beta — and **feedback, bug reports, and contributions are very welcome**!
 
 ---
 
@@ -56,9 +56,9 @@ We're offering everything for free during the beta — and **feedback, bug repor
 
 ## 💡 Why Iterator?
 
-With Pivotal Tracker shutting down, we needed a replacement that kept its best ideas — automatic sprint planning, tight workflow, and release planning — but none of the outdated UX. Modern tools are bloated or are a kanban board that can't estimate when features will be completed.
+When Pivotal Tracker shutdown, a lot of terms -- ours included -- were left stranded. So we needed a replacement that kept its best features —- automatic sprint planning, tight workflow, and release planning -- and is built for the long term. Modern tools are bloated or are a kanban board that can't estimate when features will be completed. And an open-source tool will guarantee longevity.
 
-**Iterator is built for developers** who want to spend less time managing and more time building. It's designed so that 99% of your time is spent on a single, focused screen — no jumping between tabs, views, or dashboards.
+**Iterator is built for developers** who want to spend less time managing and more time building. It's designed so that 99% of your time is spent on a single, focused screen -- no jumping between tabs, views, or dashboards.
 
 We're also rethinking the developer experience from the ground up, with features like keyboard-first navigation, AI integration, and Git workflows — all optimized for speed and flow.
 
