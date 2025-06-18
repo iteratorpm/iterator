@@ -41,7 +41,7 @@ class Project < ApplicationRecord
 
   validates :organization, presence: true
   validates :name, length: { minimum: 1, maximum: 50 }
-  validates :time_zone, presence: true, inclusion: { in: ActiveSupport::TimeZone.us_zones.map(&:name) }
+  validates :time_zone, presence: true, inclusion: { in: ActiveSupport::TimeZone.all.map(&:name) }
 
   validates :velocity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false# In your Project model
   validates :point_scale_custom, presence: true, if: -> { point_scale == 'custom' }

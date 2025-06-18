@@ -13,9 +13,9 @@ class ProjectsController < ApplicationController
       iteration_start_day: :monday,
       time_zone: "Eastern Time (US & Canada)",
       point_scale: 0,
-      velocity_strategy: 0,
+      velocity_strategy: 2,
       initial_velocity: 10,
-      iteration_length: 1,
+      iteration_length: 2,
       done_iterations_to_show: 4,
       organization_id: params[:organization_id] || current_user.current_organization_id
     )
