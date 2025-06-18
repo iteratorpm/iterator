@@ -45,15 +45,15 @@
             span.text-xs.text-gray-500= "collaborator".pluralize(org.collaborators_count)
 
       - if org.projects.active.any?
-        ul.divide-y
+        ul.divide-y.mt-4
           - org.projects.active.each do |project|
             li.p-4
               .flex.justify-between.items-start
                 .flex-1
                   = link_to project.name, projects_path(project), class: "text-blue-600 hover:underline font-medium"
                   .flex.space-x-4.mt-1.text-sm.text-gray-600
-                    span= "#{project.project_memberships_count} #{'member'.pluralize(project.project_memberships_count)}"
-                    span= "#{project.stories_count} #{'story'.pluralize(project.stories_count)}"
+                    span= "#{project.project_memberships_count} #{'member'.pluralize(project.project_memberships.size)}"
+                    span= "#{project.stories_count} #{'story'.pluralize(project.stories.size)}"
 
                 .flex.space-x-4.text-sm
                   = link_to "Members", project_memberships_path(project), class: "text-blue-600 hover:underline"

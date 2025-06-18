@@ -1,6 +1,6 @@
-li class="bg-white overflow-hidden shadow rounded-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
-  header class="border-b border-gray-200 p-1 flex items-center justify-between"
-    div class="flex items-center min-w-0 pl-2"
+li.bg-white.overflow-hidden.shadow.rounded-sm.border.border-gray-200.hover:shadow-md.transition-shadow.duration-200 data-project-search-target="item" data-project-name="#{project.name.downcase}"
+  header.border-b.border-gray-200.p-1.flex.items-center.justify-between
+    div.flex.items-center.min-w-0.pl-2
       - if project.public?
         = image_tag "icons/public.svg", class: "mr-2"
       - else
@@ -8,7 +8,11 @@ li class="bg-white overflow-hidden shadow rounded-sm border border-gray-200 hove
 
       = link_to project.name, project_path(project), class: "text-lg font-medium text-gray-900 truncate hover:text-blue-600 hover:underline", data: { turbo: false }
 
-    div class="flex items-center space-x-1"
+    div.flex.items-center.space-x-1
+      - if project.public?
+        button.hover:bg-gray-200.p-3 title="Copy link"
+          = image_tag "icons/link.svg"
+
       - if favorite
         = button_to favorite_path(project), method: :delete, class: "hover:bg-gray-200 p-3", title: "Remove from favorites", data: { turbo_method: :delete } do
           = inline_svg_tag "icons/heart.svg", class: "text-red-500"
@@ -22,47 +26,45 @@ li class="bg-white overflow-hidden shadow rounded-sm border border-gray-200 hove
       = link_to edit_project_path(project), class: "hover:bg-gray-200 p-3", title: "Project settings" do
         = image_tag "icons/settings.svg"
 
-  section class="px-4 py-3"
+  section.px-4.py-3
     / Basic project stats
-    div class="flex justify-between text-sm text-gray-600 mb-3"
+    div.flex.justify-between.text-sm.text-gray-600.mb-3
       div
         span Stories:
-        span.ml-2 class="font-medium" #{project.stories.count}
+        span.ml-2.font-medium #{project.stories.count}
       div
         span Members:
-        span.ml-2 class="font-medium" #{project.project_memberships.count}
+        span.ml-2.font-medium #{project.project_memberships.count}
 
     / Velocity and analytics section
     - iterations = project.iterations.order(start_date: :desc).limit(3)
     - if iterations.any?
-      div class="projectTileAnalyticsArea mb-3"
-        div class="flex justify-between items-center"
-          div class="projectTileAnalyticsArea__data"
-            span class="text-sm text-gray-600"
+      div.projectTileAnalyticsArea.mb-3
+        div.flex.justify-between.items-center
+          div.projectTileAnalyticsArea__data
+            span.text-sm.text-gray-600
               | Velocity
-              span.ml-2 class="font-medium" #{project.average_velocity || 0}
-            span class="text-sm text-gray-600 ml-4"
+              span.ml-2.font-medium #{project.average_velocity || 0}
+            span.text-sm.text-gray-600.ml-4
               | Volatility
-              span.ml-2 class="font-medium" #{project.volatility || '0%'}
-
-          / = link_to "View Analytics",  project_analytics_overview_path(project), class: "text-sm text-blue-600 hover:text-blue-800 hover:underline"
+              span.ml-2.font-medium #{project.volatility || '0%'}
 
       / Chart bars for recent iterations
-      div class="pointsBars flex h-8 w-full gap-1"
+      div.pointsBars.flex.h-8.w-full.gap-1
         - iterations.each do |iteration|
           - height = iteration.points_completed.to_f / [project.average_velocity.to_f, 1].max * 100
           - height = [height, 5].max # Ensure at least 5% height for visibility
           = link_to project_analytics_iteration_path(project, iteration), class: "pointsBars__pointsBar bg-green-500 hover:bg-green-600 rounded-t-sm relative", style: "height: #{height}%", data: { controller: "tooltip", action: "mouseenter->tooltip#show mouseleave->tooltip#hide" } do
-            div class="pointsBar__details hidden absolute bg-white p-2 rounded shadow-lg text-xs z-10 w-48 bottom-full mb-2 left-1/2 transform -translate-x-1/2"
-              div class="pointsBar__details_header font-medium mb-1"
+            div.pointsBar__details.hidden.absolute.bg-white.p-2.rounded.shadow-lg.text-xs.z-10.w-48.bottom-full.mb-2.left-1/2.transform.-translate-x-1/2
+              div.pointsBar__details_header.font-medium.mb-1
                 = "#{l(iteration.start_date.to_date, format: :short)} - #{l(iteration.end_date.to_date, format: :short)}"
-              div class="pointsBar__details_body space-y-1"
+              div.pointsBar__details_body.space-y-1
                 div
-                  span class="text-gray-500" Points completed:
-                  span class="font-medium ml-2" #{iteration.points_completed} pts
+                  span.text-gray-500 Points completed:
+                  span.font-medium.ml-2 #{iteration.points_completed} pts
                 div
-                  span class="text-gray-500" Team strength:
-                  span class="font-medium ml-2" 100%
+                  span.text-gray-500 Team strength:
+                  span.font-medium.ml-2 100%
 
     / Mini chart showing velocity trend
     / - if iterations.any?

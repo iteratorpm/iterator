@@ -19,4 +19,9 @@ module ProjectsHelper
       end
     end
   end
+
+  def project_public_link project
+    project_url(project)
+  end
+
 end

@@ -67,7 +67,7 @@ RSpec.describe Project, type: :model do
 
     it 'recalculates iterations when velocity strategy changes' do
       expect(project).to receive(:recalculate_iterations)
-      project.update(velocity_strategy: :past_iters_3)
+      project.update(velocity_strategy: :past_iters_2)
     end
 
     it 'recalculates iterations when iteration length changes' do

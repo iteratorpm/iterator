@@ -83,11 +83,11 @@ RSpec.describe "Projects", type: :request do
       expect(assigns(:organizations)).to match_array([organization, org2])
     end
 
-    context "when unauthorized" do
-      it "denies access to users without create permission" do
+    context "when no org" do
+      it "allows access to users without an org" do
         sign_in non_member
         get new_project_path
-        expect(response).to be_access_denied
+        expect(response).to have_http_status(:success)
       end
     end
   end

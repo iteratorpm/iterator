@@ -2,6 +2,9 @@
   = render 'settings_sidebar', project: @project
 
   .flex-1.p-8
+    - if @project.archived?
+      = render "archived_banner"
+
     = form_with model: @project, url: project_path(@project), method: :put, local: true, class: 'space-y-8' do |f|
 
       / General Section
@@ -50,7 +53,7 @@
                 = f.check_box :public, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
               .ml-3
                 .text-sm.text-gray-600
-                  p Allow anyone to view this project at #{link_to project_url(@project), project_url(@project), class: 'text-blue-600 hover:text-blue-800'}.
+                  p Allow anyone to view this project at #{link_to project_public_link(@project), project_public_link(@project), class: 'text-blue-600 hover:text-blue-800'}.
 
       / Iterations and Velocity Section
       .bg-white.rounded-lg.shadow-sm.border.border-gray-200.p-6

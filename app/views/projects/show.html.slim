@@ -11,6 +11,9 @@ javascript:
 - if signed_in?
   = turbo_stream_from [@project, "stories", "user_#{current_user.id}"]
 
+- if @project.archived?
+  = render "archived_banner"
+
 .flex.h-full.h-screen
   = render 'projects/sidebar', project: @project
 

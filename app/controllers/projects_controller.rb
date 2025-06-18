@@ -3,9 +3,19 @@ class ProjectsController < ApplicationController
   before_action :authenticate_user!, only: [:index]
 
   def index
+    @favorite_projects = current_user.favorite_projects
     @active_projects = current_user.projects.active
     @archived_projects = current_user.projects.archived
-    @favorite_projects = current_user.favorite_projects
+
+    # Combine and sort projects with favorites first
+    @filtered_projects = case params[:filter]
+                         when 'archived'
+                           (@favorite_projects & @archived_projects) + (@archived_projects - @favorite_projects)
+                         when 'active'
+                           (@favorite_projects & @active_projects) + (@active_projects - @favorite_projects)
+                         else
+                           @favorite_projects + (@active_projects - @favorite_projects)
+                         end
   end
 
   def new

@@ -1,85 +1,41 @@
-div class="min-h-screen bg-gray-50"
-  / Tabs Section
-  div class="bg-white border-b border-gray-200"
-    div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
-      div class="flex justify-between items-center"
-        div class="flex gap-4"
-          span class="hover:text-blue-800 hover:underline border-b-2 border-blue-500 px-1 py-2 text-blue-800 font-medium" Projects
-          span class="border-b-2 border-transparent px-1 py-2 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300" Workspaces
+/ Tabs Section
+div class="bg-white border-b border-gray-200"
+  div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
+    div class="flex justify-between items-center"
+      div class="flex gap-4"
+        span class="hover:text-blue-800 hover:underline border-b-2 border-blue-500 px-1 py-2 text-blue-800 font-medium" Projects
+        span class="border-b-2 border-transparent px-1 py-2 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300" Workspaces
 
-        div class="self-center"
-          / a class="text-white text-sm font-semibold mx-1 py-2 px-2.5 bg-blue-600 border border-transparent rounded-sm hover:bg-blue-700" href="/import/new" Import Projects
-          = link_to "Create project", new_project_path, class: "text-white text-sm mx-1 py-2 px-2.5 bg-green-600 border border-transparent rounded-sm hover:bg-green-700", data: { turbo_frame: "modal" }
+      div class="self-center"
+        / a class="text-white text-sm font-semibold mx-1 py-2 px-2.5 bg-blue-600 border border-transparent rounded-sm hover:bg-blue-700" href="/import/new" Import Projects
+        = link_to "Create project", new_project_path, class: "text-white text-sm mx-1 py-2 px-2.5 bg-green-600 border border-transparent rounded-sm hover:bg-green-700", data: { turbo_frame: "modal" }
 
-  / Projects Pane
-  div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
-    / Top Menu
-    .flex.justify-between.items-center.mb-6
-      .relative.flex-grow
-        .absolute.inset-y-0.left-0.pl-3.flex.items-center.pointer-events-none
-          = image_tag "icons/search.svg", class: "h-4 w-4 text-gray-500", alt:"Search"
+/ projects/index.html.slim
+div.max-w-6xl.mx-auto.px-4.py-6 data-controller="project-search"
+  header.mb-6
+    / Filters section
+    div.flex.items-center.gap-4.mb-6
 
-        input#projects-search-bar.bg-white.rounded-sm.border.border-gray-300.text-gray-700.text-sm.w-full.h-9.py-2.pl-10.pr-4.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500 type="text" placeholder="Search Active Projects" autocomplete="off"
+      / Search input
+      div.relative.flex-1
+        input.bg-white.w-full.px-4.py-2.border.border-gray-300.rounded-md.shadow-sm.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500 type="text" placeholder="Search projects..." data-action="input->project-search#filter" data-project-search-target="input"
+        svg.absolute.right-3.top-2.5.w-5.h-5.text-gray-400 fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
 
-      .relative.ml-4.group.list-none[data-controller="dropmenu"]
+      / Dropdown filter
+      div.relative data-controller="dropmenu"
+        button.flex.items-center.gap-2.px-4.py-2.bg-white.border.border-gray-300.rounded-md.shadow-sm.hover:bg-gray-50.focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500 data-action="click->dropmenu#toggle"
+          span data-dropmenu-target="label" Active Projects
+          svg.w-4.h-4.text-gray-400 fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"
 
-        button.flex.items-center.cursor-pointer.h-9.px-4.rounded-sm.hover:bg-gray-100.text-sm.text-gray-700 data-action="dropmenu#toggle click@window->dropmenu#hide" type="button"
-          | Active Projects
-          = image_tag('icons/arrow-down.svg', class: 'w-4 h-4 ml-2 text-gray-500')
+        div.absolute.z-10.mt-1.w-48.bg-white.border.border-gray-300.rounded-md.shadow-lg.hidden data-dropmenu-target="menu"
+          div.py-1
+            = link_to projects_path(filter: "active"), class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", data: { action: "click->dropmenu#select", filter: "active", turbo_frame: "projects_list" } do
+              | Active Projects
+            = link_to projects_path(filter: "archived"), class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", data: { action: "click->dropmenu#select", filter: "archived", turbo_frame: "projects_list" } do
+              | Archived Projects
 
-        .hidden.absolute.right-0.mt-1.bg-white.rounded-md.shadow-lg.ring-1.ring-black.ring-opacity-5.z-50 data-dropmenu-target="menu"
-          ul.py-1
-            li.px-4.py-2.text-sm.text-gray-700.hover:bg-gray-100
-              input#active_projects.hidden.peer[type="radio" name="project_filter" checked=""]
-              label.flex.items-center.w-full for="active_projects"
-                span.mr-2.text-green-600.hidden.peer-checked\:inline ✓
-                span Active Projects (#{@active_projects.count})
-
-            li.px-4.py-2.text-sm.text-gray-700.hover:bg-gray-100
-              input#archived_projects.hidden.peer[type="radio" name="project_filter"]
-              label.flex.items-center.w-full for="archived_projects"
-                span.mr-2.text-green-600.hidden.peer-checked\:inline ✓
-                span Archived Projects (#{@archived_projects.count})
-
-    / Favorite Projects Section
-    - if @favorite_projects.any?
-      div class="mb-8"
-        header class="mb-4"
-          div class="flex items-center text-sm font-medium text-gray-700"
-            = image_tag "icons/heart.svg", class: "mr-2"
-            span Favorite Projects | #{@favorite_projects.count}
-
-        ol class="grid grid-cols-1 gap-4 sm:grid-cols-2"
-          - @favorite_projects.each do |project|
-            = render 'project_card', project: project, favorite: true
-
-    / My Projects Section
-    div class="mb-8"
-      header class="mb-4"
-        div class="flex items-center text-sm font-medium text-gray-700"
-          = image_tag "icons/project.svg", class: "mr-2"
-          span My Projects | #{@active_projects.count}
-
-      - if @active_projects.any?
-        ol class="grid grid-cols-1 gap-4 sm:grid-cols-2"
-          - @active_projects.each do |project|
-            = render 'project_card', project: project, favorite: current_user.favorites.exists?(project_id: project.id)
-      - else
-        div class="text-center py-8 text-gray-500"
-          p You don't have any active projects yet.
-          = link_to "Create your first project", new_project_path, class: "text-blue-600 hover:text-blue-700", data: {turbo_frame: "modal"}
-
-    / Archived Projects Section (hidden by default)
-    div class="hidden" data-project-filter-target="archived"
-      header class="mb-4"
-        div class="flex items-center text-sm font-medium text-gray-700"
-          = image_tag "icons/archive.svg", class: "mr-2"
-          span Archived Projects | #{@archived_projects.count}
-
-      - if @archived_projects.any?
-        ol class="grid grid-cols-1 gap-4 sm:grid-cols-2"
-          - @archived_projects.each do |project|
-            = render 'project_card', project: project, favorite: current_user.favorites.exists?(project_id: project.id)
-      - else
-        div class="text-center py-8 text-gray-500"
-          p No projects have been archived yet.
+  / Projects list wrapped in turbo frame
+  = turbo_frame_tag "projects_list" do
+    = render "projects_list"

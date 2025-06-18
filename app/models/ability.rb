@@ -22,7 +22,7 @@ class Ability
     cannot [:update, :destroy], Membership, user_id: user.id
 
     # Project creation
-    can :new, Project, organization: { memberships: { user_id: user.id, role: [:owner, :project_creator, :admin] } }
+    can :new, Project
     can :new, Organization
     can :new, Membership
     can :new, ProjectMembership
