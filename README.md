@@ -10,7 +10,7 @@
   ·
   <a href="https://iteratorpm.com/docs">Docs</a>
   ·
-  <a href="https://discord.gg/">Community</a>
+  <a href="https://discord.gg/eHPZxVbP">Community</a>
 </div>
 
 <div align="center">
@@ -116,7 +116,7 @@ kamal deploy
 
 ## 💬 Join Our Community
 
-[![Discord](https://img.shields.io/badge/chat-Discord-7289DA)](https://discord.gg/)
+[![Discord](https://img.shields.io/badge/chat-Discord-7289DA)](https://discord.gg/eHPZxVbP)
 [![GitHub Issues](https://img.shields.io/github/issues/iteratorpm/iterator)](https://github.com/iteratorpm/iterator/issues)
 
 We welcome contributions! Check out our [contribution guidelines](CONTRIBUTING.md).
