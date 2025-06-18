@@ -42,6 +42,21 @@ class ProjectsController < ApplicationController
   end
 
   def archive
+    if @project.update(archived: true)
+      redirect_to edit_project_path(@project), notice: 'Project was successfully archived.'
+    else
+      @organizations = current_user.organizations
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def unarchive
+    if @project.update(archived: false)
+      redirect_to edit_project_path(@project), notice: 'Project was successfully unarchived.'
+    else
+      @organizations = current_user.organizations
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def show
@@ -62,7 +77,7 @@ class ProjectsController < ApplicationController
 
   def update
     if @project.update(project_params)
-      redirect_to @project, notice: 'Project was successfully updated.'
+      redirect_to edit_project_path(@project), notice: 'Project was successfully updated.'
     else
       @organizations = current_user.organizations
       render :edit, status: :unprocessable_entity
@@ -81,6 +96,7 @@ class ProjectsController < ApplicationController
       :name,
       :description,
       :organization_id,
+      :enable_tasks,
       :public,
       :iteration_start_day,
       :start_date,
@@ -91,14 +107,13 @@ class ProjectsController < ApplicationController
       :initial_velocity,
       :velocity_strategy,
       :done_iterations_to_show,
-      :auto_iteration_planning,
+      :automatic_planning,
       :allow_api_access,
       :enable_incoming_emails,
       :hide_email_addresses,
       :priority_field_enabled,
       :priority_display_scope,
-      :point_bugs_and_chores,
-      :enable_tasks
+      :point_bugs_and_chores
     )
   end
 

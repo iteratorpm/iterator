@@ -44,6 +44,7 @@ Rails.application.routes.draw do
 
     member do
       post :archive
+      post :unarchive
     end
 
     resources :iterations, module: "projects", only: [:update] do

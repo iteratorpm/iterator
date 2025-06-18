@@ -21,6 +21,7 @@ class Project < ApplicationRecord
 
   scope :active, -> { where(archived: false) }
   scope :archived, -> { where(archived: true) }
+  scope :api_visible, -> { where(archived: false, allow_api_access: true) }
 
   belongs_to :organization, counter_cache: true
   has_many :project_memberships, dependent: :destroy
@@ -40,11 +41,13 @@ class Project < ApplicationRecord
 
   validates :organization, presence: true
   validates :name, length: { minimum: 1, maximum: 50 }
-  validates :time_zone, presence: true, inclusion: { in: ActiveSupport::TimeZone.all.map(&:name) }
+  validates :time_zone, presence: true, inclusion: { in: ActiveSupport::TimeZone.us_zones.map(&:name) }
 
-  validates :velocity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
+  validates :velocity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false# In your Project model
+  validates :point_scale_custom, presence: true, if: -> { point_scale == 'custom' }
 
   after_update :recalculate_if_velocity_settings_changed
+  before_save :disable_public_if_archived
 
   def plan_current_iteration
     Time.use_zone(time_zone) do
@@ -84,6 +87,21 @@ class Project < ApplicationRecord
   # Add a user with a specific role
   def add_member(user, role = :member)
     project_memberships.create(user: user, role: role)
+  end
+
+  def point_scale_values
+    case point_scale
+    when 'linear_0123'
+      [0, 1, 2, 3]
+    when 'fibonacci'
+      [0, 1, 2, 3, 5, 8]
+    when 'tshirt_sizes'
+      ['XS', 'S', 'M', 'L', 'XL']
+    when 'powers_of_2'
+      [0, 1, 2, 4, 8]
+    when 'custom'
+      point_scale_custom&.split(',')&.map(&:strip)
+    end
   end
 
   def current_iteration
@@ -190,6 +208,10 @@ class Project < ApplicationRecord
   end
 
   private
+
+  def disable_public_if_archived
+    self.public = false if archived_changed?(from: false, to: true)
+  end
 
   def recalculate_if_velocity_settings_changed
     if saved_change_to_velocity_strategy? ||

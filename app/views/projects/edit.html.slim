@@ -3,208 +3,261 @@
 
   .flex-1.p-8
     = form_with model: @project, url: project_path(@project), method: :put, local: true, class: 'space-y-8' do |f|
-      = hidden_field_tag :authenticity_token, form_authenticity_token
 
       / General Section
-      .bg-white.rounded-lg.shadow.p-6
-        h2.text-xl.font-bold.text-gray-800.mb-4 General
-        .space-y-4
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :name, 'Project Title', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            = f.text_field :name, maxlength: 50, class: 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm md:col-span-2'
-
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :description, class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            = f.text_field :description, maxlength: 140, class: 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm md:col-span-2'
-
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :organization_id, 'Organization', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
+      .bg-white.rounded-lg.shadow-sm.border.border-gray-200.p-6
+        h2.text-xl.font-semibold.text-gray-900.mb-6 General
+        .space-y-6
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :name, 'Project Title', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
             .md:col-span-2
-              .flex.items-center
-                span.font-medium.mr-2
-                  = link_to @project.organization.name, organization_path(@project.organization), class: 'text-blue-600 hover:text-blue-800'
-                = link_to 'Change Organization', '#', id: 'organization_change_link', class: 'text-sm text-blue-600 hover:text-blue-800', data: { action: 'project-settings#toggleOrganizationSelect' }
-              = f.select :organization_id, options_from_collection_for_select(current_user.organizations, :id, :name, @project.organization_id), {}, class: 'mt-2 hidden w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm', id: 'project_organization_id_select', data: { project_settings_target: 'organizationSelect' }
+              = f.text_field :name, maxlength: 50, class: 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
 
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :enable_tasks, 'Enable Tasks', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            .flex.items-center.md:col-span-2
-              = f.check_box :enable_tasks, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
-              span.ml-2.text-sm.text-gray-600 Allows tasks to be added to stories.
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :description, 'Description', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2
+              = f.text_field :description, maxlength: 140, class: 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :organization_id, 'Organization', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2
+              .flex.items-center[data-project-settings-target="organizationDisplay"]
+                span.font-medium.mr-3
+                  = link_to @project.organization.name, organization_path(@project.organization), class: 'text-blue-600 hover:text-blue-800'
+                = link_to 'Change Organization', '#', class: 'text-sm text-blue-600 hover:text-blue-800', data: { action: 'project-settings#toggleOrganizationSelect' }
+              .hidden[data-project-settings-target="organizationSelect"]
+                = f.select :organization_id, options_from_collection_for_select(@organizations, :id, :name, @project.organization_id), { prompt: 'Select an organization' }, class: 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                .mt-2.flex.space-x-2
+                  = link_to 'Save', '#', class: 'text-sm text-blue-600 hover:text-blue-800', data: { action: 'project-settings#saveOrganization' }
+                  = link_to 'Cancel', '#', class: 'text-sm text-gray-600 hover:text-gray-800', data: { action: 'project-settings#cancelOrganizationSelect' }
+
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :enable_tasks, 'Enable Tasks', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2.flex.items-start
+              .flex.items-center.h-5
+                = f.check_box :enable_tasks, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
+              .ml-3
+                span.text-sm.text-gray-600 Allows tasks to be added to stories
 
       / Privacy Section
-      .bg-white.rounded-lg.shadow.p-6
-        h2.text-xl.font-bold.text-gray-800.mb-4 Privacy
-        .grid.grid-cols-1.md:grid-cols-3.gap-4
-          = f.label :public, 'Public Access', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
+      .bg-white.rounded-lg.shadow-sm.border.border-gray-200.p-6
+        h2.text-xl.font-semibold.text-gray-900.mb-6 Privacy
+        .grid.grid-cols-1.md:grid-cols-3.gap-6
+          = f.label :public, 'Public Access', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
           .md:col-span-2
             .flex.items-start
-              = f.check_box :public, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1'
-              .ml-2.text-sm.text-gray-600
-                p Allow anyone to view this project at #{link_to project_url(@project), project_url(@project), class: 'text-blue-600 hover:text-blue-800'}.
-                / p.mt-1 More about public projects #{link_to 'here', help_article_path('using_public_projects'), class: 'text-blue-600 hover:text-blue-800'}.
+              .flex.items-center.h-5
+                = f.check_box :public, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
+              .ml-3
+                .text-sm.text-gray-600
+                  p Allow anyone to view this project at #{link_to project_url(@project), project_url(@project), class: 'text-blue-600 hover:text-blue-800'}.
 
       / Iterations and Velocity Section
-      .bg-white.rounded-lg.shadow.p-6
-        .flex.items-center.justify-between.mb-4
-          h2.text-xl.font-bold.text-gray-800 Iterations and Velocity
-          / = link_to help_article_path('changing_project_settings'), target: '_blank', rel: 'noopener noreferrer', class: 'text-gray-400 hover:text-gray-600' do
-            svg.h-5.w-5 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-              path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"
+      .bg-white.rounded-lg.shadow-sm.border.border-gray-200.p-6
+        h2.text-xl.font-semibold.text-gray-900.mb-6 Iterations and Velocity
+        .space-y-6
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :iteration_start_day, 'Start Iterations On', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2
+              = f.select :iteration_start_day, options_for_select([['Sunday', "sunday"], ['Monday', "monday"], ['Tuesday', "tuesday"], ['Wednesday', "wednesday"], ['Thursday', "thursday"], ['Friday', "friday"], ['Saturday', "saturday"]], @project.iteration_start_day), {}, class: 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
 
-        .space-y-4
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :week_start_day, 'Start Iterations On', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            = f.select :week_start_day, Date::DAYNAMES, {}, class: 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm md:col-span-2'
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :start_date, 'Project Start Date', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2
+              = f.date_field :start_date, class: 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
 
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :start_date, 'Project Start Date', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            = f.date_field :start_date, class: 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm md:col-span-2'
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :time_zone, 'Project Time Zone', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2
+              = f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, {}, class: 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
 
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :time_zone, 'Project Time Zone', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            = f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, {}, class: 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm md:col-span-2'
-
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :iteration_length, 'Iteration Length', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            .flex.items-center.md:col-span-2
-              = f.select :iteration_length, options_for_select(1..4, @project.iteration_length), {}, class: 'mr-2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :iteration_length, 'Iteration Length', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2.flex.items-center
+              = f.select :iteration_length, options_for_select(1..4, @project.iteration_length), {}, class: 'w-20 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm mr-3'
               span.text-sm.text-gray-600 weeks
 
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :point_scale, 'Point Scale', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            = f.select :point_scale, options_for_select([['Powers of 2 (0, 1, 2, 4, 8)', '0,1,2,4,8'], ['Linear (0, 1, 2, 3)', '0,1,2,3'], ['Fibonacci (0, 1, 2, 3, 5, 8)', '0,1,2,3,5,8'], ['Custom', 'custom']], @project.point_scale), {}, class: 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm md:col-span-2'
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :point_scale, 'Point Scale', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2
+              = f.select :point_scale, options_for_select([['Linear (0, 1, 2, 3)', 'linear_0123'], ['Fibonacci (0, 1, 2, 3, 5, 8)', 'fibonacci'], ['T-Shirt Sizes (XS, S, M, L, XL)', 'tshirt_sizes'], ['Powers of 2 (0, 1, 2, 4, 8)', 'powers_of_2'], ['Custom', 'custom']], @project.point_scale), {}, class: 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm', data: { action: 'change->project-settings#toggleCustomPointScale' }
 
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :initial_velocity, 'Initial Velocity', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            = f.number_field :initial_velocity, class: 'mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm md:col-span-2'
+              / Custom point scale input field (hidden by default)
+              .mt-3 data-project-settings-target='customPointScaleField' class=(@project.point_scale == 'custom' ? '' : 'hidden')
+                = f.label :point_scale_custom, 'Custom Point Scale (comma-separated)', class: 'block text-sm font-medium text-gray-700 mb-1'
+                = f.text_field :point_scale_custom, placeholder: 'e.g., 0, 1, 2, 5, 10, 20', class: 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                .text-xs.text-gray-500.mt-1
+                  | Enter your custom point values separated by commas
 
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :velocity_strategy, 'Velocity Strategy', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            = f.select :velocity_strategy, options_for_select([\
-              ['Average of 1 iteration', 'past_iters_1'],\
-              ['Average of 2 iterations', 'past_iters_2'],\
-              ['Average of 3 iterations', 'past_iters_3'],\
-              ['Average of 4 iterations', 'past_iters_4']\
-            ], @project.velocity_strategy), {}, class: 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm md:col-span-2'
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :initial_velocity, 'Initial Velocity', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2
+              = f.number_field :initial_velocity, class: 'w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
 
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :number_of_done_iterations_to_show, 'Number of Done Iterations to Show', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            = f.number_field :number_of_done_iterations_to_show, class: 'mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm md:col-span-2'
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :velocity_strategy, 'Velocity Strategy', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2
+              = f.select :velocity_strategy, options_for_select([['Average of 1 iteration', 'past_iters_1'], ['Average of 2 iterations', 'past_iters_2'], ['Average of 3 iterations', 'past_iters_3'], ['Average of 4 iterations', 'past_iters_4']], @project.velocity_strategy), {}, class: 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
 
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :automatic_planning, 'Plan Current Iteration Automatically', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :done_iterations_to_show, 'Number of Done Iterations to Show', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2
+              = f.number_field :done_iterations_to_show, class: 'w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :automatic_planning, 'Plan Current Iteration Automatically', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
             .md:col-span-2
               .flex.items-start
-                = f.check_box :automatic_planning, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1'
-                .ml-2.text-sm.text-gray-600
-                  p Stories move to/from current iteration based on project velocity. Turn off to plan current iteration manually.
-                  / p.mt-1 = link_to 'Read more...', help_article_path('automatic_vs_manual_planning'), class: 'text-blue-600 hover:text-blue-800'
+                .flex.items-center.h-5
+                  = f.check_box :automatic_planning, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
+                .ml-3
+                  .text-sm.text-gray-600
+                    p Stories move to/from current iteration based on project velocity. Turn off to plan current iteration manually.
 
       / Access Section
-      .bg-white.rounded-lg.shadow.p-6
-        h2.text-xl.font-bold.text-gray-800.mb-4 Access
-        .space-y-4
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            label.block.text-sm.font-medium.text-gray-700.md:col-span-1 Project ID
-            .text-sm.text-gray-900.md:col-span-2 = @project.id
+      .bg-white.rounded-lg.shadow-sm.border.border-gray-200.p-6
+        h2.text-xl.font-semibold.text-gray-900.mb-6 Access
+        .space-y-6
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            label.block.text-sm.font-medium.text-gray-700.md:col-span-1.md:pt-2 Project ID
+            .md:col-span-2
+              .px-3.py-2.bg-gray-50.border.border-gray-200.rounded-md.text-sm.text-gray-900.font-mono = @project.id
 
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :api_access, 'Allow API Access', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            .flex.items-start.md:col-span-2
-              = f.check_box :api_access, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1'
-              .ml-2.text-sm.text-gray-600 Allow the Tracker iOS and Android app and other third-party clients to access your project data.
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :allow_api_access, 'Allow API Access', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2.flex.items-start
+              .flex.items-center.h-5
+                = f.check_box :allow_api_access, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
+              .ml-3
+                span.text-sm.text-gray-600 Allow the Tracker iOS and Android app and other third-party clients to access your project data
 
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :enable_incoming_emails, 'Enable Incoming Emails', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            .flex.items-start.md:col-span-2
-              = f.check_box :enable_incoming_emails, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1'
-              .ml-2.text-sm.text-gray-600
-                p Create story comments from replies to Pivotal Tracker notification emails.
-                / p.mt-1 = link_to 'Read more...', help_article_path('collaborating_with_comments#email_comments'), class: 'text-blue-600 hover:text-blue-800'
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :enable_incoming_emails, 'Enable Incoming Emails', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2.flex.items-start
+              .flex.items-center.h-5
+                = f.check_box :enable_incoming_emails, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
+              .ml-3
+                .text-sm.text-gray-600
+                  p Create story comments from replies to Iterator notification emails
 
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :hide_emails_from_collaborators, 'Hide email addresses', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            .flex.items-start.md:col-span-2
-              = f.check_box :hide_emails_from_collaborators, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1'
-              .ml-2.text-sm.text-gray-600
-                p Restricts the ability to view email addresses of people in this project.
-                / p.mt-1 = link_to 'Read more...', help_article_path('who_sees_email'), class: 'text-blue-600 hover:text-blue-800'
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :hide_email_addresses, 'Hide email addresses', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
+            .md:col-span-2.flex.items-start
+              .flex.items-center.h-5
+                = f.check_box :hide_email_addresses, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
+              .ml-3
+                .text-sm.text-gray-600
+                  p Restricts the ability to view email addresses of people in this project
 
       / Customization Section
-      .bg-white.rounded-lg.shadow.p-6
-        h2.text-xl.font-bold.text-gray-800.mb-4 Customization
-        .space-y-4
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :priority_field_enabled, 'Priority Field', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
+      .bg-white.rounded-lg.shadow-sm.border.border-gray-200.p-6
+        h2.text-xl.font-semibold.text-gray-900.mb-6 Customization
+        .space-y-6
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            = f.label :priority_field_enabled, 'Priority Field', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
             .md:col-span-2
               .flex.items-start
-                = f.check_box :priority_field_enabled, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1'
-                .ml-2.text-sm.text-gray-600
-                  / p Enable priority field in stories. #{link_to 'Read more...', blog_post_path('2021-10-28-story-priority-field'), class: 'text-blue-600 hover:text-blue-800'}
-                  p.mt-2.pl-6 Priority field values you set for stories get saved and are recoverable.
-
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            = f.label :show_priority_icon, nil, class: 'block text-sm font-medium text-gray-700 md:col-span-1'
-            .md:col-span-2
-              .flex.items-start
-                = f.check_box :show_priority_icon, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1'
-                label.ml-2.text-sm.font-medium.text-gray-700 for="project_show_priority_icon" Display priority value on story cards.
-              .mt-2.pl-6
-                p.text-sm.text-gray-600 Apply this to:
-                .flex.items-center.space-x-4.mt-1
-                  = f.radio_button :priority_display_scope, false, class: 'h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500', checked: !@project.priority_display_scope
-                  label.inline-flex.items-center.text-sm.font-medium.text-gray-700 for="project_show_priority_icon_in_all_panels_false" Icebox Only
-                  = f.radio_button :priority_display_scope, true, class: 'h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500', checked: @project.priority_display_scope
-                  label.inline-flex.items-center.text-sm.font-medium.text-gray-700 for="project_show_priority_icon_in_all_panels_true" All Panels
+                .flex.items-center.h-5
+                  = f.check_box :priority_field_enabled, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500', data: { action: 'project-settings#togglePriorityOptions', project_settings_target: 'priorityCheckbox' }
+                .ml-3
+                  .text-sm.text-gray-600
+                    p Enable priority field in stories
+                    .mt-2.pl-0[data-project-settings-target="priorityOptions" class=(@project.priority_field_enabled ? '' : 'hidden')]
+                      p.text-sm.text-gray-600.mb-3 Priority field values you set for stories get saved and are recoverable.
+                      .flex.items-start
+                        .flex.items-center.h-5
+                          = f.check_box :priority_display_scope, { checked: @project.priority_display_scope == 'all_panels' }, { value: 'all_panels', class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500' }
+                        .ml-3
+                          label.text-sm.font-medium.text-gray-700 Display priority value on story cards
+                      .mt-3.ml-8
+                        .space-y-2
+                          .flex.items-center
+                            = f.radio_button :priority_display_scope, 'icebox_only', class: 'h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500', checked: @project.priority_display_scope == 'icebox_only'
+                            label.ml-2.text-sm.text-gray-700 Icebox Only
+                          .flex.items-center
+                            = f.radio_button :priority_display_scope, 'all_panels', class: 'h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500', checked: @project.priority_display_scope == 'all_panels'
+                            label.ml-2.text-sm.text-gray-700 All Panels
 
       / Experimental Section
-      .bg-white.rounded-lg.shadow.p-6
-        h2.text-xl.font-bold.text-gray-800.mb-4 Experimental
-        .grid.grid-cols-1.md:grid-cols-3.gap-4
-          = f.label :bugs_and_chores_are_estimatable, 'Bugs and Chores May Be Given Points', class: 'block text-sm font-medium text-gray-700 md:col-span-1'
+      .bg-white.rounded-lg.shadow-sm.border.border-gray-200.p-6
+        h2.text-xl.font-semibold.text-gray-900.mb-6 Experimental
+        .grid.grid-cols-1.md:grid-cols-3.gap-6
+          = f.label :point_bugs_and_chores, 'Bugs and Chores May Be Given Points', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
           .md:col-span-2
             .flex.items-start
-              = f.check_box :bugs_and_chores_are_estimatable, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1', data: { action: 'project-settings#toggleBugsWarning', project_settings_target: 'bugsCheckbox' }
-              .ml-2.text-sm.text-gray-600
-                / p Strongly discouraged! #{link_to 'Read more...', help_article_path('planning_with_velocity#bugs-and-chores-arent-estimable-by-default'), class: 'text-blue-600 hover:text-blue-800'}
-                #bugs_and_chores_estimatable_warning.mt-2.pl-6.hidden[data-project-settings-target="bugsWarning"]
-                  strong.text-yellow-700 WARNING:
-                  | Rollback errors may occur if you reference an accepted bug or chore that existed before this setting was enabled.
+              .flex.items-center.h-5
+                = f.check_box :point_bugs_and_chores, class: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500', data: { action: 'project-settings#toggleBugsWarning', project_settings_target: 'bugsCheckbox' }
+              .ml-3
+                .text-sm.text-gray-600
+                  p
+                    |> Strongly discouraged! This setting is experimental.
+                    = link_to "Learn more", docs_path("planning-with-velocity/#bugs-and-chores-are-not-estimated-by-default"), class: "text-blue-600 hover:text-blue-800", target: "_blank"
 
-      / Save Bar
-      .bg-white.rounded-lg.shadow.p-4.flex.justify-between.items-center
-        = link_to 'Cancel', project_path(@project), class: 'px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors'
-        = f.submit 'Save', class: 'px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors', data: { confirm: 'Updating Project Settings may mean all project members have to reload the project and lose any unsaved changes. Are you sure you want to continue?' }
+                  .mt-2.hidden.bg-yellow-50.border.border-yellow-200.rounded-md.p-3[data-project-settings-target="bugsWarning"]
+                    .flex
+                      .flex-shrink-0
+                        svg.h-5.w-5.text-yellow-400 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                          path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"
+                      .ml-3
+                        .text-sm.text-yellow-700
+                          strong WARNING:
+                          |  Rollback errors may occur if you reference an accepted bug or chore that existed before this setting was enabled.
 
-      / Other Section (Delete/Archive)
-      .bg-white.rounded-lg.shadow.p-6
-        h2.text-xl.font-bold.text-gray-800.mb-4 Other
-        .space-y-4
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            label.block.text-sm.font-medium.text-gray-700.md:col-span-1 Delete Project
-            .text-sm.text-gray-600.md:col-span-2
-              p Deleting this project is an unrecoverable operation that will remove all project data.
-              = link_to 'Delete', '#', id: 'delete_link', class: 'text-red-600 hover:text-red-800 mt-1 inline-block'
+      / Save Section
+      .bg-white.rounded-lg.shadow-sm.border.border-gray-200.p-4
+        .flex.justify-between.items-center
+          = link_to 'Cancel', project_path(@project), class: 'px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors border border-gray-300'
+          = f.submit 'Save Changes', class: 'px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors', data: { confirm: 'Updating Project Settings may mean all project members have to reload the project and lose any unsaved changes. Are you sure you want to continue?' }
 
-          .grid.grid-cols-1.md:grid-cols-3.gap-4
-            label.block.text-sm.font-medium.text-gray-700.md:col-span-1 Archive Project
-            .text-sm.text-gray-600.md:col-span-2
-              p Archiving this project will remove this project from active projects list, but preserve project data.
-              = link_to 'Archive', '#', id: 'archive_link', class: 'text-blue-600 hover:text-blue-800 mt-1 inline-block'
+      / Danger Zone Section
+      .bg-white.rounded-lg.shadow-sm.border.border-red-200.p-6
+        h2.text-xl.font-semibold.text-red-900.mb-6 Danger Zone
+        .space-y-6
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            label.block.text-sm.font-medium.text-gray-700.md:col-span-1.md:pt-2 Project Archive Status
+            .md:col-span-2
+              - if @project.archived?
+                .text-sm.text-gray-600.mb-3
+                  p This project is currently archived and hidden from your active projects list.
+                  p Unarchiving will restore it and make it visible to your team again.
+                = link_to 'Unarchive Project', '#', class: 'inline-flex items-center px-4 py-2 border border-green-300 rounded-md shadow-sm text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors', data: { action: 'project-settings#showArchiveForm' }
+              - else
+                .text-sm.text-gray-600.mb-3
+                  p Archiving this project will remove it from your active projects list, but preserve all project data.
+                = link_to 'Archive Project', '#', class: 'inline-flex items-center px-4 py-2 border border-yellow-300 rounded-md shadow-sm text-sm font-medium text-yellow-700 bg-yellow-50 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors', data: { action: 'project-settings#showArchiveForm' }
 
-        / Hidden Delete Form
-        = form_with url: project_path(@project), method: :delete, id: 'project_delete_form', class: 'hidden' do
-          .bg-red-50.rounded-lg.p-4.mt-4
-            p.text-sm.text-red-700 You are about to delete this project.
-            .mt-2.flex.space-x-2
-              = submit_tag 'Delete', class: 'px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors'
-              = link_to 'Cancel', '#', class: 'cancel_delete px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors'
+          .grid.grid-cols-1.md:grid-cols-3.gap-6
+            label.block.text-sm.font-medium.text-gray-700.md:col-span-1.md:pt-2 Delete Project
+            .md:col-span-2
+              .text-sm.text-gray-600.mb-3
+                p Deleting this project is an unrecoverable operation that will remove all project data permanently.
+              = link_to 'Delete Project', '#', class: 'inline-flex items-center px-4 py-2 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors', data: { action: 'project-settings#showDeleteForm' }
 
-        / Hidden Archive Form
-        = form_with url: archive_project_path(@project), method: :post, id: 'project_archive_form', class: 'hidden' do
-          .bg-blue-50.rounded-lg.p-4.mt-4
-            p.text-sm.text-blue-700 You are about to archive this project.
-            .mt-2.flex.space-x-2
-              = submit_tag 'Archive', class: 'px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors'
-              = link_to 'Cancel', '#', class: 'cancel_archive px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors'
+    / Hidden Archive Form
+    .hidden.mt-6.p-4.bg-yellow-50.border.border-yellow-200.rounded-md[data-project-settings-target="archiveForm"]
+      - if @project.archived?
+        = form_with url: unarchive_project_path(@project), method: :post, class: 'space-y-4' do |form|
+          .text-sm.text-yellow-800.mb-4
+            p.font-medium This project is currently archived.
+            p You can unarchive it to make it visible and active again.
+          .flex.space-x-3
+            = form.submit 'Unarchive Project', class: 'inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors'
+            = link_to 'Cancel', '#', class: 'inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors', data: { action: 'project-settings#hideArchiveForm' }
+      - else
+        = form_with url: archive_project_path(@project), method: :post, class: 'space-y-4' do |form|
+          .text-sm.text-yellow-800.mb-4
+            p.font-medium You are about to archive this project.
+            p This action will hide the project from your active projects list but preserve all data.
+          .flex.space-x-3
+            = form.submit 'Archive Project', class: 'inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors'
+            = link_to 'Cancel', '#', class: 'inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors', data: { action: 'project-settings#hideArchiveForm' }
+
+    / Hidden Delete Form
+    .hidden.mt-6.p-4.bg-red-50.border.border-red-200.rounded-md[data-project-settings-target="deleteForm"]
+      = form_with url: project_path(@project), method: :delete, class: 'space-y-4' do |form|
+        .text-sm.text-red-800
+          p.font-medium You are about to permanently delete this project.
+          p This action cannot be undone. All project data will be lost forever.
+        .flex.space-x-3
+          = form.submit 'Delete Project', class: 'inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors'
+          = link_to 'Cancel', '#', class: 'inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors', data: { action: 'project-settings#hideDeleteForm' }
