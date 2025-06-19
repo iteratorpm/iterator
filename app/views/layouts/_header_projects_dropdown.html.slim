@@ -9,7 +9,7 @@
   - else
     / Project dropdown
     .relative.ml-4 data-controller="dropmenu"
-      button.flex.items-center.space-x-1.text-gray-700.hover:text-gray-900 data-action="dropmenu#toggle click@window->dropmenu#hide"
+      button.flex.items-center.space-x-1.text-gray-700.hover:text-gray-900 data-action="dropmenu#toggle"
         - if @project.present? && @project.id?
           span.font-medium.truncate.max-w-xs= @project.name
         - else

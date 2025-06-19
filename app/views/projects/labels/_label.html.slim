@@ -11,7 +11,7 @@
         span.ml-1.text-gray-500
           = "(#{label.stories.unaccepted.count})"
 
-    .relative.flex.items-center.justify-center.ml-2 data-controller="dropmenu" data-action="click->dropmenu#toggle click@window->dropmenu#hide"
+    .relative.flex.items-center.justify-center.ml-2 data-controller="dropmenu" data-action="click->dropmenu#toggle"
       button.flex.items-center.space-x-1.5.cursor-pointer type="button"
         = inline_svg_tag "icons/arrow-down.svg", class: "h-4 w-4 text-indigo-500"
 

@@ -1,6 +1,6 @@
 .relative data-controller="notifications"
   / Bell button with notification dot
-  button.relative.cursor-pointer.text-gray-600.hover:text-gray-900.focus:outline-none.p-2.rounded-full.hover:bg-gray-100 data-action="notifications#toggle click@window->notifications#hide" aria-label="Notifications" type="button"
+  button.relative.cursor-pointer.text-gray-600.hover:text-gray-900.focus:outline-none.p-2.rounded-full.hover:bg-gray-100 data-action="notifications#toggle" aria-label="Notifications" type="button"
     = inline_svg_tag "icons/bell.svg", class: "w-5 h-5"
     / Red notification dot (shown when there are unread notifications)
     .absolute.top-1.right-1.w-2.h-2.bg-red-500.rounded-full data-notifications-target="notificationDot" class="hidden"

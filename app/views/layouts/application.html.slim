@@ -11,6 +11,7 @@ html
     = javascript_importmap_tags
 
     = tag.link rel: "manifest", href: pwa_manifest_path(format: :json)
+    = render 'application/favicon'
 
     link rel="icon" href="/icon.png" type="image/png"
     link rel="icon" href="/icon.svg" type="image/svg+xml"

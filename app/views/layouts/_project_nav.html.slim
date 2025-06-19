@@ -13,7 +13,7 @@ nav[aria-label="Project navigation"]
       - current_item = nav_items.find { |item| current_page?(item[:path]) } || nav_items.first
 
       .relative data-controller="dropmenu"
-        button.flex.items-center.px-4.py-2.text-sm.font-medium.text-gray-700.hover:text-gray-900[data-action="dropmenu#toggle click@window->dropmenu#hide"]
+        button.flex.items-center.px-4.py-2.text-sm.font-medium.text-gray-700.hover:text-gray-900[data-action="dropmenu#toggle"]
           span = current_item[:name]
           = inline_svg_tag "icons/arrow-down.svg", class: "w-3 h-3 ml-1"
 
