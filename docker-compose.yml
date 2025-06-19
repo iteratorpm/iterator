@@ -1,24 +1,50 @@
 version: '3.8'
 services:
-  db:
-    image: postgres:17
+  iterator-db:
+    image: postgres:17-alpine
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: iterator
+    networks:
+      - iterator-network
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres-volume:/var/lib/postgresql/data
 
-  web:
+  iterator-web:
     image: iteratorpm/iterator:latest
+    restart: always
     environment:
-      DATABASE_URL: postgres://postgres:password@db/iterator
+      DATABASE_URL: postgres://postgres:password@db:5432/iterator
+      RAILS_ENV: production
+      RAILS_LOG_TO_STDOUT: true
+      RAILS_SERVE_STATIC_FILES: true
+      SECRET_KEY_BASE: "replace this with random characters!"
+      APP_HOST: yourwebsite.com
+      APP_PROTOCOL: https
+      DISABLE_REGISTRATION: "false"
+      SMTP_ADDRESS: smtp.yourprovider.com
+      SMTP_PORT: 587
+      SMTP_USER_NAME: your_username
+      SMTP_PASSWORD: your_password
+      DEFAULT_FROM_EMAIL: no-reply@example.com
+    volumes:
+      - storage-volume:/usr/src/app/storage
     depends_on:
-      - db
+      - iteraotr-db
     ports:
       - "3000:3000"
-    env_file:
-      - .env
+   networks:
+      - iterator-network
 
 volumes:
-  pgdata:
+  postgres-volume:
+    external: false
+
+  storage-volume:
+    external: false
+
+networks:
+  iterator-network:
+    external: false

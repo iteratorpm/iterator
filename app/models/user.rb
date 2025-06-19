@@ -36,8 +36,18 @@ class User < ApplicationRecord
   belongs_to :current_organization, class_name: 'Organization', optional: true
 
   # Include default devise modules. Others available are:
-  devise :invitable, :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :confirmable
+  devise_modules = [
+    :invitable,
+    :database_authenticatable,
+    :recoverable,
+    :rememberable,
+    :validatable,
+    :confirmable
+  ]
+
+  devise_modules << :registerable unless ENV["DISABLE_REGISTRATION"] == "true"
+
+  devise(*devise_modules)
 
   validates :name, length: { minimum: 1, maximum: 30 }
   validates :username, length: { minimum: 1, maximum: 30 }

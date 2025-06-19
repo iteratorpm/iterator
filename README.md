@@ -83,7 +83,7 @@ docker run -d \
   -p 3000:3000 \
   -e ADMIN=admin@example.com:password \
   -v ./iterator-db:/usr/src/app/storage \
-  iteratorpm/iterator:latest
+  ghcr.io/iteratorpm/iterator:latest
 ```
 
 Visit `http://localhost:3000` with demo credentials:

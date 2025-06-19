@@ -45,6 +45,7 @@ header.bg-white.shadow-sm
 
                     = button_to "Sign Out", destroy_user_session_path, method: :delete, class: "block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem", tabindex: "-1", data: { aid: "ProfileDropdown__signout" }
         - else
-          span.text-gray-600 Don't have an account?
-          a.ml-2.text-blue-600.font-medium.hover:text-blue-800 href=new_user_registration_path SIGN UP
+          - if devise_mapping.registerable? && controller_name != 'registrations'
+            span.text-gray-600 Don't have an account?
+            a.ml-2.text-blue-600.font-medium.hover:text-blue-800 href=new_user_registration_path SIGN UP
 
