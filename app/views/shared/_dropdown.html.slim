@@ -7,7 +7,7 @@
 /   options: estimate_options,# array of [value, label] pairs
 /   selected: story.estimate, # currently selected value (optional)
 /   searchable: false,        # whether to show search
-/   icon_method: :story_estimate_icon # method to call for icons (optional)
+/   icon_method: :story_point_icon # method to call for icons (optional)
 / }
 
 - selected_value = local_assigns[:selected] || record.public_send(column)

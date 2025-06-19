@@ -32,13 +32,16 @@ module StoriesHelper
     inline_svg_tag("icons/#{type}.svg", class: "h-4 w-4 #{story_color_class(type)}", title: type.capitalize)
   end
 
-  def story_estimate_icon story
+  def story_point_icon story
     estimate = (story.respond_to? :estimate) ? story.estimate : story
 
-    if estimate >= 8
-      image_tag "icons/estimate-huge.svg", class: "h-4 w-4", title: "Estimate #{estimate}"
+    if estimate == -1
+        image_tag "icons/unestimated.svg", class: "h-8 w-6", title: "Point #{estimate}"
+    elsif estimate > 0 && estimate <= 8
+      image_tag "icons/point-#{estimate}.svg", class: "h-8 w-6", title: "Point #{estimate}"
     else
-      image_tag "icons/estimate-#{estimate}.svg", class: "h-4 w-4", title: "Estimate #{estimate}"
+      content_tag :div, class: "h-8 w-6" do
+      end
     end
   end
 

@@ -24,4 +24,18 @@ module ProjectsHelper
     project_url(project)
   end
 
+  def point_scale_values(project)
+    case project.point_scale
+    when 'linear_0123'
+      [0, 1, 2, 3]
+    when 'fibonacci'
+      [0, 1, 2, 3, 5, 8]
+    when 'powers_of_2'
+      [0, 1, 2, 4, 8]
+    when 'custom'
+      project.point_scale_custom&.split(',')&.map(&:strip)
+    else
+      [0, 1, 2, 3]
+    end
+  end
 end

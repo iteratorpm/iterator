@@ -7,9 +7,9 @@
 
         - if story.estimated?
           .estimate-icon
-            = story_estimate_icon(story)
+            = story_point_icon(story)
         - else
-          .estimate-icon.w-4
+          .estimate-icon.w-6
 
       - if story.has_blockers?
         .blocker-icon aria-label="Story has blockers"
@@ -39,13 +39,12 @@
                 = image_tag("icons/#{review_status_icon(review)}", class: "h-4 w-4 mr-1", title: review.status.capitalize)
                 span.review-type.text-xs.text-gray-600 = review.review_type
 
+
     - if story.estimatable? && !story.estimated?
       span.estimate.flex.gap-1
-        - [0, 1, 2, 3].each do |point_value|
-          button.cursor-pointer.hover:bg-gray-300.estimate-item.p-1 data-action="click->story#estimate" data-story-point-value="#{point_value}" tabindex="-1" title=point_value
-            = image_tag("icons/estimate-#{point_value}.svg",
-                        class: "h-4 w-4",
-                        title: "Estimate #{point_value}")
+      - point_scale_values(story.project).each do |point_value|
+        button.cursor-pointer.hover:bg-gray-300.estimate-item data-action="click->story#estimate" data-story-point-value="#{point_value}" tabindex="-1" title=point_value
+          = image_tag("icons/estimate-#{point_value}.svg", class: "h-8 w-6", title: "Estimate #{point_value}")
     - else
       .flex.items-center.gap-x-1
         = render "projects/stories/next_state_btn", story: story

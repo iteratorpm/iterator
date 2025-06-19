@@ -83,7 +83,7 @@
           .grid.grid-cols-1.md:grid-cols-3.gap-6
             = f.label :point_scale, 'Point Scale', class: 'block text-sm font-medium text-gray-700 md:col-span-1 md:pt-2'
             .md:col-span-2
-              = f.select :point_scale, options_for_select([['Linear (0, 1, 2, 3)', 'linear_0123'], ['Fibonacci (0, 1, 2, 3, 5, 8)', 'fibonacci'], ['T-Shirt Sizes (XS, S, M, L, XL)', 'tshirt_sizes'], ['Powers of 2 (0, 1, 2, 4, 8)', 'powers_of_2'], ['Custom', 'custom']], @project.point_scale), {}, class: 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm', data: { action: 'change->project-settings#toggleCustomPointScale' }
+              = f.select :point_scale, options_for_select([['Linear (0, 1, 2, 3)', 'linear_0123'], ['Fibonacci (0, 1, 2, 3, 5, 8)', 'fibonacci'], ['Powers of 2 (0, 1, 2, 4, 8)', 'powers_of_2'], ['Custom', 'custom']], @project.point_scale), {}, class: 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm', data: { action: 'change->project-settings#toggleCustomPointScale' }
 
               / Custom point scale input field (hidden by default)
               .mt-3 data-project-settings-target='customPointScaleField' class=(@project.point_scale == 'custom' ? '' : 'hidden')

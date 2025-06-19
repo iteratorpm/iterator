@@ -1,4 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 24 24">
-  <rect stroke="#7D7D7D" fill="#FFF" x="3" y="12" width="20" height="6" rx="1" fill-rule="evenodd" />
-  <line x1="1" y1="23" x2="24" y2="23" stroke="#666" stroke-width="1" />
-</svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg width="100%" height="100%" viewBox="0 0 16 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;"><g id="estimate-0"><path id="Rectangle" d="M16,2.041l0,20c0,1.104 -0.896,2 -2,2l-12,0c-1.104,0 -2,-0.896 -2,-2l0,-20c0,-1.103 0.896,-2 2,-2l12,0c1.104,0 2,0.897 2,2Z" style="fill:#4a4a4a;fill-opacity:0;"/><path d="M13.25,16.5l0,1c0,0.552 -0.448,1 -1,1l-8,0c-0.552,0 -1,-0.448 -1,-1l0,-1c0,-0.552 0.448,-1 1,-1l8,0c0.552,0 1,0.448 1,1Z" style="fill:#fff;stroke:#000;stroke-width:0.5px;"/><rect id="Rectangle1" serif:id="Rectangle" x="2.25" y="20" width="12" height="1" style="fill:#9b9b9b;"/></g></svg>

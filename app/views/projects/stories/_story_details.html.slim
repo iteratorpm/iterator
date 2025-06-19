@@ -90,14 +90,14 @@
               .estimate-row.flex.items-center.mb-3
                 span.text-xs.text-gray-500.mr-2.w-20 Points
                 - if not story.estimatable?
-                  = render "shared/dropdown_item", label: "Unestimated", icon: story_estimate_icon(-1), class: "cursor-not-allowed"
+                  = render "shared/dropdown_item", label: "Unestimated", icon: story_point_icon(-1), class: "cursor-not-allowed"
                 - else
                   = render partial: "shared/dropdown", \
                            locals: { \
                              record: story, \
                              form: f, \
                              column: :estimate, \
-                             icon_method: :story_estimate_icon, \
+                             icon_method: :story_point_icon, \
                              options: [[-1, "Unestimated"], [0, "0 points"], [1, "1 Point"], [2, "2 Points"], [3, "3 Points"]],\
                              searchable: true \
                            }

@@ -5,7 +5,7 @@ class Project < ApplicationRecord
   }
 
   enum :point_scale, {
-    linear_0123: 0, fibonacci: 1, tshirt_sizes: 2, powers_of_2: 3, custom: 4
+    linear_0123: 0, fibonacci: 1, powers_of_2: 3, custom: 4
   }
 
   enum :velocity_strategy, {
@@ -87,21 +87,6 @@ class Project < ApplicationRecord
   # Add a user with a specific role
   def add_member(user, role = :member)
     project_memberships.create(user: user, role: role)
-  end
-
-  def point_scale_values
-    case point_scale
-    when 'linear_0123'
-      [0, 1, 2, 3]
-    when 'fibonacci'
-      [0, 1, 2, 3, 5, 8]
-    when 'tshirt_sizes'
-      ['XS', 'S', 'M', 'L', 'XL']
-    when 'powers_of_2'
-      [0, 1, 2, 4, 8]
-    when 'custom'
-      point_scale_custom&.split(',')&.map(&:strip)
-    end
   end
 
   def current_iteration
