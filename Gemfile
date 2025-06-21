@@ -130,5 +130,5 @@ group :test do
   gem "selenium-webdriver"
 
   gem 'database_cleaner'
-  gem 'shoulda-matchers', '~> 5.0'
+  gem 'shoulda-matchers', '~> 6.5'
 end
