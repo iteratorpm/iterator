@@ -85,11 +85,25 @@ class MembershipsController < ApplicationController
   end
 
   def membership_params
-    params.require(:membership).permit(:email, :role, :project_creator)
+    permitted_attrs = [:email, :role]
+
+    # Only allow project_creator to be set by owners and admins
+    if can?(:manage, @organization.memberships.build)
+      permitted_attrs << :project_creator
+    end
+
+    params.require(:membership).permit(permitted_attrs)
   end
 
   def new_user_params
-    params.require(:membership).permit(:email, :name, :initials, :role, :project_creator)
+    permitted_attrs = [:email, :name, :initials, :role]
+
+    # Only allow project_creator to be set by owners and admins
+    if can?(:manage, @organization.memberships.build)
+      permitted_attrs << :project_creator
+    end
+
+    params.require(:membership).permit(permitted_attrs)
   end
 
   def apply_filters

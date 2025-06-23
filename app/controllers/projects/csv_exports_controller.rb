@@ -20,8 +20,12 @@ class Projects::CsvExportsController < ApplicationController
 
   def download
     @export = @project.csv_exports.find(params[:id])
+
     if @export.completed?
-      send_file @export.file_path, filename: @export.filename
+      path = safe_file_path(@export)
+      name = safe_filename(@export.filename)
+
+      send_file path, filename: name
     else
       redirect_to project_csv_exports_path(@project), alert: 'Export not ready yet'
     end
@@ -35,5 +39,19 @@ class Projects::CsvExportsController < ApplicationController
 
   def export_params
     params.require(:csv_export).permit(options: [])
+  end
+
+  SAFE_STORAGE_PATH = Rails.root.join('storage', 'exports').to_s
+
+  def safe_file_path(export)
+    path = File.expand_path(export.file_path.to_s, SAFE_STORAGE_PATH)
+    unless path.start_with?(SAFE_STORAGE_PATH)
+      raise SecurityError, "Unsafe file path"
+    end
+    path
+  end
+
+  def safe_filename(filename)
+    File.basename(filename).gsub(/[^0-9A-Za-z.\-]/, '_')
   end
 end
