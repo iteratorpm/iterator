@@ -55,7 +55,7 @@ RSpec.describe Project, type: :model do
     it { is_expected.to define_enum_for(:iteration_start_day)
           .with_values(sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6) }
     it { is_expected.to define_enum_for(:point_scale)
-          .with_values(linear_0123: 0, fibonacci: 1, tshirt_sizes: 2, powers_of_2: 3, custom: 4) }
+          .with_values(linear_0123: 0, fibonacci: 1, powers_of_2: 2, custom: 3) }
     it { is_expected.to define_enum_for(:velocity_strategy)
           .with_values(past_iters_1: 0, past_iters_2: 1, past_iters_3: 2, past_iters_4: 3) }
     it { is_expected.to define_enum_for(:priority_display_scope)

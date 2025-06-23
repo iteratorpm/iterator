@@ -7,8 +7,8 @@
     .text-xs.text-gray-500.mb-2
       | Tracks flow of stories over time (To Do → In Progress → Done)
 
-    = area_chart @cfd_data, stacked: true, height: "160px", library: {
+    = area_chart @cfd_data, stacked: true, height: "160px", library: { \
         colors: ["#cbd5e1", "#60a5fa", "#34d399"],
         legend: { position: 'bottom' },
-        tooltip: { mode: 'index' }
+        tooltip: { mode: 'index' } \
       }

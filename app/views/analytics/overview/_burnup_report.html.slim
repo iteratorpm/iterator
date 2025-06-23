@@ -14,13 +14,13 @@
 
   / Chart container
   .mt-6
-    = line_chart [
+    = line_chart [ \
         { name: "Points Accepted", data: burnup_data[:accepted], color: "rgba(50, 157, 208, 0.9)" },
-        { name: "Point Scope", data: burnup_data[:scope], color: "rgba(50, 157, 208, 0.35)" }
+        { name: "Point Scope", data: burnup_data[:scope], color: "rgba(50, 157, 208, 0.35)" } \
       ],
       height: "290px",
-      library: {
+      library: { \
         point: { show: true },
         line: { width: 2 },
-        legend: { position: 'top' }
+        legend: { position: 'top' } \
       }

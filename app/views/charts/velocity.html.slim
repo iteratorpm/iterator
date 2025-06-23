@@ -39,24 +39,24 @@
 
           div class="velocity-chart h-96 relative"
             = line_chart @velocity_data[:iterations].map { |i| [i[:date], i[:points]] },
-              library: {
+              library: { \
                 colors: ['#5199D4', '#FF692F'],
-                line: {
+                line: { \
                   classes: ['pointsAccepted', 'velocity'],
-                  types: { pointsAccepted: 'bar', velocity: 'line' }
+                  types: { pointsAccepted: 'bar', velocity: 'line' } \
                 },
-                axis: {
+                axis: { \
                   x: { label: { text: 'Iteration start date', position: 'outer-center' } },
-                  y: { label: { text: 'Points accepted', position: 'outer-middle' } }
+                  y: { label: { text: 'Points accepted', position: 'outer-middle' } } \
                 },
-                tooltip: {
-                  format: {
+                tooltip: { \
+                  format: { \
                     title: function(d) { return d === 2 ? 'Current Iteration' : @velocity_data[:iterations][d][:date] },
                     value: function(value, ratio, id) {
-                      return id === 'velocity' ? value + ' pts' : value + ' pts';
-                    }
-                  }
-                }
+                      return id === 'velocity' ? value + ' pts' : value + ' pts'; \
+                    } \
+                  } \
+                } \
               }
 
     div class="pt-4"
@@ -77,21 +77,21 @@
 
         div class="p-4 pr-0"
           div class="story-composition-chart h-32 relative"
-            = bar_chart @stories_data[:iterations].map { |i|
-                [
+            = bar_chart @stories_data[:iterations].map { |i| \
+                [ \
                   i[:date],
                   { name: 'Features', data: i[:features] },
                   { name: 'Bugs', data: i[:bugs] },
-                  { name: 'Chores', data: i[:chores] }
-                ]
+                  { name: 'Chores', data: i[:chores] } \
+                ] \
               },
               stacked: true,
-              library: {
+              library: { \
                 colors: ['#E0C85E', '#D87350', '#999999'],
-                axis: {
+                axis: { \
                   x: { label: { text: 'Iteration start date', position: 'outer-center' } },
-                  y: { label: { text: 'Stories accepted', position: 'outer-middle' } }
-                }
+                  y: { label: { text: 'Stories accepted', position: 'outer-middle' } } \
+                } \
               }
 
     / Story Details section would go here

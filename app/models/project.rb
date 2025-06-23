@@ -5,7 +5,7 @@ class Project < ApplicationRecord
   }
 
   enum :point_scale, {
-    linear_0123: 0, fibonacci: 1, powers_of_2: 3, custom: 4
+    linear_0123: 0, fibonacci: 1, powers_of_2: 2, custom: 3
   }
 
   enum :velocity_strategy, {

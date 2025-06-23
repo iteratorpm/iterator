@@ -23,25 +23,25 @@
         .border.border-t-0.border-gray-300.bg-gray-50
           .pt-3.flex
             .w-3/4.inline-block
-              = column_chart [
+              = column_chart [ \
                   { name: "Features", data: @accepted_stories_data[:features], color: "#E0C85E" },
                   { name: "Bugs", data: @accepted_stories_data[:bugs], color: "#D87350" },
-                  { name: "Chores", data: @accepted_stories_data[:chores], color: "#999999" }
+                  { name: "Chores", data: @accepted_stories_data[:chores], color: "#999999" } \
                 ],
                 height: "275px",
-                library: {
+                library: { \
                   title: { text: "Accepted Stories" },
                   xAxis: { title: { text: "Iteration start date" } },
-                  yAxis: { title: { text: "Stories accepted" } }
+                  yAxis: { title: { text: "Stories accepted" } } \
                 }
 
             .w-1/4.inline-block.h-72.align-top
               .text-center.font-semibold.text-gray-700 Apr. 7 - Current
               .px-3
-                = pie_chart [
+                = pie_chart [ \
                     ["Features", @accepted_stories_data[:features]],
                     ["Bugs", @accepted_stories_data[:bugs]],
-                    ["Chores", @accepted_stories_data[:chores]]
+                    ["Chores", @accepted_stories_data[:chores]] \
                   ],
                   colors: ["#E0C85E", "#D87350", "#999999"],
                   height: "200px",
@@ -68,25 +68,25 @@
         .border.border-t-0.border-gray-300.bg-gray-50
           .pt-3.flex
             .w-3/4.inline-block
-              = column_chart [
+              = column_chart [ \
                   { name: "Features", data: @created_stories_data[:features], color: "#E0C85E" },
                   { name: "Bugs", data: @created_stories_data[:bugs], color: "#D87350" },
-                  { name: "Chores", data: @created_stories_data[:chores], color: "#999999" }
+                  { name: "Chores", data: @created_stories_data[:chores], color: "#999999" } \
                 ],
                 height: "275px",
-                library: {
+                library: { \
                   title: { text: "Created Stories" },
                   xAxis: { title: { text: "Iteration start date" } },
-                  yAxis: { title: { text: "Stories created" } }
+                  yAxis: { title: { text: "Stories created" } } \
                 }
 
             .w-1/4.inline-block.h-72.align-top
               .text-center.font-semibold.text-gray-700 Apr. 7 - Current
               .px-3
-                = pie_chart [
+                = pie_chart [ \
                     ["Features", @created_stories_data[:features]],
                     ["Bugs", @created_stories_data[:bugs]],
-                    ["Chores", @created_stories_data[:chores]]
+                    ["Chores", @created_stories_data[:chores]] \
                   ],
                   colors: ["#E0C85E", "#D87350", "#999999"],
                   height: "200px",
