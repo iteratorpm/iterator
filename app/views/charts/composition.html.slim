@@ -121,7 +121,7 @@
         header.bg-white.px-4.py-4.border-b.border-gray-200.text-sm.font-semibold.text-gray-700
           .pt-5.pb-1.leading-8
             span Accepted Stories
-            span.text-xs.font-normal.text-gray-500.ml-2.uppercase (#{@project.stories.accepted.count} story | #{@project.stories.accepted.sum(:estimate)} point)
+            span.text-xs.font-normal.text-gray-500.ml-2.uppercase "(#{@project.stories.accepted.count} story | #{@project.stories.accepted.sum(:estimate)} point)"
             span.float-right.text-xs.text-gray-500.pr-3.font-normal
 
         .border.border-t-0.border-gray-300.bg-gray-50

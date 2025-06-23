@@ -48,15 +48,15 @@
                 axis: { \
                   x: { label: { text: 'Iteration start date', position: 'outer-center' } },
                   y: { label: { text: 'Points accepted', position: 'outer-middle' } } \
-                },
-                tooltip: { \
-                  format: { \
-                    title: function(d) { return d === 2 ? 'Current Iteration' : @velocity_data[:iterations][d][:date] },
-                    value: function(value, ratio, id) {
-                      return id === 'velocity' ? value + ' pts' : value + ' pts'; \
-                    } \
-                  } \
-                } \
+                }
+                / tooltip: { \
+                /   format: { \
+                /     title: function(d) { return d === 2 ? 'Current Iteration' : @velocity_data[:iterations][d][:date] },
+                /     value: function(value, ratio, id) {
+                /       return id === 'velocity' ? value + ' pts' : value + ' pts'; \
+                /     }
+                /   } \
+                / } \
               }
 
     div class="pt-4"
