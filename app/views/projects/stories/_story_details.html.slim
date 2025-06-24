@@ -50,19 +50,22 @@
           .info-box.bg-gray-50.p-4.rounded-lg
 
             .story-state.mb-4
-              .state-row.flex.items-center.mb-2
-                span.text-xs.text-gray-500.mr-2 State
+              .state-row.flex.items-center.justify-between.mb-2
+                span.text-xs.text-gray-500 State
                 - if story.unscheduled?
                   = render "shared/dropdown_item", label: "Unscheduled"
                 - else
-                  = render partial: "shared/dropdown", \
-                           locals: { \
-                             record: story, \
-                             column: :state, \
-                             form: f, \
-                             options: story_state_options(story), \
-                             searchable: false \
-                           }
+                  .flex.items-center.gap-x-2
+                    = render "projects/stories/next_state_btn", story: story
+
+                    = render partial: "shared/dropdown", \
+                             locals: { \
+                               record: story, \
+                               column: :state, \
+                               form: f, \
+                               options: story_state_options(story), \
+                               searchable: false \
+                             }
 
             .story-info
               .type-row.flex.items-center.mb-3
