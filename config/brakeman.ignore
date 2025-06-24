@@ -1,37 +1,74 @@
 {
   "ignored_warnings": [
     {
-      "warning_type": "SendFile",
-      "check_name": "SendFile",
-      "message": "Model attribute used in file name",
-      "file": "app/controllers/projects/csv_exports_controller.rb",
-      "line": 25,
-      "code": "send_file(Project.find(params[:project_id]).csv_exports.find(params[:id]).full_file_path, :filename => Project.find(params[:project_id]).csv_exports.find(params[:id]).filename)",
-      "fingerprint": "REPLACE_WITH_REAL_FINGERPRINT_1",
-      "ignored": true,
-      "note": "Reviewed: safe due to file path sanitization in model"
-    },
-    {
       "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "24da2f2d30c8b8d2fd36648773951a5d70cbc38a7f2f10cb0d01da12c6f9a975",
       "check_name": "PermitAttributes",
       "message": "Potentially dangerous key allowed for mass assignment",
       "file": "app/controllers/project_memberships_controller.rb",
       "line": 77,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
       "code": "params.require(:project_membership).permit(:emails, :role)",
-      "fingerprint": "REPLACE_WITH_REAL_FINGERPRINT_2",
-      "ignored": true,
-      "note": "Reviewed: permitted keys are safe for current user roles"
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "ProjectMembershipsController",
+        "method": "membership_params"
+      },
+      "user_input": ":role",
+      "confidence": "Medium",
+      "cwe_id": [
+        915
+      ],
+      "note": ""
     },
     {
       "warning_type": "File Access",
+      "warning_code": 16,
+      "fingerprint": "341a4738398883aedbd37634123c9da9b184893b189e8fcc36da55923819d254",
       "check_name": "FileAccess",
       "message": "Model attribute used in file name",
       "file": "app/jobs/csv_export_job.rb",
       "line": 13,
+      "link": "https://brakemanscanner.org/docs/warning_types/file_access/",
       "code": "FileUtils.mkdir_p(File.dirname(CsvExport.find(export_id).full_file_path))",
-      "fingerprint": "REPLACE_WITH_REAL_FINGERPRINT_3",
-      "ignored": true,
-      "note": "Reviewed: file path is sanitized in model"
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CsvExportJob",
+        "method": "perform"
+      },
+      "user_input": "CsvExport.find(export_id).full_file_path",
+      "confidence": "Weak",
+      "cwe_id": [
+        22
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "File Access",
+      "warning_code": 16,
+      "fingerprint": "3881ce347ec98caa3be07a5befa5ca69314625ac026aa8f759309dfa774b475e",
+      "check_name": "SendFile",
+      "message": "Model attribute used in file name",
+      "file": "app/controllers/projects/csv_exports_controller.rb",
+      "line": 25,
+      "link": "https://brakemanscanner.org/docs/warning_types/file_access/",
+      "code": "send_file(Project.find(params[:project_id]).csv_exports.find(params[:id]).full_file_path, :filename => Project.find(params[:project_id]).csv_exports.find(params[:id]).filename)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Projects::CsvExportsController",
+        "method": "download"
+      },
+      "user_input": "Project.find(params[:project_id]).csv_exports.find(params[:id]).full_file_path",
+      "confidence": "Medium",
+      "cwe_id": [
+        22
+      ],
+      "note": ""
     }
-  ]
+  ],
+  "brakeman_version": "7.0.2"
 }
