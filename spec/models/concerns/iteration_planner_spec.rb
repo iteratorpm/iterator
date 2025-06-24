@@ -119,6 +119,95 @@ RSpec.describe IterationPlanner do
       expect(project.iterations.backlog.first.number).to eq(2)
       expect(project.iterations.backlog.first.stories.count).to eq(2)
     end
+
+    it 'unassigns unstarted stories from previous backlog iterations before replanning' do
+      # Create a current iteration
+      create(:iteration,
+             project: project,
+             state: :current,
+             start_date: Date.new(2025, 5, 5),
+             end_date: Date.new(2025, 5, 11),
+             number: 1,
+             velocity: 10)
+
+      # Create a backlog iteration with stories
+      backlog_iteration = create(:iteration,
+                                 project: project,
+                                 state: :backlog,
+                                 start_date: Date.new(2025, 5, 12),
+                                 end_date: Date.new(2025, 5, 18),
+                                 number: 2,
+                                 velocity: 10)
+
+      # Story previously assigned to backlog iteration
+      story = create(:story, project: project, state: :unstarted, estimate: 5, iteration: backlog_iteration)
+
+      # Expect assignment before recalculation
+      expect(story.iteration).to eq(backlog_iteration)
+
+      # Recalculate iterations
+      IterationPlanner.recalculate_all_iterations(project)
+
+      # Story should be reassigned or unassigned
+      story.reload
+      expect(story.iteration).not_to eq(backlog_iteration)
+
+      # Story should be part of a new backlog iteration
+      new_backlog = project.iterations.current.first
+      expect(story.iteration).to eq(new_backlog)
+    end
+
+    it 'handles foreign key constraint error when current iteration is destroyed during backlog cleanup' do
+      # This test reproduces the bug where a current iteration could be marked as backlog
+      # and then destroyed, causing a foreign key constraint error when trying to assign stories to it
+
+      # Create an iteration that looks like current but is actually marked as backlog
+      # This can happen in edge cases where iteration state management gets confused
+      problematic_iteration = create(:iteration,
+                                     project: project,
+                                     state: :backlog, # This is the key - marked as backlog but contains current stories
+                                     start_date: Date.new(2025, 5, 5), # Today's date
+                                     end_date: Date.new(2025, 5, 11),
+                                     number: 108, # Same ID as in the error log
+                                     velocity: 10)
+
+      # Create stories that should be in current iteration but are assigned to the problematic iteration
+      current_story = create(:story,
+                           project: project,
+                           state: :started, # Current state
+                           estimate: 3,
+                           iteration: problematic_iteration)
+
+      # Create additional backlog stories to trigger replanning
+      create_list(:story, 2,
+                  project: project,
+                  state: :unstarted,
+                  estimate: 5,
+                  iteration: nil)
+
+      # Before the fix, this would cause a foreign key constraint error because:
+      # 1. The method would find the problematic_iteration as "current" (contains today's date)
+      # 2. The backlog cleanup would destroy it (it's marked as :backlog)
+      # 3. fill_current_iteration would try to assign stories to the destroyed iteration
+
+      expect {
+        IterationPlanner.recalculate_all_iterations(project)
+      }.not_to raise_error
+
+      # Verify the fix worked correctly
+      project.reload
+
+      # Should have exactly one current iteration
+      expect(project.iterations.current.count).to eq(1)
+
+      # The current story should be assigned to a valid iteration
+      current_story.reload
+      expect(current_story.iteration).to be_present
+      expect(current_story.iteration.state).to eq('current')
+
+      # The problematic iteration should be gone
+      expect { problematic_iteration.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
   end
 
   describe '.calculate_project_velocity' do

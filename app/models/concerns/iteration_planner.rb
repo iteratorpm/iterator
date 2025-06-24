@@ -6,11 +6,12 @@ module IterationPlanner
         new_velocity = calculate_project_velocity(project)
         project.update(velocity: new_velocity)
 
-        # Step 2: Ensure we have a valid current iteration
-        current_iteration = find_or_create_current_iteration(project)
-
-        # Step 3: Clear future iterations and replan
+        # Step 2: Clear future iterations and replan BEFORE finding current iteration
+        project.stories.where(iteration_id: project.iterations.backlog.select(:id)).update_all(iteration_id: nil)
         project.iterations.backlog.destroy_all
+
+        # Step 3: Ensure we have a valid current iteration AFTER clearing backlog
+        current_iteration = find_or_create_current_iteration(project)
 
         # Step 4: Fill current iteration with appropriate stories
         fill_current_iteration(current_iteration)
@@ -95,14 +96,16 @@ module IterationPlanner
     end
 
     def fill_current_iteration(iteration)
+      # Reload iteration to ensure it exists and is current
+      iteration.reload
       project = iteration.project
 
       # Get stories that should be in this iteration (started, finished, delivered, rejected)
       current_stories = project.stories.current
       current_stories.update_all(iteration_id: iteration.id)
 
-      # Reset all unstarted stories assigned to this
-      project.stories.unstarted.where(iteration_id: iteration.id).update_all iteration_id: nil
+      # Reset all unstarted stories assigned to this iteration
+      project.stories.unstarted.where(iteration_id: iteration.id).update_all(iteration_id: nil)
 
       # Get unstarted stories (backlog)
       backlog_stories = project.stories
