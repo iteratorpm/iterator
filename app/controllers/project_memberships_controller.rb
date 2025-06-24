@@ -74,6 +74,36 @@ class ProjectMembershipsController < ApplicationController
   private
 
   def membership_params
-    params.require(:project_membership).permit(:emails, :role)
+    permitted_params = params.require(:project_membership).permit(:emails, :role)
+
+    # Whitelist allowed roles based on user's permissions
+    allowed_roles = determine_allowed_roles
+
+    # Default to 'member' if role is not provided or not allowed
+    if permitted_params[:role].present? && allowed_roles.include?(permitted_params[:role])
+      permitted_params[:role] = permitted_params[:role]
+    else
+      permitted_params[:role] = 'member'
+    end
+
+    permitted_params
+  end
+
+  def determine_allowed_roles
+    # Only allow basic roles by default
+    allowed = ['member', 'viewer']
+
+    # Check if current user can assign higher roles
+    if can?(:manage, @project)
+      # Project owners/admins can assign all roles except owner
+      allowed += ['admin'] unless @project_membership&.role == 'owner'
+    end
+
+    # Only organization owners can assign project owner role
+    if @project.present? && @project.organization.memberships.where(user_id: current_user.id, role: 'owner').exists?
+      allowed << 'owner'
+    end
+
+    allowed
   end
 end

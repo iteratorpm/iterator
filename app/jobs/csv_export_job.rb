@@ -5,20 +5,17 @@ class CsvExportJob < ApplicationJob
     export = CsvExport.find(export_id)
     export.update(status: 'processing')
 
-    # Generate CSV content
-    csv_content = generate_csv(export)
+    # Generate filename
+    export.generate_filename!
+    path = export.full_file_path
 
-    # Save to file
-    filename = "#{export.project.name.parameterize}_#{Time.now.to_i}-export.csv"
-    file_path = Rails.root.join('storage', 'exports', "#{export.id}_#{filename}")
-
-    FileUtils.mkdir_p(File.dirname(file_path))
-    File.write(file_path, csv_content)
+    # Generate and write CSV
+    FileUtils.mkdir_p(File.dirname(path))
+    File.write(path, generate_csv(export))
 
     export.update(
       status: 'completed',
-      filename: filename,
-      filesize: File.size(file_path)
+      filesize: File.size(path)
     )
   rescue => e
     export.update(status: 'failed')
@@ -33,25 +30,25 @@ class CsvExportJob < ApplicationJob
       csv << ["Id", "Name", "Labels", "Type", "Estimate", "Current State", "Created at", "Description"]
 
       if export.options.include?('include_done_stories')
-        project.stories.where(state: 'accepted').each do |story|
+        project.stories.where(state: 'accepted').find_each do |story|
           csv << story_to_csv_row(story)
         end
       end
 
       if export.options.include?('include_current_backlog_stories')
-        project.stories.where.not(state: ['unscheduled', 'accepted']).each do |story|
+        project.stories.where.not(state: ['unscheduled', 'accepted']).find_each do |story|
           csv << story_to_csv_row(story)
         end
       end
 
       if export.options.include?('include_icebox_stories')
-        project.stories.where(state: 'unscheduled').each do |story|
+        project.stories.where(state: 'unscheduled').find_each do |story|
           csv << story_to_csv_row(story)
         end
       end
 
       if export.options.include?('include_epics')
-        project.epics.each do |epic|
+        project.epics.find_each do |epic|
           csv << [
             epic.id,
             epic.name,
