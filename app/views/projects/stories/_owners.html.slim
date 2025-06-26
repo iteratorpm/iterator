@@ -1,0 +1,37 @@
+.owner-row.flex.items-center.mb-3 id="story-owners-#{story.id}" data-controller="story-owners" data-story-owners-story-id-value="#{story.id}"
+  span.text-xs.text-gray-500.mr-2.w-20 Owners
+
+  .flex.flex-wrap.items-center.gap-2
+
+    / Render each current owner
+    - story.owners.each do |owner|
+      .flex.items-center.relative.group
+        / Avatar that toggles the popup
+        .cursor-pointer data-action="click->story-owners#toggleOwnerPopup" data-user-id=owner.id
+          = user_avatar owner, alt: owner.name, size: 6
+
+        / Owner popup
+        .story-owner-dropdown.hidden.absolute.z-20.top-8.left-0 data-owner-id=owner.id
+
+          .flex.justify-between.items-center.bg-gray-700.py-1.px-2.rounded-t-md
+            span.text-white.text-xs.font-semibold.mr-2= owner.name
+            button.flex.items-center.justify-center.rounded.bg-red-500.hover:bg-red-600.text-xms.font-semibold.text-white.ring-1.ring-inset.ring-red-500.hover:ring-red-600.cursor-pointer data-action="click->story-owners#removeOwner" data-user-id=owner.id
+              | Remove
+
+    .relative data-controller="dropdown"
+      .flex.items-center.justify-center.w-6.h-6.rounded-full.bg-gray-200.text-gray-600.text-sm.cursor-pointer.hover:bg-gray-300 data-action="click->dropdown#toggle" data-dropdown-target="button" aria-label="Add owner"
+        = inline_svg_tag "icons/plus.svg", class: "w-8 h-8"
+      / Dropdown menu
+      .absolute.mt-2.z-10.bg-white.shadow-lg.rounded-md.ring-1.ring-black.ring-opacity-5.w-48.hidden data-dropdown-target="menu"
+        = hidden_field_tag "story[add_owner_virtual]", "", data: { dropdown_target: "input" }
+
+        .p-2.border-b
+          = text_field_tag :search, nil, placeholder: "Search users...", class: "w-full px-2 py-1 text-sm border rounded", data: { dropdown_target: "search", action: "input->dropdown#filter" }
+
+        ul.py-1.text-sm.text-gray-700.max-h-60.overflow-auto data-dropdown-target="items"
+          - (story.project.users - story.owners).each do |user|
+            li.relative.px-2.py-1.cursor-pointer.hover:bg-gray-100.rounded data-value=user.id data-action="click->dropdown#select click->story-owners#addOwner" data-dropdown-target="item"
+              .dropdown_content.flex.items-center
+                span.flex.items-center.justify-center.uppercase.text-white.text-xxs.h-6.w-6.rounded-full.mr-2
+                  = user.initials
+                span.text-sm= user.name

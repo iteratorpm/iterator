@@ -1,5 +1,5 @@
 class Projects::StoriesController < Projects::BaseController
-  before_action :set_story, only: [:edit, :update, :destroy, :reject, :rejection]
+  before_action :set_story, only: [:edit, :update, :destroy, :reject, :rejection, :add_owner, :remove_owner]
   authorize_resource only: [:edit, :update, :destroy]
 
   def my_work
@@ -60,6 +60,30 @@ class Projects::StoriesController < Projects::BaseController
         format.turbo_stream { render_turbo_validation_errors(@story) }
         format.html { render :edit }
       end
+    end
+  end
+
+  def add_owner
+    user = User.find(params[:user_id])
+    @story.owners << user unless @story.owners.include?(user)
+
+    broadcast_story_owners_update(@story)
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to project_story_path(@story.project, @story) }
+    end
+  end
+
+  def remove_owner
+    user = User.find(params[:user_id])
+    @story.owners.destroy(user)
+
+    broadcast_story_owners_update(@story)
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to project_story_path(@story.project, @story) }
     end
   end
 
@@ -192,6 +216,15 @@ class Projects::StoriesController < Projects::BaseController
         :content,
         attachments: []
       ]
+    )
+  end
+
+  def broadcast_story_owners_update(story)
+    Turbo::StreamsChannel.broadcast_replace_to(
+      [story.project, "stories"],
+      target: "story-owners-#{story.id}",
+      partial: "projects/stories/owners",
+      locals: { story: story }
     )
   end
 

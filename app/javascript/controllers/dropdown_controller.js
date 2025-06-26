@@ -49,29 +49,30 @@ export default class extends Controller {
 
   initializeSelectedItem() {
     const initialValue = this.inputTarget.value
-    const initialItem = this.itemTargets.find(item => 
-      item.dataset.value === initialValue
-    )
-    if (initialItem) this.updateDisplay(initialItem)
+    const initialItem = this.itemTargets.find(item => item.dataset.value === initialValue)
+    if (initialItem) {
+      this.updateDisplay(initialItem)
+    } else if (this.hasSelectedTarget) {
+      this.selectedTarget.innerHTML = "<span class='text-gray-400'>Select a user</span>"
+    }
   }
 
   updateDisplay(selectedItem) {
-    // Clone the selected item's content for display
-    const displayContent = selectedItem.querySelector(".dropdown_content").cloneNode(true)
+    const displayContent = selectedItem.querySelector(".dropdown_content")?.cloneNode(true)
+    if (!displayContent || !this.hasSelectedTarget) return
+
     this.selectedTarget.innerHTML = ''
     this.selectedTarget.appendChild(displayContent)
-    
-    // Update hidden input value
+
     this.inputTarget.value = this.selectedValue = selectedItem.dataset.value
-    
-    // Update active states
+
     this.itemTargets.forEach(item => {
       item.classList.toggle("bg-gray-100", item.dataset.value === this.selectedValue)
     })
   }
 
   highlightSelectedItem() {
-    this.itemsTargets.forEach(item => {
+    this.itemTargets.forEach(item => {
       if (item.dataset.value === this.selectedValue) {
         item.scrollIntoView({ block: "nearest" })
       }

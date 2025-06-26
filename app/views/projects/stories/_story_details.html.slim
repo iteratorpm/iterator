@@ -115,10 +115,7 @@
                   searchable: true \
                 }
 
-              .owner-row.flex.items-center.mb-3
-                span.text-xs.text-gray-500.mr-2.w-20 Owners
-                .flex.items-center
-                  button.add-owner.text-xs.text-blue-500.hover:text-blue-700 type="button" + Add owner
+              = render "owners", story: story
 
               .followers-row.flex.items-center
                 span.text-xs.text-gray-500.mr-2.w-20 Follow

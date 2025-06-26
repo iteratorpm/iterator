@@ -5,6 +5,5 @@
     - if @stories&.any?
       = render 'projects/stories/column', stories: @stories
     - else
-      .empty-state.text-center.text-gray-300.py-8.text-sm
+      .empty-state.text-center.text-gray-200.py-8.text-sm
         .mb-1 No stories in icebox
-        button.text-blue-500.text-xs data-action="click->panel#addStory" + Add story

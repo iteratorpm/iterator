@@ -1,7 +1,8 @@
 span.relative.ml-0.5.cursor-pointer.inline-flex.items-center
   | (
-  - owners.each do |owner|
-    span.peer.uppercase.text-blue-500.hover:text-blue-600 = owner.initials
+  .space-x-1
+    - owners.each do |owner|
+      span.peer.uppercase.text-blue-500.hover:text-blue-600 = owner.initials
   | )
   span.absolute.flex.flex-col.items-center.top-full.left-1/2.transform.-translate-x-1/2.z-40.hidden.peer-hover:flex.pt-1
     img.w-4.h-1.5 alt="" src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20width='36px'%20height='12px'%3e%3cpath%20fill='rgba(17,%2017,%2017,%200.9)'%20transform='rotate(180%2018%206)'%20d='M2.658,0.000%20C-13.615,0.000%2050.938,0.000%2034.662,0.000%20C28.662,0.000%2023.035,12.002%2018.660,12.002%20C14.285,12.002%208.594,0.000%202.658,0.000%20Z'/%3e%3c/svg%3e" draggable="false"

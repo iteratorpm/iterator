@@ -1,6 +1,6 @@
 - avatar_url = user.avatar_url
 .flex-shrink-0
   - if avatar_url.present?
-    img.rounded-full.flex-shrink-0.object-cover src=avatar_url alt=user.name class="w-#{size} h-#{size}"
+    img.rounded-full.flex-shrink-0.object-cover src=avatar_url alt=user.name *options
   - else
-    .rounded-full.bg-gray-400.flex.items-center.justify-center.text-white.text-xs.font-bold.flex-shrink-0 class="w-#{size} h-#{size}" = user.initials
+    .rounded-full.bg-gray-400.flex.items-center.justify-center.text-white.text-xs.font-bold.flex-shrink-0 class="w-#{size} h-#{size}" *options = user.initials
